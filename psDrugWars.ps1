@@ -1426,6 +1426,9 @@ function InitGame {
     $script:Player.Cash = $startingCash
     $script:Player.City = $script:GameCities | Get-Random
     $script:Player.Pockets = $startingPockets
+
+    # Fill starting City with random drugs.
+    $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $cityDrugCount
 }
 
 # Populates an array of City objects, using randomly chosen, unique names from the CityNames array.
@@ -1646,37 +1649,89 @@ function ShowMainMenu {
     return $choice
 }
 
+# This function displays the drug buying menu.
 function ShowBuyDrugsMenu {
     Clear-Host
-    Write-Host "Buy Drugs"
-    Write-Host "---------"
-    $drugPrices.GetEnumerator() | ForEach-Object {
+    Write-Centered "Buy Drugs"
+    Write-Centered "---------"
+    Write-Host
+    # Display the drugs available for purchase in the current city in a two column display.
+    $drugCount = $script:Player.City.Drugs.Count
+    $halfCount = [math]::Ceiling($drugCount / 2)
+    $boxWidth = 76
+    $leftColumnWidth = 35
+    $rightColumnWidth = 35
+    $gutterWidth = 1
+
+    # Top border
+    Write-Centered ('┌' + ('─' * ($boxWidth - 1)) + '┐')
+
+    for ($i = 0; $i -lt $halfCount; $i++) {
+        $leftDrug = "$($i + 1). $($script:Player.City.Drugs[$i].Name)"
+        $rightDrug = "$($i + $halfCount + 1). $($script:Player.City.Drugs[$i + $halfCount].Name)"
+
+        $leftDrug = $leftDrug.PadRight($leftColumnWidth)
+        $rightDrug = $rightDrug.PadRight($rightColumnWidth)
+
+        # Left gutter
+        Write-Centered ('│' + (' ' * $gutterWidth) + $leftDrug + (' ' * $gutterWidth) + '│' + (' ' * $gutterWidth) + $rightDrug + (' ' * $gutterWidth) + '│')
+
+        # Middle border
+        if ($i -eq $halfCount - 1) {
+            Write-Centered ('└' + ('─' * ($leftColumnWidth + $gutterWidth * 2)) + ('┴' + ('─' * ($rightColumnWidth + $gutterWidth * 2))) + '┘')
+        }
+        else {
+            Write-Centered ('│' + (' ' * $gutterWidth) + ('─' * $leftColumnWidth) + (' ' * $gutterWidth) + '│' + (' ' * $gutterWidth) + ('─' * $rightColumnWidth) + (' ' * $gutterWidth) + '│')
+        }
+    }
+
+    Write-Host
+    Write-Host "Enter the number of the drug you want to buy (1-$drugCount, or 'Q' to return to the main menu) " -NoNewline
+    $drugNumber = $null
+    while (-not $drugNumber) {
+        $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+        switch ($key) {
+            { $_ -in '1'.."$drugCount" } { $drugNumber = [int]$key; break }
+            { $_ -in 'q', 'Q' } { return }
+        }
+    }
+
+
+    
+    Write-Host "Transaction complete"
+    PressEnterPrompt
+}
+
+# This function displays the drug selling menu.
+function ShowSellDrugsMenu {
+    Clear-Host
+    Write-Host "Sell Drugs"
+    Write-Host "----------"
+    $script:PlayerDrugs.GetEnumerator() | ForEach-Object {
         Write-Host "$($_.Key): $($_.Value)"
     }
-    $drugName = Read-Host "Enter the name of the drug you want to buy"
-    if (-not $drugPrices.ContainsKey($drugName)) {
-        Write-Host "Invalid drug name"
+    $drugName = Read-Host "Enter the name of the drug you want to sell"
+    if (-not $script:PlayerDrugs.ContainsKey($drugName)) {
+        Write-Host "You don't have any $drugName"
         return
     }
+    $drugQuantity = $script:PlayerDrugs[$drugName]
     $drugPrice = $drugPrices[$drugName]
-    $maxQuantity = [Math]::Floor($script:Player.Cash / $drugPrice)
-    $quantity = Read-Host "Enter the quantity you want to buy (max $maxQuantity)"
+    $quantity = Read-Host "Enter the quantity you want to sell (max $drugQuantity)"
     $quantityInt = 0
     if (-not [int]::TryParse($quantity, [ref]$quantityInt)) {
         Write-Host "Invalid quantity"
         return
     }
-    if ($quantityInt -gt $maxQuantity) {
-        Write-Host "Quantity exceeds your cash limit"
+    if ($quantityInt -gt $drugQuantity) {
+        Write-Host "Quantity exceeds your inventory"
         return
     }
     $totalPrice = $quantityInt * $drugPrice
-    $script:Player.Cash -= $totalPrice
-    if ($script:PlayerDrugs.ContainsKey($drugName)) {
-        $script:PlayerDrugs[$drugName] += $quantityInt
-    }
-    else {
-        $script:PlayerDrugs[$drugName] = $quantityInt
+    $script:Player.Cash += $totalPrice
+    $script:PlayerDrugs[$drugName] -= $quantityInt
+    if ($script:PlayerDrugs[$drugName] -eq 0) {
+        $script:PlayerDrugs.Remove($drugName)
     }
     Write-Host "Transaction complete"
     PressEnterPrompt
@@ -1711,6 +1766,10 @@ function Jet {
     if ($script:Player.City -ne $alphabetizedCities[$newCity - 1]) {
         # Set player's new location.
         $script:Player.City = $alphabetizedCities[$newCity - 1]
+
+        # Fill landing City with random drugs.
+        $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $cityDrugCount
+        
         # Travel takes a day.
         $script:Player.GameDay++
     }
@@ -1718,40 +1777,6 @@ function Jet {
         Write-Centered ('Lay off your stash man!  You''re already in {0}!' -f $script:Player.City.Name)
         PressEnterPrompt
     }
-}
-
-function SellDrugs {
-    Clear-Host
-    Write-Host "Sell Drugs"
-    Write-Host "----------"
-    $script:PlayerDrugs.GetEnumerator() | ForEach-Object {
-        Write-Host "$($_.Key): $($_.Value)"
-    }
-    $drugName = Read-Host "Enter the name of the drug you want to sell"
-    if (-not $script:PlayerDrugs.ContainsKey($drugName)) {
-        Write-Host "You don't have any $drugName"
-        return
-    }
-    $drugQuantity = $script:PlayerDrugs[$drugName]
-    $drugPrice = $drugPrices[$drugName]
-    $quantity = Read-Host "Enter the quantity you want to sell (max $drugQuantity)"
-    $quantityInt = 0
-    if (-not [int]::TryParse($quantity, [ref]$quantityInt)) {
-        Write-Host "Invalid quantity"
-        return
-    }
-    if ($quantityInt -gt $drugQuantity) {
-        Write-Host "Quantity exceeds your inventory"
-        return
-    }
-    $totalPrice = $quantityInt * $drugPrice
-    $script:Player.Cash += $totalPrice
-    $script:PlayerDrugs[$drugName] -= $quantityInt
-    if ($script:PlayerDrugs[$drugName] -eq 0) {
-        $script:PlayerDrugs.Remove($drugName)
-    }
-    Write-Host "Transaction complete"
-    PressEnterPrompt
 }
 
 # This function handles a random event.
@@ -1880,7 +1905,7 @@ while ($true) {
             ShowBuyDrugsMenu
         }
         "S" {
-            SellDrugs
+            ShowSellDrugsMenu
         }
         "J" {
             Jet
