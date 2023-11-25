@@ -1428,7 +1428,7 @@ function InitGame {
     $script:Player.Pockets = $startingPockets
 
     # Fill starting City with random drugs.
-    $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $cityDrugCount
+    $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
 }
 
 # Populates an array of City objects, using randomly chosen, unique names from the CityNames array.
@@ -1652,10 +1652,12 @@ function ShowMainMenu {
 # This function displays the drug buying menu.
 function ShowBuyDrugsMenu {
     Clear-Host
+    ShowMenuHeader
+    Write-Host    
     Write-Centered "Buy Drugs"
-    Write-Centered "---------"
     Write-Host
-    # Display the drugs available for purchase in the current city in a two column display.
+
+    # Display the drugs available in the current city in a two column display.
     $drugCount = $script:Player.City.Drugs.Count
     $halfCount = [math]::Ceiling($drugCount / 2)
     $boxWidth = 76
@@ -1667,8 +1669,8 @@ function ShowBuyDrugsMenu {
     Write-Centered ('┌' + ('─' * ($boxWidth - 1)) + '┐')
 
     for ($i = 0; $i -lt $halfCount; $i++) {
-        $leftDrug = "$($i + 1). $($script:Player.City.Drugs[$i].Name)"
-        $rightDrug = "$($i + $halfCount + 1). $($script:Player.City.Drugs[$i + $halfCount].Name)"
+        $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $script:Player.City.Drugs[$i].Name, $script:Player.City.Drugs[$i].get_Price())
+        $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $script:Player.City.Drugs[$i + $halfCount].Name, $script:Player.City.Drugs[$i + $halfCount].get_Price())
 
         $leftDrug = $leftDrug.PadRight($leftColumnWidth)
         $rightDrug = $rightDrug.PadRight($rightColumnWidth)
@@ -1768,13 +1770,15 @@ function Jet {
         $script:Player.City = $alphabetizedCities[$newCity - 1]
 
         # Fill landing City with random drugs.
-        $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $cityDrugCount
-        
+        $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
+
         # Travel takes a day.
         $script:Player.GameDay++
     }
     else {
+        Write-Host
         Write-Centered ('Lay off your stash man!  You''re already in {0}!' -f $script:Player.City.Name)
+        Start-Sleep 2
         PressEnterPrompt
     }
 }
