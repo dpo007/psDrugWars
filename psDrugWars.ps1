@@ -927,52 +927,60 @@ function Write-Centered {
     # Get console width
     $consoleWidth = $Host.UI.RawUI.WindowSize.Width
 
-    # If the text is longer than the console width -2, split the Text into an array of multiple lines
-    $textArray = @()
+    # If the text is longer than the console width -2, split the Text into an array of multiple lines...
+    # Create a new list to store the lines of text
+    $textList = New-Object System.Collections.Generic.List[string]
+
     # Check if the length of the text is greater than the console width minus 2
     if ($Text.Length -gt ($consoleWidth - 2)) {
         # Store the length of the text and the maximum line length
         $textLength = $Text.Length
         $lineLength = $consoleWidth - 2
 
-        # Calculate the number of lines needed to display the text
-        $lineCount = [math]::Ceiling($textLength / $lineLength)
+        # Loop while there is still text left
+        while ($textLength -gt 0) {
+            # Calculate the end index for the substring
+            $endIndex = [math]::Min($lineLength, $textLength)
+            # Extract the substring from the text
+            $stringToAdd = $Text.Substring(0, $endIndex)
 
-        # Loop through each line
-        for ($i = 0; $i -lt $lineCount; $i++) {
-            # Calculate the start and end index for the substring
-            $startIndex = $i * $lineLength
-            $endIndex = [math]::Min(($i + 1) * $lineLength, $textLength)
-
-            # Extract the line from the text
-            $line = $Text.Substring($startIndex, $endIndex - $startIndex)
-
-            # Check if the line exceeds the line length
-            if ($line.Length -eq $lineLength) {
-                # Find the last space in the line
-                $lastSpaceIndex = $line.LastIndexOf(' ')
-
-                # If a space was found, truncate the line at the last space
-                if ($lastSpaceIndex -gt 0) {
-                    $line = $line.Substring(0, $lastSpaceIndex)
-                }
+            # Check if the string contains a space and if the text length is not equal to the end index
+            $shouldTruncate = $stringToAdd.Contains(' ') -and ($textLength -ne $endIndex)
+            if ($shouldTruncate) {
+                # Find the last space in the string
+                $lastSpace = $stringToAdd.LastIndexOf(' ')
+                # Truncate the string at the last space
+                $stringToAdd = $stringToAdd.Substring(0, $lastSpace + 1)
             }
 
-            # Add the line to the text array
-            $textArray += $line
+            # Add the string to the list and trim it
+            $textList.Add($stringToAdd.Trim())
+            # Remove the string from the text and trim it
+            $Text = $Text.Substring($stringToAdd.Length).Trim()
+            # Update the text length
+            $textLength = $Text.Length
         }
     }
     else {
-        $textArray += $Text
+        # If the text is not longer than the console width minus 2, add it to the list as is
+        $textList.Add($Text)
     }
 
     # Iterate through each line in the array
-    foreach ($line in $textArray) {
+    foreach ($line in $textList) {
         # Calculate padding to center text
-        $padding = [math]::Max(0, [math]::Floor((($Host.UI.RawUI.WindowSize.Width - $line.Length) / 2)))
+        $padding = [math]::Max(0, [math]::Floor((($consoleWidth - $line.Length) / 2)))
+
+        # Calculate right padding
+        $rightPadding = $consoleWidth - $line.Length - $padding
+
+        # If right padding is negative, set it to zero
+        if ($rightPadding -lt 0) {
+            $rightPadding = 0
+        }
 
         # Write text to console with padding, using the filtered parameters.
-        Write-Host (' ' * $padding + $line) @filteredParams
+        Write-Host ((' ' * $padding) + $line + (' ' * $rightPadding)) @filteredParams
     }
 }
 
@@ -1740,7 +1748,7 @@ function ShowBuyDrugsMenu {
     ShowCityDrugs $script:Player.City
     Write-Host
     $drugCount = $script:Player.City.Drugs.Count
-    Write-Host "Enter the number of the drug you want to buy (1-$drugCount, or 'Q' to return to the main menu) " -NoNewline
+    Write-Centered "Enter the number of the drug you want to buy (1-$drugCount, or 'Q' to return to the main menu) " -NoNewline
     $drugNumber = $null
     while (-not $drugNumber) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
@@ -1758,7 +1766,8 @@ function ShowBuyDrugsMenu {
     $quantity = Read-Host "Enter the quantity you want to buy (max $maxQuantity)"
     $quantityInt = 0
     if (-not [int]::TryParse($quantity, [ref]$quantityInt) -or $quantityInt -lt 1) {
-        Write-Host "Invalid quantity."
+        Write-Centered "Invalid quantity."
+        PressEnterPrompt
         return
     }
 
@@ -1766,7 +1775,6 @@ function ShowBuyDrugsMenu {
     $drugToBuy.Quantity += $quantityInt
     $script:Player.BuyDrugs($drugToBuy)
     
-    Write-Host "Transaction complete"
     PressEnterPrompt
 }
 
@@ -1817,7 +1825,7 @@ function Jet {
     $cityCount = $script:GameCities.Count
 
     $newCity = $null
-    Write-Host "Enter the city you want to jet to (1-$cityCount, or 'Q' to return to the main menu) " -NoNewline
+    Write-Centered "Enter the city you want to jet to (1-$cityCount, or 'Q' to return to the main menu) " -NoNewline
     while (-not $newCity) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
         switch ($key) {
