@@ -119,21 +119,21 @@ class Player {
     }
 
     # Method to buy drugs.
-    [void]BuyDrugs([int]$Quantity, [string]$DrugName) {
-        # Get the drug from the city's drug list
-        $cityDrug = $this.City.Drugs | Where-Object { $_.Name -eq $DrugName }
+    [void]BuyDrugs([Drug]$Drug) {
+        # Get the drug from the city's drug list (if it's available)
+        $cityDrug = $this.City.Drugs | Where-Object { $_.Name -eq $Drug.Name }
 
         # Use a switch statement to handle different conditions (run teh first block that's "True")
         switch ($true) {
             # If the drug is not available in the city, print a message and return
             (-not $cityDrug) {
                 $wachoo = @('Whutchoo talkin'' about, Willis?', 'Are you high?', 'You''re trippin''!', 'You drunk?')
-                Write-Host ('{0} {1} is not available in {2}.' -f (Get-Random -InputObject $wachoo), $DrugName, $this.City.Name)
+                Write-Host ('{0} {1} is not available in {2}.' -f (Get-Random -InputObject $wachoo), $Drug.Name, $this.City.Name)
                 break
             }
             # If the quantity is less than 1, print a message and return
-            ($Quantity -lt 1) {
-                Write-Host ('You really trying to buy {0} drugs...?' -f $Quantity)
+            ($Drug.Quantity -lt 1) {
+                Write-Host ('You really trying to buy {0} drugs...?' -f $Drug.Quantity)
                 $whoyou = @('M.C. Escher', 'Salvador Dali', 'David Blaine', 'Doug Henning')
                 Write-Host ('Who are you? {0} or some shit?' -f (Get-Random -InputObject $whoyou))
                 break
@@ -141,22 +141,21 @@ class Player {
             # If the drug is available and the quantity is valid, proceed to buy
             default {
                 # Calculate the total price
-                $totalPrice = $Quantity * $cityDrug.get_Price()
+                $totalPrice = $Drug.Quantity * $Drug.get_Price()
                 # If the player doesn't have enough cash, print a message and return
                 if ($totalPrice -gt $this.Cash) {
-                    Write-Host ('You don''t have enough cash to buy that much {0}.' -f $cityDrug.Name)
+                    Write-Host ('You don''t have enough cash to buy that much {0}.' -f $Drug.Name)
                     break
                 }
                 # If the quantity being bought is greater than the number of free pockets, print a message and return
-                if ($Quantity -gt $this.get_FreePockets()) {
-                    Write-Host ('You don''t have enough free pockets to hold that much {0}.' -f $cityDrug.Name)
+                if ($Drug.Quantity -gt $this.get_FreePockets()) {
+                    Write-Host ('You don''t have enough free pockets to hold that much {0}.' -f $Drug.Name)
                     break
                 }
                 # If the player has enough cash and free pockets, buy the drugs
-                $cityDrug.Quantity = $Quantity
                 $this.Cash -= $totalPrice
-                $this.AddDrugs($cityDrug)
-                Write-Host ('You bought {0} {1} for ${2}.' -f $Quantity, $cityDrug.Name, $totalPrice)
+                $this.AddDrugs($Drug)
+                Write-Host ('You bought {0} {1} for ${2}.' -f $Drug.Quantity, $Drug.Name, $totalPrice)
             }
         }
         # Pause for 3 seconds before returning
@@ -925,11 +924,56 @@ function Write-Centered {
         }
     }
 
-    # Calculate padding to center text
-    $padding = [math]::Max(0, [math]::Floor((($Host.UI.RawUI.WindowSize.Width - $Text.Length) / 2)))
+    # Get console width
+    $consoleWidth = $Host.UI.RawUI.WindowSize.Width
 
-    # Write text to console with padding, using the filtered parameters.
-    Write-Host (' ' * $padding + $Text) @filteredParams
+    # If the text is longer than the console width -2, split the Text into an array of multiple lines
+    $textArray = @()
+    # Check if the length of the text is greater than the console width minus 2
+    if ($Text.Length -gt ($consoleWidth - 2)) {
+        # Store the length of the text and the maximum line length
+        $textLength = $Text.Length
+        $lineLength = $consoleWidth - 2
+
+        # Calculate the number of lines needed to display the text
+        $lineCount = [math]::Ceiling($textLength / $lineLength)
+
+        # Loop through each line
+        for ($i = 0; $i -lt $lineCount; $i++) {
+            # Calculate the start and end index for the substring
+            $startIndex = $i * $lineLength
+            $endIndex = [math]::Min(($i + 1) * $lineLength, $textLength)
+
+            # Extract the line from the text
+            $line = $Text.Substring($startIndex, $endIndex - $startIndex)
+
+            # Check if the line exceeds the line length
+            if ($line.Length -eq $lineLength) {
+                # Find the last space in the line
+                $lastSpaceIndex = $line.LastIndexOf(' ')
+
+                # If a space was found, truncate the line at the last space
+                if ($lastSpaceIndex -gt 0) {
+                    $line = $line.Substring(0, $lastSpaceIndex)
+                }
+            }
+
+            # Add the line to the text array
+            $textArray += $line
+        }
+    }
+    else {
+        $textArray += $Text
+    }
+
+    # Iterate through each line in the array
+    foreach ($line in $textArray) {
+        # Calculate padding to center text
+        $padding = [math]::Max(0, [math]::Floor((($Host.UI.RawUI.WindowSize.Width - $line.Length) / 2)))
+
+        # Write text to console with padding, using the filtered parameters.
+        Write-Host (' ' * $padding + $line) @filteredParams
+    }
 }
 
 # Function to write large block letters to the console, based on provided text.
@@ -1649,16 +1693,14 @@ function ShowMainMenu {
     return $choice
 }
 
-# This function displays the drug buying menu.
-function ShowBuyDrugsMenu {
-    Clear-Host
-    ShowMenuHeader
-    Write-Host    
-    Write-Centered "Buy Drugs"
-    Write-Host
-
-    # Display the drugs available in the current city in a two column display.
-    $drugCount = $script:Player.City.Drugs.Count
+# Function to display drugs available in a city in a two column display
+function ShowCityDrugs {
+    param (
+        [Parameter(Mandatory)]
+        [City]$City
+    )
+        
+    $drugCount = $city.Drugs.Count
     $halfCount = [math]::Ceiling($drugCount / 2)
     $boxWidth = 76
     $leftColumnWidth = 35
@@ -1669,8 +1711,8 @@ function ShowBuyDrugsMenu {
     Write-Centered ('┌' + ('─' * ($boxWidth - 1)) + '┐')
 
     for ($i = 0; $i -lt $halfCount; $i++) {
-        $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $script:Player.City.Drugs[$i].Name, $script:Player.City.Drugs[$i].get_Price())
-        $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $script:Player.City.Drugs[$i + $halfCount].Name, $script:Player.City.Drugs[$i + $halfCount].get_Price())
+        $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $city.Drugs[$i].Name, $city.Drugs[$i].get_Price())
+        $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $city.Drugs[$i + $halfCount].Name, $city.Drugs[$i + $halfCount].get_Price())
 
         $leftDrug = $leftDrug.PadRight($leftColumnWidth)
         $rightDrug = $rightDrug.PadRight($rightColumnWidth)
@@ -1686,8 +1728,18 @@ function ShowBuyDrugsMenu {
             Write-Centered ('│' + (' ' * $gutterWidth) + ('─' * $leftColumnWidth) + (' ' * $gutterWidth) + '│' + (' ' * $gutterWidth) + ('─' * $rightColumnWidth) + (' ' * $gutterWidth) + '│')
         }
     }
+}
 
+# This function displays the drug buying menu.
+function ShowBuyDrugsMenu {
+    Clear-Host
+    ShowMenuHeader
+    Write-Host    
+    Write-Centered "Buy Drugs"
     Write-Host
+    ShowCityDrugs $script:Player.City
+    Write-Host
+    $drugCount = $script:Player.City.Drugs.Count
     Write-Host "Enter the number of the drug you want to buy (1-$drugCount, or 'Q' to return to the main menu) " -NoNewline
     $drugNumber = $null
     while (-not $drugNumber) {
@@ -1698,7 +1750,21 @@ function ShowBuyDrugsMenu {
         }
     }
 
+    Write-Host
+    $drugToBuy = $script:Player.City.Drugs[$drugNumber - 1]
+    $maxQuantity = [math]::Floor($script:Player.Cash / $drugToBuy.get_Price())
 
+    # Ask how many they want to buy.
+    $quantity = Read-Host "Enter the quantity you want to buy (max $maxQuantity)"
+    $quantityInt = 0
+    if (-not [int]::TryParse($quantity, [ref]$quantityInt) -or $quantityInt -lt 1) {
+        Write-Host "Invalid quantity."
+        return
+    }
+
+    # Buy the drugs.
+    $drugToBuy.Quantity += $quantityInt
+    $script:Player.BuyDrugs($drugToBuy)
     
     Write-Host "Transaction complete"
     PressEnterPrompt
