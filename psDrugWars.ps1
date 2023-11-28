@@ -104,11 +104,11 @@ class Player {
     }
 
     # Method to remove drugs from the player's Drugs collection.
-    [void]RemoveDrugs([Drug]$Drug) {
+    [void]RemoveDrugs([Drug]$Drug, [int]$Quantity) {
         # If the player has some of the drug, remove the quantity from the existing drug, otherwise do nothing.
         $myMatchingDrug = $this.Drugs | Where-Object { $_.Name -eq $Drug.Name }
         if ($myMatchingDrug) {
-            $myMatchingDrug.Quantity -= $Drug.Quantity
+            $myMatchingDrug.Quantity -= $Quantity
             if ($myMatchingDrug.Quantity -le 0) {
                 $myMatchingDrug.Quantity = 0
             }
@@ -160,6 +160,23 @@ class Player {
         }
         # Pause for 3 seconds before returning
         Start-Sleep 3
+    }
+
+    [void]SellDrugs([Drug]$Drug, [int]$Quantity) {
+        # Calculate the total price
+        $totalPrice = $Drug.get_Price() * $Quantity
+
+        # Check if the player has enough quantity of the drug
+        $drugToSell = $this.Drugs | Where-Object { $_.Name -eq $Drug.Name }
+        if ($drugToSell.Quantity -lt $Quantity) {
+            Write-Host ('You don''t have enough {0} to sell.' -f $Drug.Name)
+            return
+        }
+
+        # If the player has enough quantity of the drug, sell the drugs
+        $this.RemoveDrugs($Drug, $Quantity)
+        $this.Cash += $totalPrice
+        Write-Host ('You sold {0} {1} for ${2}.' -f $Quantity, $Drug.Name, $totalPrice)
     }
 }
 ###########################
@@ -1781,35 +1798,49 @@ function ShowBuyDrugsMenu {
 # This function displays the drug selling menu.
 function ShowSellDrugsMenu {
     Clear-Host
-    Write-Host "Sell Drugs"
-    Write-Host "----------"
-    $script:PlayerDrugs.GetEnumerator() | ForEach-Object {
-        Write-Host "$($_.Key): $($_.Value)"
+    ShowMenuHeader
+    Write-Host    
+    Write-Centered "Sell Drugs"
+    Write-Host
+    ShowCityDrugs $script:Player.City
+    Write-Host
+    $drugCount = $script:Player.City.Drugs.Count
+
+    # Ask which drug they want to sell.
+    Write-Centered "Enter the number of the drug you want to sell (1-$drugCount, or 'Q' to return to the main menu) " -NoNewline
+    $drugNumber = $null
+    while (-not $drugNumber) {
+        $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+        switch ($key) {
+            { $_ -in '1'.."$drugCount" } { $drugNumber = [int]$key; break }
+            { $_ -in 'q', 'Q' } { return }
+        }
     }
-    $drugName = Read-Host "Enter the name of the drug you want to sell"
-    if (-not $script:PlayerDrugs.ContainsKey($drugName)) {
-        Write-Host "You don't have any $drugName"
+
+    Write-Host
+    $nameOfDrugToSell = $script:Player.City.Drugs[$drugNumber - 1].Name
+    $drugToSell = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToSell }
+
+    if (!$drugToSell) {
+        Write-Centered ('You don''t have any {0} to sell!' -f $nameOfDrugToSell)
+        PressEnterPrompt
         return
     }
-    $drugQuantity = $script:PlayerDrugs[$drugName]
-    $drugPrice = $drugPrices[$drugName]
-    $quantity = Read-Host "Enter the quantity you want to sell (max $drugQuantity)"
+
+    $maxQuantity = $drugToSell.Quantity
+
+    # Ask how many they want to sell.
+    $quantity = Read-Host ('Enter the quantity you want to sell (max {0})' -f $maxQuantity)
     $quantityInt = 0
-    if (-not [int]::TryParse($quantity, [ref]$quantityInt)) {
-        Write-Host "Invalid quantity"
+    if (-not [int]::TryParse($quantity, [ref]$quantityInt) -or $quantityInt -lt 1) {
+        Write-Centered "Invalid quantity."
+        PressEnterPrompt
         return
     }
-    if ($quantityInt -gt $drugQuantity) {
-        Write-Host "Quantity exceeds your inventory"
-        return
-    }
-    $totalPrice = $quantityInt * $drugPrice
-    $script:Player.Cash += $totalPrice
-    $script:PlayerDrugs[$drugName] -= $quantityInt
-    if ($script:PlayerDrugs[$drugName] -eq 0) {
-        $script:PlayerDrugs.Remove($drugName)
-    }
-    Write-Host "Transaction complete"
+
+    # Sell the drugs.
+    $script:Player.SellDrugs($drugToSell, $quantityInt)
+
     PressEnterPrompt
 }
 
