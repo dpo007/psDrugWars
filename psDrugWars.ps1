@@ -2182,10 +2182,11 @@ function ShowTaglinePrompt {
             
             # Write the text to the host with the current color, without a newline at the end
             if ($color -eq "Black") {
-                Write-Host (' ' * $Text.Length) -NoNewline
+                # If the color is black, clear the line instead.
+                Write-Centered (' ' * $Text.Length) -NoNewline
                 $host.UI.RawUI.CursorPosition = $originalCursorPosition
             } else {
-                Write-Host $Text -ForegroundColor $color -NoNewline
+                Write-Centered $Text -ForegroundColor $color -NoNewline
             }
 
             # Set the sleep duration based on the current color
