@@ -2085,6 +2085,7 @@ function QuitGame {
     return    
 }
 
+# This function is called to end the game.
 function EndGame {
     Clear-Host
     Write-Host
@@ -2244,8 +2245,12 @@ function ShowTitleScreen {
     # Calculate the top padding
     $topPadding = [math]::Floor(($consoleHeight - $blockHeight) / 2)
 
+    # Remove a couple lines of padding to make up for tagline and enter prompt
+    $topPadding -= 2
+
     # Ensure top padding is not negative
     $topPadding = [math]::max(0, $topPadding)
+
     # Add top padding
     1..$topPadding | ForEach-Object { Write-Host }
 
@@ -2259,41 +2264,6 @@ function ShowTitleScreen {
     PressEnterPrompt
 }
 
-# This function creates a fading text effect in the console by cycling through different colors.
-function FadingText {
-    param (
-        [string]$Text
-    )
-
-    # Define an array of colors to be used for the text
-    $colors = @("Black", "DarkGray", "Gray", "White", "White", "White", "White", "White", "Gray", "DarkGray", "Black")
-
-    # Store the original cursor position
-    $originalCursorPosition = $host.UI.RawUI.CursorPosition
-
-    # Start an infinite loop
-    while ($true) {
-        # Loop through each color in the colors array
-        foreach ($color in $colors) {
-            # Reset the cursor position to the original position
-            $host.UI.RawUI.CursorPosition = $originalCursorPosition
-            # Write the text to the host with the current color, without a newline at the end
-            Write-Host $Text -ForegroundColor $color -NoNewline
-            # Pause execution for 120 milliseconds
-            Start-Sleep -Milliseconds 120
-            # Check if a key has been pressed
-            if ([System.Console]::KeyAvailable) {
-                # Read the key that was pressed
-                $key = [System.Console]::ReadKey($true)
-                # If the Enter key was pressed, exit the loop
-                if ($key.Key -eq "Enter") {
-                    # Exit the function
-                    return
-                }
-            }
-        }
-    }
-}
 
 ##############################
 #endregion Function Definitions
