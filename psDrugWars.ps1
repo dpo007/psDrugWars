@@ -683,8 +683,8 @@ $script:RandomEvents = @(
         }
     },
     @{
-        "Name"        = "Hemp Poncho"
-        "Description" = "Far-out find, man! You snagged a tie-dyed hemp poncho. It's like wearing a kaleidoscope of good vibes!"
+        "Name"        = "Tie-dyed Poncho"
+        "Description" = "Far-out find, man! You snagged a psychedelic tie-dyed hemp poncho. It's like wearing a kaleidoscope of good vibes!"
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
