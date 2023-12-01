@@ -2202,6 +2202,7 @@ function ShowTaglinePrompt {
 
     # Define an array of taglines to be used for the text
     $tagLines = @(
+        '"Mine version is better." - John E. Dell',
         'In Drug Wars, it''s not personal; it''s strictly business.',
         'Red pill or Blue pill? Why not both?',
         'To infinity and beyond (the law).',
