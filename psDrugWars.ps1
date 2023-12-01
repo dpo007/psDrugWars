@@ -14,6 +14,7 @@ class Drug {
     Drug([string]$Name) {
         $this.Name = $Name
         $this.Code = $script:DrugCodes.Keys | Where-Object { $script:DrugCodes[$_] -eq $Name }
+        $this.Description = $script:DrugsInfo[$this.Code]['History']
         $this.PriceRange = $script:DrugsInfo[$this.Code]['PriceRange']
         $this.PriceMultiplier = 1.0
         $this.Quantity = 0
@@ -63,11 +64,13 @@ class Player {
     [City]$City
     [Drug[]]$Drugs
     [int]$Pockets
+    [string[]]$Inventory
     [int]$GameDay
 
     # Default constructor
     Player() {
         $this.Drugs = @()
+        $this.Inventory = @()
         $this.Pockets = 0
         $this.GameDay = 1
     }
@@ -177,6 +180,18 @@ class Player {
         $this.RemoveDrugs($Drug, $Quantity)
         $this.Cash += $totalPrice
         Write-Host ('You sold {0} {1} for ${2}.' -f $Quantity, $Drug.Name, $totalPrice)
+    }
+
+    [bool]AddInventory([string]$Item) {
+        # If the player already has the item, return false
+        if ($this.Inventory -contains $Item) {
+            return $false
+        }
+        # Otherwise, add the item to the player's inventory and return true.
+        else {
+            $this.Inventory += $Item
+            return $true
+        }
     }
 }
 ###########################
@@ -516,7 +531,11 @@ $script:RandomEvents = @(
                 Write-Centered 'Bummer! You don''t have any empty pockets to hold the free Hash.'
                 Start-Sleep -Seconds 3
                 Write-Host
-                Write-BlockLetters '** BURN!! **' -ForegroundColor Black -BackgroundColor DarkRed -Align Center -VerticalPadding 1
+                if ((Write-BlockLetters '** BURN!! **' -ForegroundColor Black -BackgroundColor DarkRed -Align Center -VerticalPadding 1) -eq $false) {
+                    Write-Centered ' ' -BackgroundColor DarkRed
+                    Write-Centered '** BURN!! **' -ForegroundColor Black -BackgroundColor DarkRed
+                    Write-Centered ' ' -BackgroundColor DarkRed
+                }
                 Start-Sleep -Seconds 2
             }
         }
@@ -589,43 +608,61 @@ $script:RandomEvents = @(
         }
     },
     @{
-        "Name"        = "Cosmic Cargo Pants"
+        "Name"        = "Cargo Pants"
         "Description" = "Groovy, man! You stumbled upon these cosmic cargo pants, packed with pockets for all your trippy treasures!"
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
-            $extraPockets = Get-Random -Minimum 10 -Maximum 21
-            $script:Player.Pockets += $extraPockets
-            Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
+            if ($script:Player.AddInventroy('Cargo Pants')) {
+                $extraPockets = 10
+                $script:Player.Pockets += $extraPockets
+                Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
+            }
+            else {
+                Write-Centered 'You already have a pair of cosmic cargo pants. You decide to sell these for $10.'
+                $script:Player.Cash += 10
+            }
             Start-Sleep -Seconds 2
         }
     },
     @{
-        "Name"        = "Zen Hemp Backpack"
+        "Name"        = "Hemp Backpack"
         "Description" = "Whoa, dude! Check out this Zen hemp backpack! It's like, totally eco-friendly and has space for all your good vibes and herbal remedies."
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
-            $extraPockets = 50
-            $script:Player.Pockets += $extraPockets
-            Write-Centered ('Dude, it can cradle {0} extra pockets worth of your good stuff. Mother Nature would be proud.' -f $extraPockets) -ForegroundColor DarkGreen
+            if ($script:Player.AddInventroy('Hemp Backpack')) {
+                $extraPockets = 20
+                $script:Player.Pockets += $extraPockets
+                Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
+            }
+            else {
+                Write-Centered 'You already have a Zen hemp backpack. You decide to sell this one for $20.'
+                $script:Player.Cash += 20
+            }
             Start-Sleep -Seconds 2
         }
     },
     @{
-        "Name"        = "Psychedelic Hemp Poncho"
+        "Name"        = "Hemp Poncho"
         "Description" = "Far-out find, man! You snagged a tie-dyed hemp poncho. It's like wearing a kaleidoscope of good vibes!"
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
-            $extraPockets = 5
-            $script:Player.Pockets += $extraPockets
-            Write-Centered ('Trippy, right? This tie-dyed hemp poncho adds {0} extra pockets to your cosmic wardrobe. Carry on, peace traveler.' -f $extraPockets) -ForegroundColor DarkGreen
+            if ($script:Player.AddInventroy('Hemp Poncho')) {
+                $extraPockets = 10
+                $script:Player.Pockets += $extraPockets
+                Write-Centered ('Trippy, right? This tie-dyed hemp poncho adds {0} extra pockets to your cosmic wardrobe. Carry on, peace traveler.' -f $extraPockets) -ForegroundColor DarkGreen
+            }
+            else {
+                Write-Centered 'You already have a tie-dyed hemp poncho. You decide to sell this one for $10.'
+                $script:Player.Cash += 10
+            }
             Start-Sleep -Seconds 2
         }
     },
     @{
-        "Name"        = "Skid-Row Lemonade Stand"
+        "Name"        = "Lemonade Stand"
         "Description" = "Wandering through the gritty streets of Skid-Row, your eyes catch a peculiar sight - a little girl gleefully running a lemonade stand. But, as you approach, you realize this stand has a mysterious twist!"
         "Effect"      = {
             Start-Sleep -Seconds 3
@@ -913,6 +950,15 @@ $script:RandomEvents = @(
 ###########################
 #region Function Definitions
 #############################
+# Function that will Exit if console size is not at least 80x25.
+function CheckConsoleSize {
+    if ($Host.UI.RawUI.WindowSize.Width -lt 120 -or $Host.UI.RawUI.WindowSize.Height -lt 25) {
+        Write-Host 'Please resize your console window to at least 120 x 25 and run the script again.' -ForegroundColor Red
+        Write-Host ('Current size: {0}x{1}' -f $Host.UI.RawUI.WindowSize.Width, $Host.UI.RawUI.WindowSize.Height) -ForegroundColor Red
+        Exit 666
+    }
+}
+
 # Displays provided text in center of console.
 function Write-Centered {
     param (
@@ -1008,8 +1054,8 @@ function Write-BlockLetters {
         [string]$Text,
         [ValidateSet("Left", "Center", "Right")]
         [string]$Align = "Left",
-        [ConsoleColor]$ForegroundColor = [ConsoleColor]::Gray,
-        [ConsoleColor]$BackgroundColor = [ConsoleColor]::Black,
+        [ConsoleColor]$ForegroundColor = $Host.UI.RawUI.ForegroundColor,
+        [ConsoleColor]$BackgroundColor = $Host.UI.RawUI.BackgroundColor,
         [int]$VerticalPadding = 0
     )
     
@@ -1400,7 +1446,27 @@ function Write-BlockLetters {
             " #",
             "# "
         )
-    
+        ':' = @(
+            "   ",
+            " # ",
+            "   ",
+            " # ",
+            "   "
+        )
+        ';' = @(
+            "   ",
+            " # ",
+            "   ",
+            " # ",
+            "#  "
+        )
+        ',' = @(
+            "   ",
+            "   ",
+            "   ",
+            " # ",
+            "#  "
+        )
     }
     
     # Convert the input text to block letters and create an array of lines containing the block letters
@@ -1422,12 +1488,12 @@ function Write-BlockLetters {
     
     # Get width of the longest line (as integer)
     $longestLine = ($lines | Measure-Object -Property Length -Maximum).Maximum
-
-    # Add blank vertical padding lines to the top and bottom $lines array that are as wide as the longest line
+    
+    # Add blank vertical padding lines to the top and bottom $lines array that are as wide as the longest line.
     for ($i = 0; $i -lt $VerticalPadding; $i++) {
         $lines = @(" " * $longestLine) + $lines + @(" " * $longestLine)
     }
-
+    
     # Get the console width
     $consoleWidth = $Host.UI.RawUI.WindowSize.Width
     
@@ -1438,39 +1504,58 @@ function Write-BlockLetters {
         }
         "Center" {
             $leftPadding = [Math]::Floor(($consoleWidth - $longestLine) / 2)
+            if ($leftPadding -lt 0) {
+                $leftPadding = 0
+            }
             $rightPadding = $consoleWidth - $longestLine - $leftPadding
+            if ($rightPadding -lt 0) {
+                $rightPadding = 0
+            }
         }
         "Right" {
             $leftPadding = $consoleWidth - $longestLine
         }
     }
     
-    # Write the lines to the console with the padding
-    $lines | ForEach-Object {
-        $line = $_
-        if ($Align -eq "Center") {
-            # Right padding is added so we can fill it with spaces/background colour when using centered alignment.
-            $line = (" " * $leftPadding) + $line + (" " * $rightPadding)
-        }
-        else {
-            $line = (" " * $leftPadding) + $line
-        }
+    if ($consoleWidth -lt ($longestLine + 2)) {
+        # If the console width is less than the longest line plus 2, return false
+        return $false
+    }
+    else {
+        # Write the text to the console as block characters, line by line.
+        $lines | ForEach-Object {
+            $line = $_
     
-        # Write the line to the console, character by character
-        for ($i = 0; $i -lt $line.Length; $i++) {
-            $char = $line[$i]
-    
-            # If the character is a space, write a space with the background color, otherwise write a space with the foreground color (to represent a lit pixel in the character).
-            if ($char -eq " ") {
-                Write-Host " " -NoNewline -BackgroundColor $BackgroundColor
+            if ($Align -eq "Center") {
+                # Right padding is added so we can fill it with spaces/background colour when using centered alignment.
+                $line = (" " * $leftPadding) + $line + (" " * $rightPadding)
             }
             else {
-                Write-Host " " -NoNewline -BackgroundColor $ForegroundColor 
-            }        
-        }
+                $line = (" " * $leftPadding) + $line
+            }
     
-        # Add New Line to end.
-        Write-Host
+            # If $line is empty (i.e. all spaces), write the line as a whole
+            if ($line.Trim().Length -eq 0) {
+                Write-Host $line -NoNewLine -BackgroundColor $BackgroundColor
+            }
+            else {
+                # Write the line to the console, character by character
+                for ($i = 0; $i -lt $line.Length; $i++) {
+                    $char = $line[$i]
+    
+                    # If the character is a space, write a space with the background color, otherwise write a space with the foreground color (to represent a lit pixel in the character).
+                    if ($char -eq " ") {
+                        Write-Host " " -NoNewline -BackgroundColor $BackgroundColor
+                    }
+                    else {
+                        Write-Host " " -NoNewline -BackgroundColor $ForegroundColor 
+                    }        
+                }
+            }
+    
+            # Add New Line to end.
+            Write-Host
+        }
     }
 }
 
@@ -1896,7 +1981,9 @@ function StartRandomEvent {
     ShowMenuHeader
     Write-Host
     $eventName = ('{0}!' -f $randomEvent.Name)
-    Write-BlockLetters $eventName -Align Center
+    if ((Write-BlockLetters $eventName -Align Center) -eq $false) {
+        Write-Centered $eventName
+    }
     Write-Host
     Write-Host
     Write-Centered $randomEvent.Description
@@ -1934,7 +2021,9 @@ function QuitGame {
         $daysLabel = if ($days -eq 1) { 'day' } else { 'days' }
         Write-Centered ('You survived {0} {1}, and ended up with ${2} in cash.' -f $days, $daysLabel, $script:Player.Cash)
         Write-Host
-        Write-BlockLetters 'Thanks for playing!' -Align Center -BackgroundColor Blue -VerticalPadding 1
+        if ((Write-BlockLetters 'Thanks for playing!' -Align Center -BackgroundColor Blue -VerticalPadding 1) -eq $false) {
+            Write-Centered 'Thanks for playing!' -BackgroundColor Blue
+        }
         Write-Host
         Write-Host
         Write-Host
@@ -2002,6 +2091,9 @@ function ShowHelp {
 
 # Set default error action
 $ErrorActionPreference = 'Stop'
+
+# Confirm that the console window is large enough to display the game.
+CheckConsoleSize
 
 # Initialize game state.
 InitGame
