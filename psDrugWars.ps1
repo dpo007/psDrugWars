@@ -128,7 +128,8 @@ class Player {
         if ($myMatchingDrug) {
             $myMatchingDrug.Quantity -= $Quantity
             if ($myMatchingDrug.Quantity -le 0) {
-                $myMatchingDrug.Quantity = 0
+                # None left, remove the Drug object from the Drugs collection.
+                $this.Drugs = $this.Drugs | Where-Object { $_.Name -ne $Drug.Name }
             }
         }
         else {
