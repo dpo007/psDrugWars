@@ -2152,6 +2152,110 @@ function ShowHelp {
     Write-Host
     PressEnterPrompt
 }
+
+# Function to shoe the title screen
+function ShowTitleScreen {
+    $titleBlocks = @(
+        @(
+            ' (                                                    ____',
+            ' )\ )                      (  (                      |   /',
+            '(()/(   (      (   (  (    )\))(   ''    )  (         |  /',
+            ' /(_))  )(    ))\  )\))(  ((_)()\ )  ( /(  )(   (    | /',
+            '(_))_  (()\  /((_)((_))\  _(())\_)() )(_))(()\  )\   |/',
+            ' |   \  ((_)(_))(  (()(_) \ \((_)/ /((_)_  ((_)((_) (',
+            ' | |) || ''_|| || |/ _` |   \ \/\/ / / _` || ''_|(_-< )\',
+            ' |___/ |_|   \_,_|\__, |    \_/\_/  \__,_||_|  /__/((_)',
+            '                  |___/'
+        ),
+        @(
+            '________                           __      __                       ._.',
+            '\______ \ _______  __ __   ____   /  \    /  \_____  _______  ______| |',
+            ' |    |  \\_  __ \|  |  \ / ___\  \   \/\/   /\__  \ \_  __ \/  ___/| |',
+            ' |    `   \|  | \/|  |  // /_/  >  \        /  / __ \_|  | \/\___ \  \|',
+            '/_______  /|__|   |____/ \___  /    \__/\  /  (____  /|__|  /____  > __',
+            '        \/              /_____/          \/        \/            \/  \/'
+        ),
+        @(
+            ' _______  .______       __    __    _______    ____    __    ____  ___      .______           _______. __',
+            '|       \ |   _  \     |  |  |  |  /  _____|   \   \  /  \  /   / /   \     |   _  \         /       ||  |',
+            '|  .--.  ||  |_)  |    |  |  |  | |  |  __      \   \/    \/   / /  ^  \    |  |_)  |       |   (----`|  |',
+            '|  |  |  ||      /     |  |  |  | |  | |_ |      \            / /  /_\  \   |      /         \   \    |  |',
+            '|  ''--''  ||  |\  \----.|  `--''  | |  |__| |       \    /\    / /  _____  \  |  |\  \----..----)   |   |__|',
+            '|_______/ | _| `._____| \______/   \______|        \__/  \__/ /__/     \__\ | _| `._____||_______/    (__)'
+        ),
+        @(
+            '    ,---,',
+            '  .''  .'' `\',
+            ',---.''     \   __  ,-.         ,--,',
+            '|   |  .`\  |,'' ,''/ /|       ,''_ /|  ,----._,.',
+            ':   : |  ''  |''  | |'' |  .--. |  | : /   /  '' /',
+            '|   '' ''  ;  :|  |   ,'',''_ /| :  . ||   :     |',
+            '   | ;  .  |''  :  /  |  '' | |  . .|   | .\  .',
+            '|   | :  |  ''|  | ''   |  | '' |  | |.   ; '';  |',
+            '   : | /  ; ;  : |   :  | : ;  ; |''   .   . |',
+            '|   | ''` ,/  |  , ;   ''  :  `--''   \`---`-''| |',
+            ';   :  .''     ---''    :  ,      .-./.''__/\_: |     ,---,',
+            '|   ,.''                `--`----''    |   :    :  ,`--.'' |',
+            '---''      .---.                     \   \  /   |   :  :',
+            '          /. ./|                      `--`-''    ''   ''  ;',
+            '      .--''.  '' ;             __  ,-.            |   |  |',
+            '     /__./ \ : |           ,'' ,''/ /|  .--.--.   ''   :  ;',
+            ' .--''.  ''   \'' .  ,--.--.  ''  | |'' | /  /    ''  |   |  ',
+            '/___/ \ |    '' '' /       \ |  |   ,''|  :  /`./  ''   :  |',
+            ';   \  \;      :.--.  .-. |''  :  /  |  :  ;_    ;   |  ;',
+            ' \   ;  `      | \__\/: . .|  | ''    \  \    `. `---''. |',
+            '  .   \    .\  ; ," .--.; |;  : |     `----.   \ `--..`;',
+            '   \   \   '' \ |/  /  ,.  ||  , ;    /  /`--''  /.--,_',
+            '    :   ''  |--";  :   .''   \---''    ''--''.     / |    |`.',
+            '     \   \ ;   |  ,     .-./          `--''---''  `-- -`, ;',
+            '      ''---"     `--`---''                          ''---`"'''
+        )
+    )
+    
+    # Change the foreground and background colors to gray and black
+    $host.UI.RawUI.ForegroundColor = "Gray"
+    $host.UI.RawUI.BackgroundColor = "Black"
+    Clear-Host
+
+    # Pick a random title block
+    [string[]]$titleBlock = Get-Random -InputObject $titleBlocks
+
+    # Figure out how many characters wide the longest line is.
+    $longestLineLength = 0
+    $titleBlock | ForEach-Object {
+        if ($_.Length -gt $longestLineLength) {
+            $longestLineLength = $_.Length
+        }
+    }
+
+    $blockHeight = $titleBlock.Length
+
+    # Based on the console height and width print the block centered verticalland horizontally
+    $consoleWidth = $Host.UI.RawUI.WindowSize.Width
+    $consoleHeight = $Host.UI.RawUI.WindowSize.Height
+
+    # Calculate the left padding
+    $leftPadding = [math]::Floor(($consoleWidth - $longestLineLength) / 2)
+
+    # Calculate the top padding
+    $topPadding = [math]::Floor(($consoleHeight - $blockHeight) / 2)
+
+    # Ensure top padding is not negative
+    $topPadding = [math]::max(0, $topPadding)
+    # Add top padding
+    1..$topPadding | ForEach-Object { Write-Host }
+
+    # Print the block
+    $titleBlock | ForEach-Object {
+        Write-Host (' ' * $leftPadding) $_
+    }
+
+    Write-Host
+    Write-Host
+    PressEnterPrompt
+}
+
+
 ##############################
 #endregion Function Definitions
 ################################
@@ -2167,6 +2271,9 @@ $ErrorActionPreference = 'Stop'
 if (!$SkipConsoleSizeCheck) {
     CheckConsoleSize
 }
+
+# Show title screen
+ShowTitleScreen
 
 # Initialize game state.
 InitGame
