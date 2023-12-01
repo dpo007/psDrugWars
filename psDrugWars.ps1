@@ -2084,6 +2084,13 @@ function QuitGame {
         $days = $script:Player.GameDay
         $daysLabel = if ($days -eq 1) { 'day' } else { 'days' }
         Write-Centered ('You survived {0} {1}, and ended up with ${2} in cash.' -f $days, $daysLabel, $script:Player.Cash)
+        if ($script:Player.Drugs.Count -gt 0) {
+            Write-Host
+            Write-Centered 'Drugs left over:'
+            $script:Player.Drugs | ForEach-Object {
+                Write-Centered ('· {0} {1}' -f $_.Quantity, $_.Name)
+            }
+        }
         Write-Host
         if ((Write-BlockLetters 'Thanks for playing!' -Align Center -BackgroundColor Blue -VerticalPadding 1) -eq $false) {
             Write-Centered 'Thanks for playing!' -BackgroundColor Blue
