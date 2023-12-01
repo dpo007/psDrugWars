@@ -2206,7 +2206,7 @@ function ShowTaglinePrompt {
     $originalCursorPosition = $host.UI.RawUI.CursorPosition
 
     # Define the alternate text
-    $alternateText = "Press Enter To Begin"
+    $alternateText = "Press Enter to begin"
 
     $counter = 1
 
