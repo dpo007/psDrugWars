@@ -719,6 +719,24 @@ $script:RandomEvents = @(
         }
     },
     @{
+        "Name"        = "Fishing Vest"
+        "Description" = "Whoa, you've discovered a far-out fishing vest! It's got a whole whack of pockets for all your ""fishing gear""."
+        "Effect"      = {
+            Start-Sleep -Seconds 2
+            Write-Host
+            if ($script:Player.AddClothing('Fishing Vest')) {
+                $extraPockets = 25
+                $script:Player.Pockets += $extraPockets
+                Write-Centered ('Incredible! You''ve now got {0} extra pockets! You''ll never run out of storage space.' -f $extraPockets) -ForegroundColor DarkGreen
+            }
+            else {
+                Write-Centered 'You already have a fishing vest. You decide to sell this one for $15.'
+                $script:Player.Cash += 15
+            }
+            Start-Sleep -Seconds 2
+        }
+    },
+    @{
         "Name"        = "Lemonade Stand"
         "Description" = "Wandering through the gritty streets of Skid-Row, your eyes catch a peculiar sight - a little girl gleefully running a lemonade stand. But, as you approach, you realize this stand has a mysterious twist!"
         "Effect"      = {
