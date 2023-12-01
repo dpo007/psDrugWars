@@ -2079,29 +2079,33 @@ function QuitGame {
     }
 
     if ($choice -eq 'Y') {
-        Clear-Host
-        Write-Host
-        $days = $script:Player.GameDay
-        $daysLabel = if ($days -eq 1) { 'day' } else { 'days' }
-        Write-Centered ('You survived {0} {1}, and ended up with ${2} in cash.' -f $days, $daysLabel, $script:Player.Cash)
-        if ($script:Player.Drugs.Count -gt 0) {
-            Write-Host
-            Write-Centered 'Drugs left over:'
-            $script:Player.Drugs | ForEach-Object {
-                Write-Centered ('· {0} {1}' -f $_.Quantity, $_.Name)
-            }
-        }
-        Write-Host
-        if ((Write-BlockLetters 'Thanks for playing!' -Align Center -BackgroundColor Blue -VerticalPadding 1) -eq $false) {
-            Write-Centered 'Thanks for playing!' -BackgroundColor Blue
-        }
-        Write-Host
-        Write-Host
-        Write-Host
-        exit
+        EndGame
     }
 
     return    
+}
+
+function EndGame {
+    Clear-Host
+    Write-Host
+    $days = $script:Player.GameDay
+    $daysLabel = if ($days -eq 1) { 'day' } else { 'days' }
+    Write-Centered ('You survived {0} {1}, and ended up with ${2} in cash.' -f $days, $daysLabel, $script:Player.Cash)
+    if ($script:Player.Drugs.Count -gt 0) {
+        Write-Host
+        Write-Centered 'Drugs left over:'
+        $script:Player.Drugs | ForEach-Object {
+            Write-Centered ('· {0} {1}' -f $_.Quantity, $_.Name)
+        }
+    }
+    Write-Host
+    if ((Write-BlockLetters 'Thanks for playing!' -Align Center -BackgroundColor Blue -VerticalPadding 1) -eq $false) {
+        Write-Centered 'Thanks for playing!' -BackgroundColor Blue
+    }
+    Write-Host
+    Write-Host
+    Write-Host
+    exit
 }
 
 # This function displays the help screen.
@@ -2153,7 +2157,7 @@ function ShowHelp {
     PressEnterPrompt
 }
 
-# Function to shoe the title screen
+# Function to show the title screen
 function ShowTitleScreen {
     $titleBlocks = @(
         @(
@@ -2255,6 +2259,41 @@ function ShowTitleScreen {
     PressEnterPrompt
 }
 
+# This function creates a fading text effect in the console by cycling through different colors.
+function FadingText {
+    param (
+        [string]$Text
+    )
+
+    # Define an array of colors to be used for the text
+    $colors = @("Black", "DarkGray", "Gray", "White", "White", "White", "White", "White", "Gray", "DarkGray", "Black")
+
+    # Store the original cursor position
+    $originalCursorPosition = $host.UI.RawUI.CursorPosition
+
+    # Start an infinite loop
+    while ($true) {
+        # Loop through each color in the colors array
+        foreach ($color in $colors) {
+            # Reset the cursor position to the original position
+            $host.UI.RawUI.CursorPosition = $originalCursorPosition
+            # Write the text to the host with the current color, without a newline at the end
+            Write-Host $Text -ForegroundColor $color -NoNewline
+            # Pause execution for 120 milliseconds
+            Start-Sleep -Milliseconds 120
+            # Check if a key has been pressed
+            if ([System.Console]::KeyAvailable) {
+                # Read the key that was pressed
+                $key = [System.Console]::ReadKey($true)
+                # If the Enter key was pressed, exit the loop
+                if ($key.Key -eq "Enter") {
+                    # Exit the function
+                    return
+                }
+            }
+        }
+    }
+}
 
 ##############################
 #endregion Function Definitions
@@ -2317,11 +2356,15 @@ while ($true) {
         Write-Centered 'You''re not really cut out for this business.' -ForegroundColor DarkGray
         Write-Host
         Write-Host 'Game over.' -ForegroundColor Red
-        QuitGame
+        Write-Host
+        PressEnterPrompt
+        EndGame
     }
     # Out of days, game over.
     if ($script:Player.GameDay -gt $script:GameDays) {
         Write-Centered ('Time''s up!  Game over.' -f $script:GameDays) -ForegroundColor DarkGreen
-        QuitGame
+        Write-Host
+        PressEnterPrompt
+        EndGame
     }
 }
