@@ -2158,6 +2158,68 @@ function ShowHelp {
     PressEnterPrompt
 }
 
+# This function displays tag line prompt (for title screen)
+function ShowTaglinePrompt {
+    param (
+        [string]$Text
+    )
+
+    # Define an array of colors to be used for the text
+    $colors = @("DarkGray", "Gray", "White", "Gray", "DarkGray", "Black")
+
+    # Store the original cursor position
+    $originalCursorPosition = $host.UI.RawUI.CursorPosition
+
+    # Define the alternate text
+    $alternateText = "Press Enter To Continue"
+
+    # Start an infinite loop
+    while ($true) {
+        # Loop through each color in the colors array
+        foreach ($color in $colors) {
+            # Reset the cursor position to the original position
+            $host.UI.RawUI.CursorPosition = $originalCursorPosition
+            
+            # Write the text to the host with the current color, without a newline at the end
+            if ($color -eq "Black") {
+                Write-Host (' ' * $Text.Length) -NoNewline
+                $host.UI.RawUI.CursorPosition = $originalCursorPosition
+            } else {
+                Write-Host $Text -ForegroundColor $color -NoNewline
+            }
+
+            # Set the sleep duration based on the current color
+            $sleepDuration = 125
+            if ($color -eq "White") {
+                $sleepDuration *= 10
+            } elseif ($color -eq "Black") {
+                $sleepDuration *= 5
+            }
+
+            # Pause execution for the specified duration
+            Start-Sleep -Milliseconds $sleepDuration
+
+            # Check if a key has been pressed
+            if ([System.Console]::KeyAvailable) {
+                # Read the key that was pressed
+                $key = [System.Console]::ReadKey($true)
+                # If the Enter key was pressed, exit the loop
+                if ($key.Key -eq "Enter") {
+                    Write-Host
+                    # Exit the function
+                    return
+                }
+            }
+        }
+
+        # Swap the text and the alternate text
+        $temp = $Text
+        $Text = $alternateText
+        $alternateText = $temp
+
+    }
+}
+
 # Function to show the title screen
 function ShowTitleScreen {
     $titleBlocks = @(
@@ -2245,12 +2307,11 @@ function ShowTitleScreen {
     # Calculate the top padding
     $topPadding = [math]::Floor(($consoleHeight - $blockHeight) / 2)
 
-    # Remove a couple lines of padding to make up for tagline and enter prompt
-    $topPadding -= 2
+    # Remove a line from the padding to make room for tagline
+    $topPadding -= 1
 
     # Ensure top padding is not negative
     $topPadding = [math]::max(0, $topPadding)
-
     # Add top padding
     1..$topPadding | ForEach-Object { Write-Host }
 
@@ -2260,10 +2321,8 @@ function ShowTitleScreen {
     }
 
     Write-Host
-    Write-Host
-    PressEnterPrompt
+    ShowTaglinePrompt 'It''s a game!'
 }
-
 
 ##############################
 #endregion Function Definitions
