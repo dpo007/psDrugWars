@@ -222,7 +222,10 @@ class Player {
         # Remove any clothing that is in the starterClothes list.
         $this.Clothing = $this.Clothing | Where-Object { $this.starterClothes -notcontains $_ }
         # Put on a random new one, that isn't in $currentStarterClothes
-        $this.Clothing += $this.starterClothes | Where-Object { $_ -notin $currentStarterClothes } | Get-Random
+        [string[]]$newClothing = $this.starterClothes | Where-Object { $_ -notin $currentStarterClothes } | Get-Random
+
+        # Add the new clothing to the top of the list
+        $this.Clothing = $newClothing += $this.Clothing
     }
 }
 ###########################
