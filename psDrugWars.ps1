@@ -1789,9 +1789,9 @@ function ShowDrugopedia {
     Clear-Host
     ShowMenuHeader
     Write-Host
-    Write-Centered '-----------'
+    Write-Centered '------------'
     Write-Centered 'Drugopedia'
-    Write-Centered '-----------'
+    Write-Centered '------------'
     Write-Host
     Write-Centered 'Information about the drugs currently active in this game session.'
     Write-Host
