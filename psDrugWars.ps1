@@ -211,7 +211,7 @@ class Player {
         }
     }
 }
-############################
+###########################
 #endregion Class Definitions
 #############################
 
@@ -1805,7 +1805,7 @@ function ShowMainMenu {
     for ($i = 0; $i -lt $maxCount; $i++) {
         # Get the drug and clothing at the current index, or null if the index is out of range
         $dispDrug = if ($i -lt $script:Player.Drugs.Count) { 
-            '· {0}' -f $script:Player.Drugs[$i].Name 
+            '· {0} {1}' -f $script:Player.Drugs[$i].Quantity, $script:Player.Drugs[$i].Name 
         }
         elseif ($i -eq 0) {
             '· You have 0 marijuanas.' 
