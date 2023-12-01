@@ -1,3 +1,7 @@
+param (
+    [switch]$SkipConsoleSizeCheck
+)
+
 ########################
 #region Class Definitions
 ##########################
@@ -2093,7 +2097,9 @@ function ShowHelp {
 $ErrorActionPreference = 'Stop'
 
 # Confirm that the console window is large enough to display the game.
-CheckConsoleSize
+if (!$SkipConsoleSizeCheck) {
+    CheckConsoleSize
+}
 
 # Initialize game state.
 InitGame
