@@ -2365,9 +2365,12 @@ function ShowTitleScreen {
     # Add top padding
     1..$topPadding | ForEach-Object { Write-Host }
 
+# Randomly pick DarkRed or DarkGreen
+    $foreColour = Get-Random -InputObject @('DarkRed', 'DarkGreen')
+
     # Print the block
     $titleBlock | ForEach-Object {
-        Write-Host (' ' * $leftPadding) $_
+        Write-Host (' ' * $leftPadding) $_ -ForegroundColor $foreColour
     }
 
     Write-Host
