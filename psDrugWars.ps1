@@ -211,6 +211,16 @@ class Player {
             return $true
         }
     }
+
+    # Method to change base outfit.
+    [void]ChangeOutfit() {
+        $currentStarterClothes = $this.starterClothes | Where-Object { $this.Clothing -contains $_ }
+
+        # Remove any clothing that is in the starterClothes list.
+        $this.Clothing = $this.Clothing | Where-Object { $this.starterClothes -notcontains $_ }
+        # Put on a random new one, that isn't in $currentStarterClothes
+        $this.Clothing += $this.starterClothes | Where-Object { $_ -notin $currentStarterClothes } | Get-Random
+    }
 }
 ###########################
 #endregion Class Definitions
@@ -727,14 +737,14 @@ $script:RandomEvents = @(
                         if ($choice -eq 'Y') {
                             $script:Player.Cash -= $extraPocketsCost
                             $script:Player.Pockets += $extraPockets
-                            Write-Centered 'You made a wise investment and gained 5 extra pockets!'
+                            Write-Centered ('You made a wise investment and gained {0} extra pockets!' -f $extraPockets) -ForegroundColor DarkGreen
                         }
                         else {
                             Write-Centered 'You decide not to spend your cash, and the cosmic vendor fades away. No extra pockets for you.'
                         }
                     }
                     else {
-                        Write-Centered 'You don''t have enough cash to buy the magical pockets. The cosmic vendor disappears in disappointment. No extra pockets for you.'
+                        Write-Centered 'You don''t have enough cash to buy the magical pockets. The cosmic vendor disappears in disappointment. No extra pockets for you.' -ForegroundColor Red
                     }
                 }
                 2 {
@@ -2004,6 +2014,9 @@ function Jet {
 
         # Travel takes a day.
         $script:Player.GameDay++
+
+        # New day, change your clothes
+        $script:Player.ChangeOutfit()
     }
     else {
         Write-Host
