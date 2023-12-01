@@ -74,8 +74,11 @@ class Player {
     hidden [string[]]$starterClothes = @(
         'Bell-bottom pants',
         'Flannel shirt (buttoned Cholo-style)',
+        '"I''m with Stupid ->" T-shirt',
         'Over-sized athletic jersey',
         'Pink Floyd T-shirt',
+        'Smelly socks',
+        'Smelly socks with a hole in them',
         'Terry-cloth bath robe',
         'Underwear hanging out',
         'Velour track suit',
