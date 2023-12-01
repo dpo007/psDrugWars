@@ -701,6 +701,24 @@ $script:RandomEvents = @(
         }
     },
     @{
+        "Name"        = "Fanny Pack"
+        "Description" = "Radical, dude! You found a totally tubular fanny pack. It's compact, convenient, and has room for all your gnarly gear."
+        "Effect"      = {
+            Start-Sleep -Seconds 2
+            Write-Host
+            if ($script:Player.AddClothing('Fanny Pack')) {
+                $extraPockets = 5
+                $script:Player.Pockets += $extraPockets
+                Write-Centered ('Awesome! You''ve now got {0} extra pockets! Storing your stuff just got a whole lot easier.' -f $extraPockets) -ForegroundColor DarkGreen
+            }
+            else {
+                Write-Centered 'You already have a fanny pack. You decide to sell this one for $5.'
+                $script:Player.Cash += 5
+            }
+            Start-Sleep -Seconds 2
+        }
+    },
+    @{
         "Name"        = "Lemonade Stand"
         "Description" = "Wandering through the gritty streets of Skid-Row, your eyes catch a peculiar sight - a little girl gleefully running a lemonade stand. But, as you approach, you realize this stand has a mysterious twist!"
         "Effect"      = {
