@@ -71,10 +71,21 @@ class Player {
     [string[]]$Clothing
     [int]$GameDay
 
+    hidden [string[]]$starterClothes = @(
+        'Bell-bottom pants',
+        'Flannel shirt (buttoned Cholo-style)',
+        'Over-sized athletic jersey',
+        'Pink Floyd T-shirt',
+        'Terry-cloth bath robe',
+        'Underwear hanging out',
+        'Velour track suit',
+        'Wife-beater'
+    )
+
     # Default constructor
     Player() {
         $this.Drugs = @()
-        $this.Clothing = @()
+        $this.Clothing = $this.starterClothes | Get-Random
         $this.Pockets = 0
         $this.GameDay = 1
     }
@@ -1778,19 +1789,37 @@ function ShowDrugopedia {
 function ShowMainMenu {
     Clear-Host
     ShowMenuHeader
+
     Write-Host
-    Write-Host 'Your drugs:'
-    if ($script:Player.Drugs.Count -eq 0) {
-        Write-Host '· You have 0 marijuanas.'
-    }
-    else {
-        $script:Player.Drugs | ForEach-Object {
-            Write-Host ('· {0}: {1}' -f $_.Name, $_.Quantity)
+
+    # Define the column width
+    $columnWidth = 38
+
+    # Print the headers
+    Write-Centered ("{0,-$columnWidth}{1,-$columnWidth}" -f "Your drugs:", "Your clothes:")
+
+    # Get the maximum count between the two collections
+    $maxCount = [Math]::Max($script:Player.Drugs.Count, $script:Player.Clothing.Count)
+
+    # Loop that many times
+    for ($i = 0; $i -lt $maxCount; $i++) {
+        # Get the drug and clothing at the current index, or null if the index is out of range
+        $dispDrug = if ($i -lt $script:Player.Drugs.Count) { 
+            '· {0}' -f $script:Player.Drugs[$i].Name 
         }
+        elseif ($i -eq 0) {
+            '· You have 0 marijuanas.' 
+        }
+
+        $dispClothing = if ($i -lt $script:Player.Clothing.Count) { 
+            '· {0}' -f $script:Player.Clothing[$i] 
+        }
+        elseif ($i -eq 0) {
+            '· You are naked.' 
+        }
+
+        Write-Centered ("{0,-$columnWidth}{1,-$columnWidth}" -f $dispDrug, $dispClothing)
     }
-
-    Wri-teHost 'Your clothes'
-
 
     Write-Host
     Write-Host '[B]uy drugs'
