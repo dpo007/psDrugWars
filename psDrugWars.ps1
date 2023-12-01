@@ -68,13 +68,13 @@ class Player {
     [City]$City
     [Drug[]]$Drugs
     [int]$Pockets
-    [string[]]$Inventory
+    [string[]]$Clothing
     [int]$GameDay
 
     # Default constructor
     Player() {
         $this.Drugs = @()
-        $this.Inventory = @()
+        $this.Clothing = @()
         $this.Pockets = 0
         $this.GameDay = 1
     }
@@ -169,6 +169,7 @@ class Player {
         Start-Sleep 3
     }
 
+    # Method to sell drugs.
     [void]SellDrugs([Drug]$Drug, [int]$Quantity) {
         # Calculate the total price
         $totalPrice = $Drug.get_Price() * $Quantity
@@ -186,14 +187,15 @@ class Player {
         Write-Host ('You sold {0} {1} for ${2}.' -f $Quantity, $Drug.Name, $totalPrice)
     }
 
-    [bool]AddInventory([string]$Item) {
+    # Method to add items to the player's Clothing collection.
+    [bool]AddClothing([string]$Item) {
         # If the player already has the item, return false
-        if ($this.Inventory -contains $Item) {
+        if ($this.Clothing -contains $Item) {
             return $false
         }
-        # Otherwise, add the item to the player's inventory and return true.
+        # Otherwise, add the item to the player's Clothing and return true.
         else {
-            $this.Inventory += $Item
+            $this.Clothing += $Item
             return $true
         }
     }
@@ -617,7 +619,7 @@ $script:RandomEvents = @(
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
-            if ($script:Player.AddInventroy('Cargo Pants')) {
+            if ($script:Player.AddClothing('Cargo Pants')) {
                 $extraPockets = 10
                 $script:Player.Pockets += $extraPockets
                 Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
@@ -635,7 +637,7 @@ $script:RandomEvents = @(
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
-            if ($script:Player.AddInventroy('Hemp Backpack')) {
+            if ($script:Player.AddClothing('Hemp Backpack')) {
                 $extraPockets = 20
                 $script:Player.Pockets += $extraPockets
                 Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
@@ -653,7 +655,7 @@ $script:RandomEvents = @(
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
-            if ($script:Player.AddInventroy('Hemp Poncho')) {
+            if ($script:Player.AddClothing('Hemp Poncho')) {
                 $extraPockets = 10
                 $script:Player.Pockets += $extraPockets
                 Write-Centered ('Trippy, right? This tie-dyed hemp poncho adds {0} extra pockets to your cosmic wardrobe. Carry on, peace traveler.' -f $extraPockets) -ForegroundColor DarkGreen
@@ -1786,15 +1788,19 @@ function ShowMainMenu {
             Write-Host ('· {0}: {1}' -f $_.Name, $_.Quantity)
         }
     }
+
+    Wri-teHost 'Your clothes'
+
+
     Write-Host
-    Write-Host "[B]uy drugs"
-    Write-Host "[S]ell drugs"
-    Write-Host "[J]et to another city"
+    Write-Host '[B]uy drugs'
+    Write-Host '[S]ell drugs'
+    Write-Host '[J]et to another city'
     Write-Host
-    Write-Host "[Q]uit"
-    Write-Host "[?]Help"
+    Write-Host '[Q]uit'
+    Write-Host '[?]Help'
     Write-Host
-    Write-Host "What now, boss? " -NoNewline
+    Write-Host 'What now, boss? ' -NoNewline
 
     # Wait for user to press a valid key
     $choices = @('B', 'S', 'J', 'Q', '?', 'D', '!')
