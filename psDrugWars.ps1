@@ -2164,6 +2164,41 @@ function ShowTaglinePrompt {
         [string]$Text
     )
 
+    # Define an array of taglines to be used for the text
+    $tagLines = @(
+        'In Drug Wars, it''s not personal; it''s strictly business.',
+        'Red pill or Blue pill? Why not both?',
+        'To infinity and beyond (the law).',
+        'Life is like a box of narcotics; you never know what you''re gonna get.',
+        'There''s no crying In Drug Wars!',
+        'I see dead people... dealing drugs in Drug Wars.',
+        'Frankly, my dear, I don''t give a gram.',
+        'We''re gonna need a bigger syndicate.',
+        'Keep your friends close and your narcotics closer.',
+        'In Drug Wars, the first rule is you do talk about Drug Wars.',
+        'I''ll be back... after I conquer the drug trade.',
+        'Where every decision could be your last.',
+        'The stakes have never been higher. (Get it?)',
+        'In the shadows of a city gripped by vice, every move has consequences.',
+        'Say hello to my little bag of weed.',
+        'I feel the need... the need for speed! And by speed, I mean Amphetamines.',
+        'May the force be with you, druggie.',
+        'There''s no place like the seedy underbelly of a city.',
+        '"Grandma loves it; reminds her of the good ol'' days." - Sarcastic Sally Says',
+        '"Pixelated corner store trip. Play hide and seek with the cops!" - StonerGamer420',
+        '"High scores as wild as my weekend. Like Mario Kart, but with banana peels." -  Captain Cannabis',
+        '"Monopoly''s side hustle. Laughed so hard, neighbours thought I was on something!" - ChuckleMaster69',
+        '"Five stars for unexpected therapy!" - Johnny Two-eyes',
+        '"In-game lawyer pricier than virtual stash. Legal drama with pixels, fewer objections." - The Gamer''s Ass',
+        '"Meh" - Most People'
+    )
+
+    # If no text is supplied, randomly pick a tagline to use as $text
+    if ([string]::IsNullOrEmpty($Text)) {
+        $Text = Get-Random -InputObject $tagLines
+        $useTagLines = $true
+    }
+    
     # Define an array of colors to be used for the text
     $colors = @("DarkGray", "Gray", "White", "Gray", "DarkGray", "Black")
 
@@ -2171,7 +2206,9 @@ function ShowTaglinePrompt {
     $originalCursorPosition = $host.UI.RawUI.CursorPosition
 
     # Define the alternate text
-    $alternateText = "Press Enter To Continue"
+    $alternateText = "Press Enter To Begin"
+
+    $counter = 1
 
     # Start an infinite loop
     while ($true) {
@@ -2185,16 +2222,18 @@ function ShowTaglinePrompt {
                 # If the color is black, clear the line instead.
                 Write-Centered (' ' * $Text.Length) -NoNewline
                 $host.UI.RawUI.CursorPosition = $originalCursorPosition
-            } else {
+            }
+            else {
                 Write-Centered $Text -ForegroundColor $color -NoNewline
             }
 
             # Set the sleep duration based on the current color
             $sleepDuration = 125
             if ($color -eq "White") {
+                $sleepDuration *= 20
+            }
+            elseif ($color -eq "Black") {
                 $sleepDuration *= 10
-            } elseif ($color -eq "Black") {
-                $sleepDuration *= 5
             }
 
             # Pause execution for the specified duration
@@ -2214,10 +2253,20 @@ function ShowTaglinePrompt {
         }
 
         # Swap the text and the alternate text
-        $temp = $Text
-        $Text = $alternateText
-        $alternateText = $temp
-
+        if ($useTagLines) {
+            if ($counter % 2 -eq 0) {
+                $Text = Get-Random -InputObject $tagLines
+            }
+            else {
+                $Text = $alternateText
+            }
+            $counter++
+        }
+        else {
+            $temp = $Text
+            $Text = $alternateText
+            $alternateText = $temp
+        }
     }
 }
 
@@ -2322,7 +2371,7 @@ function ShowTitleScreen {
     }
 
     Write-Host
-    ShowTaglinePrompt 'It''s a game!'
+    ShowTaglinePrompt
 }
 
 ##############################
