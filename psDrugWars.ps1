@@ -2697,9 +2697,12 @@ while ($true) {
             Start-Sleep -Milliseconds 500
         }
     }
+
+    # Random events have a 10% chance of happening each day.
     if ($script:RandomEvents -and (Get-Random -Maximum 100) -lt 10) {
         StartRandomEvent
     }
+
     # No cash and no drugs, game over
     if ($script:Player.Cash -le 0 -and $script:Player.Drugs.Count -eq 0) {
         Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
@@ -2710,6 +2713,7 @@ while ($true) {
         PressEnterPrompt
         EndGame
     }
+
     # Out of days, game over.
     if ($script:Player.GameDay -gt $script:GameDays) {
         Write-Centered ('Time''s up!  Game over.' -f $script:GameDays) -ForegroundColor DarkGreen
