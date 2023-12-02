@@ -595,6 +595,21 @@ $script:RandomEvents = @(
         }
     },
     @{
+        "Name"        = "Someone's Wallet"
+        "Description" = "You found a wallet full of cash laying in the gutter!"
+        "Effect"      = {
+            $gain = Get-Random -Minimum 100 -Maximum 501
+            # Round the gain to the nearest 10 (Bankers' rounding).
+            $gain = [math]::Round($gain / 10) * 10
+            $script:Player.Cash += $gain
+
+            Start-Sleep -Seconds 2
+            Write-Host
+            Write-Centered ('NICE! You gained ${0}.' -f $gain) -ForegroundColor DarkGreen
+            Start-Sleep -Seconds 2
+        }
+    },
+    @{
         "Name"        = "Found Vape Pen"
         "Description" = "You found a vape pen on the ground. Do you want to use it? (Y/N)"
         "Effect"      = {
