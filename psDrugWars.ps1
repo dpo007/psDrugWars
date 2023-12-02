@@ -2143,29 +2143,42 @@ function EndGame {
     
     if (IsHighScore -Score $script:Player.Cash) {
         Write-Host
-        Write-Centered 'You got a high score!  Enter your name to save it to the high score list.'
+        Write-Centered 'You got a high score!' -ForegroundColor Green
         Write-Host
-        Write-Centered 'Initials: ' -NoNewline
+        Write-Centered 'Enter your initials to save it to the high score list:'
+        Write-Host
+
+        # Figure out leftpadding for input of initials
+        $leftPadding = [Math]::Floor(($Host.UI.RawUI.WindowSize.Width - 3) / 2)
+        Write-Host (' ' * $leftPadding) -NoNewline
+
         $initials = ""
         while ($true) {
             $key = [System.Console]::ReadKey($true)
             if ($key.Key -eq "Enter") {
                 break
-            } elseif ($key.Key -eq "Backspace") {
+            }
+            elseif ($key.Key -eq "Backspace") {
                 if ($initials.Length -gt 0) {
                     $initials = $initials.Substring(0, $initials.Length - 1)
                     [System.Console]::Write("`b `b") # erase the last character
                 }
-            } elseif ($initials.Length -lt 3) {
-                $initials += $key.KeyChar
-                [System.Console]::Write($key.KeyChar)
+            }
+            elseif ($initials.Length -lt 3) {
+                $upperCasedChar = $key.KeyChar.ToString().ToUpper()
+                $initials += $upperCasedChar
+                [System.Console]::Write($upperCasedChar)
             }
         }
-        [System.Console]::WriteLine()
+        
+        # Convert the initials to uppercase
+        $initials = $initials.ToUpper()
         
         AddHighScore -Inititals $initials -Score $script:Player.Cash
     }
 
+    GetHighScores
+    Write-Host
     exit
 }
 
@@ -2444,13 +2457,26 @@ function GetHighScores {
     if (Test-Path -Path "highscores.json") {
         $highScores = Get-Content -Path "highscores.json" | ConvertFrom-Json
     }
+    else {
+        # Create default high score file with 10 made up initals and scores starting at 1000 gogin to 10000
+        $highScores = 1..10 | ForEach-Object {
+            [PSCustomObject]@{
+                Initials = ('{0}{1}{2}' -f [char](Get-Random -Minimum 65 -Maximum 91), [char](Get-Random -Minimum 65 -Maximum 91), [char](Get-Random -Minimum 65 -Maximum 91))
+                Score    = (Get-Random -Minimum 1000 -Maximum 10001)
+                Date     = (Get-Date).ToString("yyyy-MM-dd")
+            }
+        }
+
+        # Save them to the json file
+        $highScores | ConvertTo-Json | Out-File -FilePath "highscores.json" -Force
+    }
     return $highScores | Sort-Object -Property Score -Descending
 }
 
 # Check if given score will make it onto the high score list
 function IsHighScore {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [int]$Score
     )
 
@@ -2463,17 +2489,17 @@ function IsHighScore {
 # Function to add a new score to the high scores list
 function AddHighScore {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [int]$Score, 
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$Inititals
     )
     
-    $highScores = @(LoadHighScores)
+    $highScores = @(GetHighScores)
     $newScore = [PSCustomObject]@{
-        Inititals  = $Inititals
-        Score = $Score
-        Date = (Get-Date).ToString("yyyy-MM-dd")
+        Inititals = $Inititals
+        Score     = $Score
+        Date      = (Get-Date).ToString("yyyy-MM-dd")
     }
     $highScores += $newScore
     
