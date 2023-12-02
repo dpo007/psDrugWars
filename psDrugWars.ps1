@@ -2174,7 +2174,7 @@ function EndGame {
         # Convert the initials to uppercase
         $initials = $initials.ToUpper()
         
-        AddHighScore -Inititals $initials -Score $script:Player.Cash
+        AddHighScore -Initials $initials -Score $script:Player.Cash
     }
 
     GetHighScores
@@ -2492,12 +2492,12 @@ function AddHighScore {
         [Parameter(Mandatory = $true)]
         [int]$Score, 
         [Parameter(Mandatory = $true)]
-        [string]$Inititals
+        [string]$Initials
     )
     
     $highScores = @(GetHighScores)
     $newScore = [PSCustomObject]@{
-        Inititals = $Inititals
+        Initials = $Initials
         Score     = $Score
         Date      = (Get-Date).ToString("yyyy-MM-dd")
     }
