@@ -2140,8 +2140,32 @@ function EndGame {
         Write-Centered 'Thanks for playing!' -BackgroundColor Blue
     }
     Write-Host
-    Write-Host
-    Write-Host
+    
+    if (IsHighScore -Score $script:Player.Cash) {
+        Write-Host
+        Write-Centered 'You got a high score!  Enter your name to save it to the high score list.'
+        Write-Host
+        Write-Centered 'Initials: ' -NoNewline
+        $initials = ""
+        while ($true) {
+            $key = [System.Console]::ReadKey($true)
+            if ($key.Key -eq "Enter") {
+                break
+            } elseif ($key.Key -eq "Backspace") {
+                if ($initials.Length -gt 0) {
+                    $initials = $initials.Substring(0, $initials.Length - 1)
+                    [System.Console]::Write("`b `b") # erase the last character
+                }
+            } elseif ($initials.Length -lt 3) {
+                $initials += $key.KeyChar
+                [System.Console]::Write($key.KeyChar)
+            }
+        }
+        [System.Console]::WriteLine()
+        
+        AddHighScore -Inititals $initials -Score $script:Player.Cash
+    }
+
     exit
 }
 
@@ -2437,17 +2461,17 @@ function IsHighScore {
 }
 
 # Function to add a new score to the high scores list
-function AddScore {
+function AddHighScore {
     param (
         [Parameter(Mandatory=$true)]
         [int]$Score, 
         [Parameter(Mandatory=$true)]
-        [string]$Name
+        [string]$Inititals
     )
     
     $highScores = @(LoadHighScores)
     $newScore = [PSCustomObject]@{
-        Name  = $Name
+        Inititals  = $Inititals
         Score = $Score
         Date = (Get-Date).ToString("yyyy-MM-dd")
     }
