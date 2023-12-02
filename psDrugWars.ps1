@@ -909,7 +909,7 @@ $script:RandomEvents = @(
                         }
                         else {
                             $script:Player.Cash += Get-Random -Minimum 20 -Maximum 501
-                            Write-Centered ('The cocktail of {0} gives you an otherworldly experience.' -f $randomDrug.Name)
+                            Write-Centered ('The cocktail of {0} gives you an otherworldly experience.' -f $randomDrugs)
                             Start-Sleep -Seconds 2
                             Write-Centered ('You find some extra cash in your pocket (after you barf and come down)!') -ForegroundColor DarkGreen
                         }
