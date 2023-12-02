@@ -2414,6 +2414,48 @@ function ShowTitleScreen {
     ShowTaglinePrompt
 }
 
+# Function to load the high scores from the highscores.json file
+function GetHighScores {
+    $highScores = @()
+    if (Test-Path -Path "highscores.json") {
+        $highScores = Get-Content -Path "highscores.json" | ConvertFrom-Json
+    }
+    return $highScores | Sort-Object -Property Score -Descending
+}
+
+# Check if given score will make it onto the high score list
+function IsHighScore {
+    param (
+        [Parameter(Mandatory=$true)]
+        [int]$Score
+    )
+
+    $highScores = @(GetHighScores)
+    $lowerScore = $highScores | Where-Object { $_.Score -lt $Score } | Select-Object -First 1
+
+    return $null -ne $lowerScore
+}
+
+# Function to add a new score to the high scores list
+function AddScore {
+    param (
+        [Parameter(Mandatory=$true)]
+        [int]$Score, 
+        [Parameter(Mandatory=$true)]
+        [string]$Name
+    )
+    
+    $highScores = @(LoadHighScores)
+    $newScore = [PSCustomObject]@{
+        Name  = $Name
+        Score = $Score
+        Date = (Get-Date).ToString("yyyy-MM-dd")
+    }
+    $highScores += $newScore
+    
+    # Sort the high scores by score, descending, and keep the top 10
+    $highScores | Sort-Object -Property Score -Descending | Select-Object -First 10 | ConvertTo-Json | Out-File -FilePath "highscores.json" -Force
+}
 ##############################
 #endregion Function Definitions
 ################################
