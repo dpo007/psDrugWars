@@ -484,7 +484,7 @@ $script:RandomEvents = @(
             if ($script:Player.Drugs.Count -eq 0) {
                 Write-Centered 'You were searched, but you didn''t have any drugs on you!'
                 Write-Host
-                Write-Centered 'The cops let you go with a warning.'
+                Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
                 
                 if ($script:Player.Cash -gt 10) {
                     # Cops let you go, but take 5% of your cash
