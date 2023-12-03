@@ -498,52 +498,53 @@ $script:RandomEvents = @(
                 return
             }
 
-            # Check if the player's cash is more than $1000
-            if ($script:Player.Cash -gt 1000) {
-                # Calculate the bust chance. The base chance is 5%, and it increases by 5% for each $1000 over $1000 the player has.
-                [float]$bustChance = 0.05 + (0.05 * (($script:Player.Cash - 1000) / 1000))
 
-                # If the bust chance is greater than 60%, cap it at 60%
-                if ($bustChance -gt 0.6) {
-                    $bustChance = 0.6
-                }
+            # Calculate the bust chance. The base chance is 0%, and it increases by 5% for each $1000 the player has.
+            [float]$bustChance = 0.0
+            if ($script:Player.Cash -gt 0) {
+                $bustChance = $script:Player.Cash / 1000 * 0.05
+            }
 
-                # Generate a random decimal number between 0 and 1
-                [float]$randomNumber = Get-Random -Minimum 0.0 -Maximum 1.0
-                # If the random number is less than or equal to the bust chance, the cops bust the player
-                if ($randomNumber -le $bustChance) {
-                    Write-Centered 'You spent the night in jail and lost all your drugs.' -ForegroundColor Red
-                    # Remove all drugs from the player's possession
-                    $script:Player.Drugs = @()
-                    # Increment the game day
-                    $script:Player.GameDay++
-                }
-                else {
-                    # Create an array of messages
-                    $messages = @(
-                        'They searched you, but you got away!',
-                        'You were searched, but managed to slip away!',
-                        'They tried to catch you, but you were too quick!',
-                        'You were almost caught, but you escaped!',
-                        'They attempted to search you, but you evaded them!',
-                        'You narrowly avoided being searched!',
-                        'They let you go with a warning!',
-                        'You played hide and seek with the search party, and you won!',
-                        'You turned the search into a dance-off and moonwalked out of trouble!',
-                        'They tried to catch you, but you hit them with your "Invisible Cloak of Inconspicuousness"(tm)!',
-                        'You transformed the search into a magic show and disappeared in a puff of glitter!',
-                        'You were almost caught, but you executed the perfect ninja smoke bomb escape!',
-                        'They attempted to search you, but you pulled out a trombone and started a parade distracting them!',
-                        'You narrowly avoided being searched by unleashing your inner contortionist and slipping through their fingers!',
-                        'They let you go with a warning, probably because they were impressed by your interpretive dance routine!'       
-                    )
+            # If the bust chance is greater than 60%, cap it at 60%
+            if ($bustChance -gt 0.6) {
+                $bustChance = 0.6
+            }
 
-                    # Select a random message
-                    $message = Get-Random -InputObject $messages
+            # Generate a random decimal number between 0 and 1
+            [float]$randomNumber = Get-Random -Minimum 0.0 -Maximum 1.0
+            # If the random number is less than or equal to the bust chance, the cops bust the player
+            if ($randomNumber -le $bustChance) {
+                Write-Centered 'You spent the night in jail and lost all your drugs.' -ForegroundColor Red
+                # Remove all drugs from the player's possession
+                $script:Player.Drugs = @()
+                # Increment the game day
+                $script:Player.GameDay++
+            }
+            else {
+                # Create an array of messages
+                $messages = @(
+                    'They searched you, but you got away!',
+                    'You were searched, but managed to slip away!',
+                    'They tried to catch you, but you were too quick!',
+                    'You were almost caught, but you escaped!',
+                    'They attempted to search you, but you evaded them!',
+                    'You narrowly avoided being searched!',
+                    'They let you go with a warning!',
+                    'You played hide and seek with the search party, and you won!',
+                    'You turned the search into a dance-off and moonwalked out of trouble!',
+                    'They tried to catch you, but you hit them with your "Invisible Cloak of Inconspicuousness"(tm)!',
+                    'You transformed the search into a magic show and disappeared in a puff of glitter!',
+                    'You were almost caught, but you executed the perfect ninja smoke bomb escape!',
+                    'They attempted to search you, but you pulled out a trombone and started a parade distracting them!',
+                    'You narrowly avoided being searched by unleashing your inner contortionist and slipping through their fingers!',
+                    'They let you go with a warning, probably because they were impressed by your interpretive dance routine!'       
+                )
 
-                    # Display the message
-                    Write-Centered $message -ForegroundColor DarkGreen
-                }
+                # Select a random message
+                $message = Get-Random -InputObject $messages
+
+                # Display the message
+                Write-Centered $message -ForegroundColor DarkGreen
             }
         }
     },
