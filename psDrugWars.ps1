@@ -581,11 +581,11 @@ $script:RandomEvents = @(
     },
     @{
         "Name"        = "Bad Batch"
-        "Description" = "You got a bad batch of drugs. You lose some cash trying to get rid of it."
+        "Description" = "You got a bad batch of drugs. You lose 10% of your cash trying to get rid of it."
         "Effect"      = {
-            $loss = Get-Random -Minimum 100 -Maximum 501
-            # Round the loss to the nearest 10 (Bankers' rounding).
-            $loss = [math]::Round($loss / 10) * 10
+            # Calculate 10% of the player's cash.
+            $loss = $script:Player.Cash * 0.10
+            # Subtract the loss from the player's cash.
             $script:Player.Cash -= $loss
 
             Start-Sleep -Seconds 2
