@@ -498,16 +498,10 @@ $script:RandomEvents = @(
                 return
             }
 
-
-            # Calculate the bust chance. The base chance is 0%, and it increases by 5% for each $1000 the player has.
+            # Calculate the bust chance. The base chance is 0%, and it increases by 5% for each $1000 the player has. Capped at 60%.
             [float]$bustChance = 0.0
             if ($script:Player.Cash -gt 0) {
-                $bustChance = $script:Player.Cash / 1000 * 0.05
-            }
-
-            # If the bust chance is greater than 60%, cap it at 60%
-            if ($bustChance -gt 0.6) {
-                $bustChance = 0.6
+                $bustChance = [Math]::Min($script:Player.Cash / 1000 * 0.05, 0.6)
             }
 
             # Generate a random decimal number between 0 and 1
@@ -2664,6 +2658,22 @@ function AddHighScore {
     
     # Sort the high scores by score, descending, and keep the top 10
     $highScores | Sort-Object -Property Score -Descending | Select-Object -First 10 | ConvertTo-Json | Out-File -FilePath "highscores.json" -Force
+}
+
+# Function to advance to the game day
+function AdvanceGameDay {
+    param (
+        [int]$Days = 1,
+        [switch]$ChangeOutfit
+    )
+
+    # Advance the game day
+    $script:Player.GameDay += $Days
+
+    # Change your clothes
+    if ($ChangeOutfit) {
+        $script:Player.ChangeOutfit()
+    }
 }
 ##############################
 #endregion Function Definitions
