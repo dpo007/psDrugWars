@@ -2670,7 +2670,19 @@ function AdvanceGameDay {
     if ($ChangeOutfit) {
         $script:Player.ChangeOutfit()
     }
+
+    # Randomize the drug prices for the day
+    SetDrugPriceMultiplier
 }
+
+# This function sets a random price multiplier for each drug in the game.
+function SetDrugPriceMultiplier {
+    $drugs = $script:Game.Drugs
+    foreach ($drug in $drugs) {
+        $drug.PriceMultiplier = Get-Random -Minimum 0.5 -Maximum 2.6
+    }
+}
+
 ##############################
 #endregion Function Definitions
 ################################
