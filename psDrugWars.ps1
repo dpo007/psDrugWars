@@ -480,13 +480,13 @@ $script:RandomEvents = @(
         "Description" = 'You were busted by the cops!'
         "Effect"      = {
             
-            # if player has no drugs on them, the cops leave you alone
+            # If player has no drugs on them, the cops leave them alone
             if ($script:Player.Drugs.Count -eq 0) {
                 Write-Centered 'You were searched, but you didn''t have any drugs on you!'
                 Write-Host
                 Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
                 
-                if ($script:Player.Cash -gt 10) {
+                if ($script:Player.Cash -gt 50) {
                     # Cops let you go, but take 5% of your cash
                     Write-Host '...after a bit of a shake-down.' -ForegroundColor Yellow
                     $loss = [int]([math]::Round($script:Player.Cash * 0.05))
