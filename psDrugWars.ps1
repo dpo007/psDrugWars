@@ -512,7 +512,7 @@ $script:RandomEvents = @(
                 # Remove all drugs from the player's possession
                 $script:Player.Drugs = @()
                 # Increment the game day
-                $script:Player.GameDay++
+                AdvanceGameDay
             }
             else {
                 # Create an array of messages
@@ -547,7 +547,7 @@ $script:RandomEvents = @(
         "Description" = "You trip out and lose a day!"
         "Effect"      = {
             Tripout
-            $script:Player.GameDay++
+            AdvanceGameDay
         }
     },
     @{
@@ -642,7 +642,7 @@ $script:RandomEvents = @(
                     Start-Sleep -Seconds 1
                     Tripout
                     Write-Centered 'You tripped out hard and lost a day!'
-                    $script:Player.GameDay++
+                    AdvanceGameDay
                 }
                 else {
                     $randomScore = Get-Random -Minimum 1 -Maximum 12
@@ -919,7 +919,7 @@ $script:RandomEvents = @(
                             Write-Centered ('The cocktail of {0} hits you hard, and you trip out in a neon-lit dreamscape.' -f $randomDrugs)
                             Tripout
                             Write-Centered 'You lose a day as you navigate the surreal landscapes of your mind.' -ForegroundColor Red
-                            $script:Player.GameDay++
+                            AdvanceGameDay
                         }
                         else {
                             $script:Player.Cash += Get-Random -Minimum 20 -Maximum 501
@@ -986,7 +986,7 @@ $script:RandomEvents = @(
 
                             Write-Centered ('You find a stash of {0}, but before you can celebrate {1} jumps you!' -f $randomDrug.Name, (Get-Random -InputObject $mobBosses))
                             Write-Centered ('They beat you up, take back their drugs, and you spend a day recovering in the hospital.') -ForegroundColor Red
-                            $script:Player.GameDay++
+                            AdvanceGameDay
                         }
                         else {
                             $script:Player.AddDrugs($randomDrug)
@@ -2212,16 +2212,13 @@ function Jet {
         # Fill landing City with random drugs.
         $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
 
-        # Travel takes a day.
-        $script:Player.GameDay++
-
-        # New day, change your clothes
-        $script:Player.ChangeOutfit()
+        # Travel takes a day, change clothes.
+        AdvanceGameDay -ChangeOutfit
     }
     else {
         Write-Host
         Write-Centered ('Lay off your stash man!  You''re already in {0}!' -f $script:Player.City.Name)
-        Start-Sleep 2
+        Start-Sleep 3
         PressEnterPrompt
     }
 }
