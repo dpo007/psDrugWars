@@ -479,6 +479,25 @@ $script:RandomEvents = @(
         "Name"        = "Busted"
         "Description" = 'You were busted by the cops!'
         "Effect"      = {
+            
+            # if player has no drugs on them, the cops leave you alone
+            if ($script:Player.Drugs.Count -eq 0) {
+                Write-Centered 'You were searched, but you didn''t have any drugs on you!'
+                Write-Host
+                Write-Centered 'The cops let you go with a warning.'
+                
+                if ($script:Player.Cash -gt 10) {
+                    # Cops let you go, but take 5% of your cash
+                    Write-Host '...after a bit of a shake-down.' -ForegroundColor Yellow
+                    $loss = [int]([math]::Round($script:Player.Cash * 0.05))
+                    $script:Player.Cash = $script:Player.Cash - $loss
+                    Write-Centered ('They took ${0}!' -f $loss) -ForegroundColor DarkRed
+                }
+                
+                Start-Sleep -Seconds 3
+                return
+            }
+
             # Check if the player's cash is more than $1000
             if ($script:Player.Cash -gt 1000) {
                 # Calculate the bust chance. The base chance is 5%, and it increases by 5% for each $1000 over $1000 the player has.
