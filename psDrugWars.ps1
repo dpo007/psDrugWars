@@ -478,8 +478,7 @@ $script:RandomEvents = @(
     @{
         "Name"        = "Busted"
         "Description" = 'You were busted by the cops!'
-        "Effect"      = {
-            
+        "Effect"      = {    
             # If player has no drugs on them, the cops leave them alone
             if ($script:Player.Drugs.Count -eq 0) {
                 Write-Centered 'You were searched, but you didn''t have any drugs on you!'
@@ -2735,7 +2734,7 @@ while ($true) {
         Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
         Write-Centered 'You''re not really cut out for this business.' -ForegroundColor DarkGray
         Write-Host
-        Write-Host 'Game over.' -ForegroundColor Red
+        Write-BlockLetters 'Game over.' -ForegroundColor Black -BackgroundColor DarkRed -VerticalPadding 1 -Align Center
         Write-Host
         PressEnterPrompt
         EndGame
@@ -2743,7 +2742,10 @@ while ($true) {
 
     # Out of days, game over.
     if ($script:Player.GameDay -gt $script:GameDays) {
-        Write-Centered ('Time''s up!  Game over.' -f $script:GameDays) -ForegroundColor DarkGreen
+        Write-BlockLetters ('Day {0}!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
+        Write-Host
+        Write-Centered 'Time''s up!' -ForegroundColor Green
+        Write-Host
         Write-Host
         PressEnterPrompt
         EndGame
