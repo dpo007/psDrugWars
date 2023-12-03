@@ -2205,14 +2205,14 @@ function Jet {
 
     # If the new city is differnt from the current city, then travel to the new city.
     if ($script:Player.City -ne $alphabetizedCities[$newCity - 1]) {
+        # Travel takes a day, change clothes.
+        AdvanceGameDay -ChangeOutfit
+
         # Set player's new location.
         $script:Player.City = $alphabetizedCities[$newCity - 1]
 
         # Fill landing City with random drugs.
         $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
-
-        # Travel takes a day, change clothes.
-        AdvanceGameDay -ChangeOutfit
     }
     else {
         Write-Host
