@@ -30,9 +30,13 @@ class Drug {
         $this.BasePrice = [math]::Round((Get-Random -Minimum $this.PriceRange[0] -Maximum $this.PriceRange[1]) / 10) * 10
     }
 
-    # Calculate the price based on BasePrice and PriceMultiplier, rounded to the nearest 10 dollars (Bankers' rounding).
+    # Calculate the price based on BasePrice and PriceMultiplier, rounded to the nearest 5 dollars (Bankers' rounding).
     [int]get_Price() {
-        return [math]::Round($this.BasePrice * $this.PriceMultiplier / 10) * 10
+        $price = [int][math]::Round($this.BasePrice * $this.PriceMultiplier / 5) * 5
+        if ($price -lt 5){
+            $price = 5
+        }
+        return $price 
     }
 }
 
