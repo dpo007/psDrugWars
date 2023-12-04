@@ -2844,7 +2844,7 @@ while ($script:Playing) {
             }
         }
 
-        # User is quitting...
+        # User is quitting, or the game is over, break out of the loop.
         if ((!$script:Playing) -or $script:GameOver) {
             break
         }
