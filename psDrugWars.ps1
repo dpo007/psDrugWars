@@ -183,8 +183,12 @@ class Player {
 
     # Method to sell drugs.
     [void]SellDrugs([Drug]$Drug, [int]$Quantity) {
-        # Calculate the total price
-        $totalPrice = $Drug.get_Price() * $Quantity
+        
+        # Look up the drug by name in the current City's drug list.
+        $cityDrug = $this.City.Drugs | Where-Object { $_.Name -eq $Drug.Name }
+        
+        # Calculate the total price (using the city's price for the drug)
+        $totalPrice = $cityDrug.get_Price() * $Quantity
 
         # Check if the player has enough quantity of the drug
         $drugToSell = $this.Drugs | Where-Object { $_.Name -eq $Drug.Name }
@@ -2156,6 +2160,7 @@ function ShowSellDrugsMenu {
     Write-Host
     $nameOfDrugToSell = $script:Player.City.Drugs[$drugNumber - 1].Name
     $drugToSell = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToSell }
+
 
     if (!$drugToSell) {
         Write-Centered ('You don''t have any {0} to sell!' -f $nameOfDrugToSell)
