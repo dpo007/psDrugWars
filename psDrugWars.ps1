@@ -1062,7 +1062,69 @@ $script:RandomEvents = @(
                 }
             }
         }
-    }    
+    },
+    @{
+        "Name"        = "Cocaine Conundrum"
+        "Description" = "Oh dear, you find yourself cornered by a self-proclaimed cocaine connoisseur. This enthusiastic individual insists on sharing their 'expertise' and believes they are the absolute BEST at doing cocaine."
+        "Effect"      = {
+            Start-Sleep -Seconds 2
+            Write-Host
+            Write-Centered 'You try to escape, but the self-proclaimed cocaine expert has you trapped in a pointless conversation about their "skills."'
+            Start-Sleep -Seconds 3
+    
+            $awkwardnessLevel = Get-Random -Minimum 1 -Maximum 4
+    
+            switch ($awkwardnessLevel) {
+                1 {
+                    Write-Centered 'The cocaine aficionado insists their nose is the most finely tuned instrument for the job.'
+                }
+                2 {
+                    Write-Centered 'They start demonstrating their "perfect" snorting technique, much to your dismay.'
+                }
+                3 {
+                    Write-Centered 'In an attempt to impress you, they share a bizarre list of "achievements" related to their cocaine adventures.'
+                }
+                default {
+                    Write-Centered 'You can''t help but wonder how you ended up in this peculiar conversation about someone being the BEST at doing cocaine.'
+                }
+            }
+    
+            Start-Sleep -Seconds 2
+            Write-Host 'How would you like to react?'
+            Write-Host '1. Politely nod and pretend to be impressed.'
+            Write-Host '2. Burst into laughter and call their bluff.'
+            Write-Host '3. Attempt to challenge them with your own made-up cocaine "skills."'
+    
+            $playerChoice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
+    
+            switch ($playerChoice) {
+                1 {
+                    Write-Centered 'You decide to play along, nodding as if genuinely impressed. The cocaine fiend beams with pride, convinced they''ve found an admirer.'
+                }
+                2 {
+                    Write-Centered 'Unable to contain yourself, you burst into laughter. The cocaine expert looks offended, muttering something about "non-believers" before storming off.'
+                }
+                3 {
+                    Write-Centered 'In a bold move, you attempt to challenge their skills with your own absurd and entirely made-up cocaine "techniques." The fiend is left bewildered, questioning your sanity.'
+                }
+                default {
+                    Write-Centered 'You stand there, paralyzed by the absurdity of the situation. The cocaine fiend continues their monologue, oblivious to your internal crisis.'
+                }
+            }
+
+            Start-Sleep -Seconds 3
+            Write-Host
+            Write-Centered 'You finally manage to escape the cocaine connoisseur, but not before losing a day to their ramblings.' -ForegroundColor Red
+            $cocaine = [Drug]::new('Cocaine')
+            $cocaine.Quantity = Get-Random -Minimum 2 -Maximum 6
+            $script:Player.AddDrugs($cocaine)
+            Write-Host
+            Write-Centered 'But at least they gave you some cocaine to make up for it!'
+            Write-Centered ('You gained {0} pockets of Cocaine.' -f $cocaine.Quantity) -ForegroundColor DarkGreen
+            Write-Host
+            AdvanceGameDay -SkipPriceUpdate
+        }
+    }      
 )
 
 # Define game guns
@@ -2695,7 +2757,8 @@ function AddHighScore {
 function AdvanceGameDay {
     param (
         [int]$Days = 1,
-        [switch]$ChangeOutfit
+        [switch]$ChangeOutfit,
+        [switch]$SkipPriceUpdate
     )
 
     # Advance the game day
@@ -2706,8 +2769,11 @@ function AdvanceGameDay {
         $script:Player.ChangeOutfit()
     }
 
-    # Randomize the drug prices for the day
-    SetDrugPriceMultiplier
+    if (!$SkipPriceUpdate) {
+        # Randomize the drug prices for the day
+        SetDrugPriceMultiplier
+    }
+    
 }
 
 # This function sets a random price multiplier for each drug in the game.
