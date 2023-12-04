@@ -2679,7 +2679,7 @@ function AdvanceGameDay {
 
 # This function sets a random price multiplier for each drug in the game.
 function SetDrugPriceMultiplier {
-    $drugs = $script:Game
+    $drugs = $script:GameDrugs
         foreach ($drug in $drugs) {
         $drug.PriceMultiplier = Get-Random -Minimum 0.5 -Maximum 2.6
     }
