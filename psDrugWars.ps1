@@ -1796,6 +1796,7 @@ function InitGame {
     $gameDrugCount = 10
     $cityDrugCount = 6
     $script:GameDays = 30
+    $script:GameOver = $false
 
     # Create and populate the drugs available for this game session.
     [Drug[]]$script:GameDrugs = InitGameDrugs -DrugCount $gameDrugCount
@@ -2332,6 +2333,8 @@ function EndGame {
     }
 
     GetHighScores
+    $script:GameOver = $true
+    
     Write-Host
     Write-Centered 'Would you like to play again? (Y/N)' -NoNewline
     # Wait for user to press a valid key
@@ -2724,7 +2727,7 @@ while ($script:Playing) {
     InitGame
 
     # Main game loop.
-    while ($script:Playing) {
+    while (!$script:GameOver) {
         $choice = ShowMainMenu
         switch ($choice) {
             "B" {
@@ -2755,7 +2758,7 @@ while ($script:Playing) {
         }
 
         # User is quitting...
-        if (!$script:Playing) {
+        if ((!$script:Playing) -or $script:GameOver) {
             break
         }
 
