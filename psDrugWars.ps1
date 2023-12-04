@@ -1,4 +1,4 @@
-param (
+﻿param (
     [switch]$SkipConsoleSizeCheck
 )
 
@@ -2273,8 +2273,6 @@ function QuitGame {
     if ($choice -eq 'Y') {
         EndGame
     }
-
-    return    
 }
 
 # This function is called to end the game.
@@ -2335,7 +2333,17 @@ function EndGame {
 
     GetHighScores
     Write-Host
-    exit
+    Write-Centered 'Would you like to play again? (Y/N)' -NoNewline
+    # Wait for user to press a valid key
+    $choices = @('Y', 'N')
+    $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
+    while (-not $choices.Contains($choice)) {
+        $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
+    }
+
+    if ($choice -eq 'N') {
+        $script:Playing = $false
+    }
 }
 
 # This function displays the help screen.
@@ -2685,7 +2693,7 @@ function AdvanceGameDay {
 # This function sets a random price multiplier for each drug in the game.
 function SetDrugPriceMultiplier {
     $drugs = $script:GameDrugs
-        foreach ($drug in $drugs) {
+    foreach ($drug in $drugs) {
         $drug.PriceMultiplier = Get-Random -Minimum 0.5 -Maximum 2.6
     }
 }
@@ -2706,67 +2714,76 @@ if (!$SkipConsoleSizeCheck) {
     CheckConsoleSize
 }
 
-# Show title screen
-ShowTitleScreen
+$script:Playing = $true
 
-# Initialize game state.
-InitGame
+while ($script:Playing) {
+    # Show title screen
+    ShowTitleScreen
 
-# Main game loop.
-while ($true) {
-    $choice = ShowMainMenu
-    switch ($choice) {
-        "B" {
-            ShowBuyDrugsMenu
+    # Initialize game state.
+    InitGame
+
+    # Main game loop.
+    while ($script:Playing) {
+        $choice = ShowMainMenu
+        switch ($choice) {
+            "B" {
+                ShowBuyDrugsMenu
+            }
+            "S" {
+                ShowSellDrugsMenu
+            }
+            "J" {
+                Jet
+            }
+            "Q" {
+                QuitGame
+            }
+            "?" {
+                ShowHelp
+            }
+            "D" {
+                ShowDrugopedia
+            }
+            "!" {
+                StartRandomEvent
+            }
+            default {
+                Write-Host 'Invalid choice'
+                Start-Sleep -Milliseconds 500
+            }
         }
-        "S" {
-            ShowSellDrugsMenu
+
+        # User is quitting...
+        if (!$script:Playing) {
+            break
         }
-        "J" {
-            Jet
-        }
-        "Q" {
-            QuitGame
-        }
-        "?" {
-            ShowHelp
-        }
-        "D" {
-            ShowDrugopedia
-        }
-        "!" {
+
+        # Random events have a 10% chance of happening each day.
+        if ($script:RandomEvents -and (Get-Random -Maximum 100) -lt 10) {
             StartRandomEvent
         }
-        default {
-            Write-Host 'Invalid choice'
-            Start-Sleep -Milliseconds 500
+
+        # No cash and no drugs, game over
+        if ($script:Player.Cash -le 0 -and $script:Player.Drugs.Count -eq 0) {
+            Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
+            Write-Centered 'You''re not really cut out for this business.' -ForegroundColor DarkGray
+            Write-Host
+            Write-BlockLetters 'Game over.' -ForegroundColor Black -BackgroundColor DarkRed -VerticalPadding 1 -Align Center
+            Write-Host
+            PressEnterPrompt
+            EndGame
         }
-    }
 
-    # Random events have a 10% chance of happening each day.
-    if ($script:RandomEvents -and (Get-Random -Maximum 100) -lt 10) {
-        StartRandomEvent
-    }
-
-    # No cash and no drugs, game over
-    if ($script:Player.Cash -le 0 -and $script:Player.Drugs.Count -eq 0) {
-        Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
-        Write-Centered 'You''re not really cut out for this business.' -ForegroundColor DarkGray
-        Write-Host
-        Write-BlockLetters 'Game over.' -ForegroundColor Black -BackgroundColor DarkRed -VerticalPadding 1 -Align Center
-        Write-Host
-        PressEnterPrompt
-        EndGame
-    }
-
-    # Out of days, game over.
-    if ($script:Player.GameDay -gt $script:GameDays) {
-        Write-BlockLetters ('Day {0}!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
-        Write-Host
-        Write-Centered 'Time''s up!' -ForegroundColor Green
-        Write-Host
-        Write-Host
-        PressEnterPrompt
-        EndGame
+        # Out of days, game over.
+        if ($script:Player.GameDay -gt $script:GameDays) {
+            Write-BlockLetters ('Day {0}!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
+            Write-Host
+            Write-Centered 'Time''s up!' -ForegroundColor Green
+            Write-Host
+            Write-Host
+            PressEnterPrompt
+            EndGame
+        }
     }
 }
