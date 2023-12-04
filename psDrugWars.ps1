@@ -766,6 +766,23 @@ $script:RandomEvents = @(
         }
     },
     @{
+        "Name"        = "Fence Fumble"
+        "Description" = "Uh-oh! You tried to impressively hop a fence to escape a shady-looking character, but your acrobatics didn't quite go as planned."
+        "Effect"      = {
+            Start-Sleep -Seconds 2
+            Write-Host
+            if ($script:Player.Pockets -gt 0) {
+                $lostPockets = Get-Random -Minimum 1 -Maximum 4
+                $script:Player.Pockets -= $lostPockets
+                Write-Centered ('Yikes! You lost {0} pockets in the fence fumble fiasco. Perhaps stealth is more your style.' -f $lostPockets) -ForegroundColor DarkRed
+            }
+            else {
+                Write-Centered 'Phew! Luckily, you had no pockets to lose. Maybe next time stick to a less athletic escape plan, dumpy.'
+            }
+            Start-Sleep -Seconds 2
+        }
+    },    
+    @{
         "Name"        = "Lemonade Stand"
         "Description" = "Wandering through the gritty streets of Skid-Row, your eyes catch a peculiar sight - a little girl gleefully running a lemonade stand. But, as you approach, you realize this stand has a mysterious twist!"
         "Effect"      = {
