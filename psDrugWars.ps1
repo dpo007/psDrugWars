@@ -9,7 +9,7 @@ class Drug {
     [string]$Name
     [string]$Code
     [string]$Description
-    hidden [int]$BasePrice
+    [int]$BasePrice
     [int[]]$PriceRange
     [float]$PriceMultiplier
     [int]$Quantity
@@ -33,11 +33,6 @@ class Drug {
     # Calculate the price based on BasePrice and PriceMultiplier, rounded to the nearest 10 dollars (Bankers' rounding).
     [int]get_Price() {
         return [math]::Round($this.BasePrice * $this.PriceMultiplier / 10) * 10
-    }
-
-    # Method to set the hidden BasePrice value
-    [void]set_BasePrice([int]$BasePrice) {
-        $this.BasePrice = $BasePrice
     }
 }
 
@@ -170,14 +165,16 @@ class Player {
                     break
                 }
                 # If the quantity being bought is greater than the number of free pockets, print a message and return
-                if ($Drug.Quantity -gt $this.get_FreePockets()) {
+                $freePockets = $this.get_FreePockets()
+                if ($Drug.Quantity -gt $freePockets) {
                     Write-Host ('You don''t have enough free pockets to hold that much {0}.' -f $Drug.Name)
                     break
                 }
                 # If the player has enough cash and free pockets, buy the drugs
                 $this.Cash -= $totalPrice
-                $this.AddDrugs($Drug)
                 Write-Host ('You bought {0} {1} for ${2}.' -f $Drug.Quantity, $Drug.Name, $totalPrice)
+                $this.AddDrugs($Drug)
+                
             }
         }
         # Pause for 3 seconds before returning
@@ -2110,7 +2107,12 @@ function ShowBuyDrugsMenu {
     }
 
     Write-Host
-    $drugToBuy = $script:Player.City.Drugs[$drugNumber - 1]
+    # Create clone of drug object for transaction.
+    $cityDrug = $script:Player.City.Drugs[$drugNumber - 1]
+    $drugToBuy = [Drug]::new($cityDrug.Name)
+    $drugToBuy.BasePrice = $cityDrug.BasePrice
+    $drugToBuy.PriceMultiplier = $cityDrug.PriceMultiplier
+
     $maxQuantity = [math]::Floor($script:Player.Cash / $drugToBuy.get_Price())
 
     # Ask how many they want to buy.
@@ -2123,7 +2125,7 @@ function ShowBuyDrugsMenu {
     }
 
     # Buy the drugs.
-    $drugToBuy.Quantity += $quantityInt
+    $drugToBuy.Quantity = $quantityInt
     $script:Player.BuyDrugs($drugToBuy)
     
     PressEnterPrompt
