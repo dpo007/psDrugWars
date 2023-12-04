@@ -27,7 +27,7 @@ class Drug {
 
     # Method to set the hidden BasePrice value to a random value from the drugs PriceRange, rounded to the nearest 10 dollars (Bankers' rounding).
     [void]SetRandomBasePrice() {
-        $this.BasePrice = [math]::Round((Get-Random -Minimum $this.PriceRange[0] -Maximum $this.PriceRange[1]) / 10) * 10
+        $this.BasePrice = [int][math]::Round((Get-Random -Minimum $this.PriceRange[0] -Maximum $this.PriceRange[1]) / 10) * 10
     }
 
     # Calculate the price based on BasePrice and PriceMultiplier, rounded to the nearest 5 dollars (Bankers' rounding).
