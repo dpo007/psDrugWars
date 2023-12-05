@@ -271,7 +271,8 @@ class Player {
                 'Fool',
                 'Chump',
                 'Big Spender',
-                'Numb-skull'
+                'Numb-skull',
+                '70 year-old gigolo'
             )
 
             $this.Cash += $sellPrice
