@@ -871,7 +871,7 @@ $script:RandomEvents = @(
                         Write-Centered 'You see a DMT-induced alien shaman, but they''re uninterested in playing a game with someone who doesn''t even have 5 pockets. No extra pockets for you.'
                     }
                     else {
-                        Write-Centered 'A mischievous DMT-induced alien shaman challenges you to a game. Win, and you gain 15 extra pockets. Lose, and you lose 5 pockets. Play the game? (Y/N)'
+                        Write-Centered 'A mischievous DMT-induced alien shaman challenges you to a game. Win, and you gain 25 extra pockets. Lose, and you lose 5 pockets. Play the game? (Y/N)'
                         # Wait for user to press a valid key
                         $choices = @('Y', 'N')
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
@@ -881,8 +881,8 @@ $script:RandomEvents = @(
                         if ($choice -eq 'Y') {
                             $win = Get-Random -Minimum 0 -Maximum 2
                             if ($win -eq 1) {
-                                $script:Player.Pockets += 15
-                                Write-Centered 'You outwit the alien shaman in a cosmic game of tic-tac-toe. You gained 15 extra pockets!'
+                                $script:Player.Pockets += 25
+                                Write-Centered 'You outwit the alien shaman in a cosmic game of tic-tac-toe. You gained 25 extra pockets!'
                             }
                             else {
                                 $script:Player.Pockets -= 5
@@ -903,7 +903,8 @@ $script:RandomEvents = @(
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
                     if ($choice -eq 'Y') {
-                        $pocketsToGain = Get-Random -Minimum 1 -Maximum 6
+                        # Generate a random number between 5 and 26, divide it by 5, round up to the nearest whole number, then multiply by 5 to get the number of pockets to gain
+                        $pocketsToGain = [Math]::Ceiling((Get-Random -Minimum 5 -Maximum 26) / 5) * 5
                         $script:Player.Pockets += $pocketsToGain
                         Write-Centered ('The magical dank kush aroma of the pocket flower works its wonders. You gained {0} extra pockets!' -f $pocketsToGain)
                     }
