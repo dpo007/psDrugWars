@@ -686,13 +686,13 @@ $script:RandomEvents = @(
             Start-Sleep -Seconds 2
             Write-Host
             if ($script:Player.AddClothing('Cargo Pants')) {
-                $extraPockets = 10
+                $extraPockets = 20
                 $script:Player.Pockets += $extraPockets
                 Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
-                Write-Centered 'You already have a pair of cosmic cargo pants. You decide to sell these for $10.'
-                $script:Player.Cash += 10
+                Write-Centered 'You already have a pair of cosmic cargo pants. You decide to sell these for $20.'
+                $script:Player.Cash += 20
             }
             Start-Sleep -Seconds 2
         }
@@ -704,13 +704,13 @@ $script:RandomEvents = @(
             Start-Sleep -Seconds 2
             Write-Host
             if ($script:Player.AddClothing('Hemp Backpack')) {
-                $extraPockets = 20
+                $extraPockets = 50
                 $script:Player.Pockets += $extraPockets
                 Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
-                Write-Centered 'You already have a Zen hemp backpack. You decide to sell this one for $20.'
-                $script:Player.Cash += 20
+                Write-Centered 'You already have a Zen hemp backpack. You decide to sell this one for $50.'
+                $script:Player.Cash += 50
             }
             Start-Sleep -Seconds 2
         }
