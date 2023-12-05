@@ -740,13 +740,13 @@ $script:RandomEvents = @(
             Start-Sleep -Seconds 2
             Write-Host
             if ($script:Player.AddClothing('Fanny Pack')) {
-                $extraPockets = 5
+                $extraPockets = 15
                 $script:Player.Pockets += $extraPockets
                 Write-Centered ('Awesome! You''ve now got {0} extra pockets! Storing your stuff just got a whole lot easier.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
-                Write-Centered 'You already have a fanny pack. You decide to sell this one for $5.'
-                $script:Player.Cash += 5
+                Write-Centered 'You already have a fanny pack. You decide to sell this one for $15.'
+                $script:Player.Cash += 15
             }
             Start-Sleep -Seconds 2
         }
@@ -758,13 +758,13 @@ $script:RandomEvents = @(
             Start-Sleep -Seconds 2
             Write-Host
             if ($script:Player.AddClothing('Fishing Vest')) {
-                $extraPockets = 25
+                $extraPockets = 75
                 $script:Player.Pockets += $extraPockets
                 Write-Centered ('Incredible! You''ve now got {0} extra pockets! You''ll never run out of storage space.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
-                Write-Centered 'You already have a fishing vest. You decide to sell this one for $15.'
-                $script:Player.Cash += 15
+                Write-Centered 'You already have a fishing vest. You decide to sell this one for $75.'
+                $script:Player.Cash += 75
             }
             Start-Sleep -Seconds 2
         }
@@ -818,10 +818,10 @@ $script:RandomEvents = @(
             Write-Centered 'Whoa, man! This portal takes you to a pocket dimension of infinite possibilities!'
             Start-Sleep -Seconds 2
             $choice = Get-Random -Minimum 1 -Maximum 5
-            $pocketCost = 20
+            $pocketCost = 10
             switch ($choice) {
                 1 {
-                    $extraPockets = 50
+                    $extraPockets = 75
                     $extraPocketsCost = $pocketCost * $extraPockets
                     Write-Centered ('You encounter a cosmic, drugged-out vendor selling magical pockets. Spend ${0} to get {1} extra pockets? (Y/N)' -f $extraPocketsCost, $extraPockets)
                     if ($script:Player.Cash -ge $extraPocketsCost) {
