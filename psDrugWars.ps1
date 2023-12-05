@@ -69,7 +69,6 @@ class Player {
     [int]$Pockets
     [string[]]$Clothing
     [int]$GameDay
-    [string]$Vehicle
 
     hidden [string[]]$starterClothes = @(
         'Bell-bottom pants',
@@ -91,7 +90,6 @@ class Player {
         $this.Clothing = $this.starterClothes | Get-Random
         $this.Pockets = 0
         $this.GameDay = 1
-        $this.Vehicle = '2 feet and a heartbeat'
     }
 
     # FreePockets method returns the number of pockets minus the total Quntity of all Drugs
@@ -237,77 +235,6 @@ class Player {
         # Add the other clothing back to the list (unless it's null)
         if ($otherClothes) {
             $this.Clothing += $otherClothes
-        }
-    }
-
-    # Method to buy Vehicle.
-    [bool]BuyVehicle([string]$VehicleType) {
-        # Get the price of the vehicle from $script:VehicleInfo
-        $newVehicle = $script:VehicleInfo | Where-Object { $_.Name -eq $VehicleType }
-
-        # If it doesn't exist in the list, print a message and return
-        if (-not $newVehicle) {
-            Write-Centered ('{0} is not a valid vehicle type!' -f $VehicleType) -ForegroundColor DarkRed
-            return $false
-        }
-
-        # If the player doesn't have enough cash, print a message and return
-        if ($newVehicle.Price -gt $this.Cash) {
-            Write-Centered ('You don''t have enough cash to buy a {0}.' -f $VehicleType) -ForegroundColor DarkRed
-            return $false
-        }
-
-        # If the player has enough cash, buy the vehicle
-        $this.Cash -= $newVehicle.Price
-        Write-Centered ('You bought a {0} for ${1}!' -f $VehicleType, $newVehicle.Price) -ForegroundColor Green
-
-        # Assign the new vehicle to the player.
-        $this.ChangeVehicle($VehicleType)
-
-        # All good, return true
-        return $true
-    }
-
-    # Method to change the player's vehicle.
-    [void]ChangeVehicle([string]$NewVehicleType) {
-        # Get the price of player's current vehicle from $script:VehicleInfo
-        $currentVehicle = $script:VehicleInfo | Where-Object { $_.Name -eq $this.Vehicle }
-
-        # If it doesn't exist inteh list, set its price to 0.
-        if (-not $currentVehicle) {
-            $currentVehiclePrice = 0
-        }
-        else {
-            $currentVehiclePrice = $currentVehicle.Price
-        }
-
-        # If the price is > 0 sell it for 25% of the price.
-        if ($currentVehiclePrice -gt 0) {
-            $sellPrice = [int]([math]::Round($currentVehiclePrice * 0.25))
-
-            # Minimum sale price of $50.
-            if ($sellPrice -lt 50) {
-                $sellPrice = 50
-            }
-
-            # Sell the car to a random buyer.
-            $buyerNames = @(
-                'Sucka',
-                'Mug',
-                'Rube',
-                'Skid',
-                'Fool',
-                'Chump',
-                'Big Spender',
-                'Numb-skull',
-                '70 year-old gigolo'
-            )
-
-            $this.Cash += $sellPrice
-            Write-Centered ('You sold your {0} to some {1} for ${2}.' -f $this.Vehicle, (Get-Random -InputObject $buyerNames), $sellPrice)
-
-            # Assign a new vehicle to the player.
-            $this.Vehicle = $NewVehicleType
         }
     }
 }
@@ -1203,50 +1130,6 @@ $script:RandomEvents = @(
         }
     }      
 )
-
-# Define vehicles
-$script:VehicleInfo = @{
-    "Courier Bicycle"      = @{
-        Description   = "Sneak through the concrete canyons like a two-wheeled shadow with this bad boy. Perfect for low-key deliveries that keep you ahead of the game. Dodging traffic has never been this stylish."
-        CargoCapacity = 250
-        Price         = 2500
-    }
-    "Family Sedan"         = @{
-        Description   = "Roll up in this vintage chariot, blending into suburbia while hauling secrets in the trunk. It may look like it's seen better days, but that's just a disguise for its underworld connections - the ultimate family business."
-        CargoCapacity = 750
-        Price         = 5000
-    }
-    "Modified Panel Van"   = @{
-        Description   = "Cruise the streets in this inconspicuous van, customized with hidden compartments and a rap sheet as long as a Hollywood screenplay. The perfect choice for those who like their cargo like they like their movies - full of twists and turns."
-        CargoCapacity = 1500
-        Price         = 12500
-    }
-    "Cargo Van"            = @{
-        Description   = "Bigger, bolder, and ready to handle the mean streets, this van is the unsung hero of underground cargo. It's not just a ride; it's a whispered conversation in the language of shady dealings and loaded glances."
-        CargoCapacity = 2000
-        Price         = 22500
-    }
-    "1992 Motorhome"       = @{
-        Description   = "Step into the lap of worn-out luxury with this motorhome. It's got hidden compartments, a hint of mystery, and a scent of secrets that'll keep you and your cargo riding in style - even if the style is a bit questionable."
-        CargoCapacity = 2400
-        Price         = 30000
-    }
-    "Box Truck"            = @{
-        Description   = "Meet the heavyweight champ of underground deliveries - the box truck with swagger. It's got the moves of a seasoned player, handling larger loads and leaving behind a trail of mystery. Because in this game, every delivery is a plot twist."
-        CargoCapacity = 3200
-        Price         = 45000
-    }
-    "Armored Pickup Truck" = @{
-        Description   = "Ride on the edge with this rugged pickup, armored and ready for high-stakes chases. It's not just a truck; it's a statement - an intense declaration that you're playing the game by your own rules. Buckle up for a wild ride."
-        CargoCapacity = 4000
-        Price         = 75000
-    }
-    "Semi-Trailer Truck"   = @{
-        Description   = "Bow down to the kingpin of the highways, the 'big rig' that rules the underworld of long-distance hauling. With a front as tough as its rear, this semi-trailer truck is the boss ride for carrying substantial loads through the vast expanse of the shadowy realm."
-        CargoCapacity = 5000
-        Price         = 150000
-    }
-}
 
 # Define game guns
 $script:GunInfo = @(
