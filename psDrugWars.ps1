@@ -240,6 +240,34 @@ class Player {
         }
     }
 
+    # Method to buy Vehicle.
+    [bool]BuyVehicle([string]$VehicleType) {
+        # Get the price of the vehicle from $script:VehicleInfo
+        $newVehicle = $script:VehicleInfo | Where-Object { $_.Name -eq $VehicleType }
+
+        # If it doesn't exist in the list, print a message and return
+        if (-not $newVehicle) {
+            Write-Centered ('{0} is not a valid vehicle type!' -f $VehicleType) -ForegroundColor DarkRed
+            return $false
+        }
+
+        # If the player doesn't have enough cash, print a message and return
+        if ($newVehicle.Price -gt $this.Cash) {
+            Write-Centered ('You don''t have enough cash to buy a {0}.' -f $VehicleType) -ForegroundColor DarkRed
+            return $false
+        }
+
+        # If the player has enough cash, buy the vehicle
+        $this.Cash -= $newVehicle.Price
+        Write-Centered ('You bought a {0} for ${1}!' -f $VehicleType, $newVehicle.Price) -ForegroundColor Green
+
+        # Assign the new vehicle to the player.
+        $this.ChangeVehicle($VehicleType)
+
+        # All good, return true
+        return $true
+    }
+
     # Method to change the player's vehicle.
     [void]ChangeVehicle([string]$NewVehicleType) {
         # Get the price of player's current vehicle from $script:VehicleInfo
@@ -276,7 +304,10 @@ class Player {
             )
 
             $this.Cash += $sellPrice
-            Write-Centered ('You sold your {0} to some {1} for ${2}.' -f $this.Vehicle, (Get-Random -InputObject $buyerNames), $sellPrice) -ForegroundColor Green
+            Write-Centered ('You sold your {0} to some {1} for ${2}.' -f $this.Vehicle, (Get-Random -InputObject $buyerNames), $sellPrice)
+
+            # Assign a new vehicle to the player.
+            $this.Vehicle = $NewVehicleType
         }
     }
 }
