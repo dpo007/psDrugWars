@@ -262,6 +262,7 @@ class Player {
                 $sellPrice = 50
             }
 
+            # Sell the car to a random buyer.
             $buyerNames = @(
                 'Sucka',
                 'Mug',
@@ -275,11 +276,7 @@ class Player {
 
             $this.Cash += $sellPrice
             Write-Centered ('You sold your {0} to some {1} for ${2}.' -f $this.Vehicle, (Get-Random -InputObject $buyerNames), $sellPrice) -ForegroundColor Green
-            Write-Host
-            
         }
-
-
     }
 }
 ###########################
