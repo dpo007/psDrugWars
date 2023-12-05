@@ -239,6 +239,48 @@ class Player {
             $this.Clothing += $otherClothes
         }
     }
+
+    # Method to change the player's vehicle.
+    [void]ChangeVehicle([string]$NewVehicleType) {
+        # Get the price of player's current vehicle from $script:VehicleInfo
+        $currentVehicle = $script:VehicleInfo | Where-Object { $_.Name -eq $this.Vehicle }
+
+        # If it doesn't exist inteh list, set its price to 0.
+        if (-not $currentVehicle) {
+            $currentVehiclePrice = 0
+        }
+        else {
+            $currentVehiclePrice = $currentVehicle.Price
+        }
+
+        # If the price is > 0 sell it for 25% of the price.
+        if ($currentVehiclePrice -gt 0) {
+            $sellPrice = [int]([math]::Round($currentVehiclePrice * 0.25))
+
+            # Minimum sale price of $50.
+            if ($sellPrice -lt 50) {
+                $sellPrice = 50
+            }
+
+            $buyerNames = @(
+                'Sucka',
+                'Mug',
+                'Rube',
+                'Skid',
+                'Fool',
+                'Chump',
+                'Big Spender',
+                'Numb-skull'
+            )
+
+            $this.Cash += $sellPrice
+            Write-Centered ('You sold your {0} to some {1} for ${2}.' -f $this.Vehicle, (Get-Random -InputObject $buyerNames), $sellPrice) -ForegroundColor Green
+            Write-Host
+            
+        }
+
+
+    }
 }
 ###########################
 #endregion Class Definitions
