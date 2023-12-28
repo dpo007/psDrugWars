@@ -2425,7 +2425,15 @@ function EndGame {
 
     $highScores | ForEach-Object {
         $score = $_.Score.ToString().PadRight($maxScoreLength)
-        Write-Centered ('{0} - ${1}' -f $_.Initials, $score)
+        if ($_.Initials -eq $highScores[0].Initials -and $_.Score -eq $highScores[0].Score) {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor "Yellow"
+        } elseif ($_.Initials -eq $highScores[1].Initials -and $_.Score -eq $highScores[1].Score) {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor "White"
+        } elseif ($_.Initials -eq $highScores[2].Initials -and $_.Score -eq $highScores[2].Score) {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor "Gray"
+        } else {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -foregroundColor "DarkGray"
+        }
     }
 
     $script:GameOver = $true
