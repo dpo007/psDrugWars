@@ -2420,8 +2420,12 @@ function EndGame {
     Write-Centered 'Highest Dealers'
     Write-Centered '---------------'
     Write-Host
-    GetHighScores | ForEach-Object {
-        Write-Centered ('{0} - ${1}' -f $_.Initials, $_.Score)
+    $highScores = GetHighScores
+    $maxScoreLength = ($highScores | Measure-Object -Property Score -Maximum).Maximum.ToString().Length
+
+    $highScores | ForEach-Object {
+        $score = $_.Score.ToString().PadRight($maxScoreLength)
+        Write-Centered ('{0} - ${1}' -f $_.Initials, $score)
     }
 
     $script:GameOver = $true
