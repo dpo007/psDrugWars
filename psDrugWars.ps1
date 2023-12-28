@@ -2378,7 +2378,6 @@ function EndGame {
     if ((Write-BlockLetters 'Thanks for playing!' -Align Center -BackgroundColor Blue -VerticalPadding 1) -eq $false) {
         Write-Centered 'Thanks for playing!' -BackgroundColor Blue
     }
-    Write-Host
     
     if (IsHighScore -Score $script:Player.Cash) {
         Write-Host
@@ -2416,7 +2415,15 @@ function EndGame {
         AddHighScore -Initials $initials -Score $script:Player.Cash
     }
 
-    GetHighScores
+    # Display high scores center justified on screen, with a header
+    Write-Host
+    Write-Centered 'High Scores'
+    Write-Centered '-----------'
+    Write-Host
+    GetHighScores | ForEach-Object {
+        Write-Centered ('{0} - ${1}' -f $_.Initials, $_.Score)
+    }
+
     $script:GameOver = $true
     
     Write-Host
