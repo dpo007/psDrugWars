@@ -2417,8 +2417,8 @@ function EndGame {
 
     # Display high scores center justified on screen, with a header
     Write-Host
-    Write-Centered 'High Scores'
-    Write-Centered '-----------'
+    Write-Centered 'Highest Dealers'
+    Write-Centered '---------------'
     Write-Host
     GetHighScores | ForEach-Object {
         Write-Centered ('{0} - ${1}' -f $_.Initials, $_.Score)
