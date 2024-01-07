@@ -1903,7 +1903,7 @@ function Write-BlockLetters {
             "  ",
             "  "
         )
-        '"' = @(
+        '"'  = @(
             "# #",
             "# #",
             "   ",
@@ -2902,10 +2902,12 @@ function GetHighScores {
         $highScores = Get-Content -Path "highscores.json" | ConvertFrom-Json
     }
     else {
-        # Create default high score file with 10 made up initals and scores starting at 1000 gogin to 10000
+        # Create default high score file with 10 made up initals and scores between 1000 and 100000
         $highScores = 1..10 | ForEach-Object {
             [PSCustomObject]@{
+                # Generate 3 random uppercase letters for the initals.
                 Initials = ('{0}{1}{2}' -f [char](Get-Random -Minimum 65 -Maximum 91), [char](Get-Random -Minimum 65 -Maximum 91), [char](Get-Random -Minimum 65 -Maximum 91))
+                # Generate a random number between 1000 and 100000 that is a multiple of 10
                 Score    = [int][Math]::Ceiling((Get-Random -Minimum 1000 -Maximum 100001) / 10) * 10
                 Date     = (Get-Date).ToString("yyyy-MM-dd")
             }
