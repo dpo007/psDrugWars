@@ -2321,6 +2321,15 @@ function Jet {
     Write-Host
     $cityCount = $script:GameCities.Count
 
+    $ticketPrice = 100
+    # If the player cna't pay the ticket price, tell them and then exit the function.
+    if ($script:Player.Cash -lt $ticketPrice) {
+        Write-Centered ('You don''t have enough cash to buy a ticket, Chum...p!') -ForegroundColor Red
+        Start-Sleep 3
+        PressEnterPrompt
+        return
+    }
+
     $newCity = $null
     Write-Centered "Enter the city you want to jet to (1-$cityCount, or 'Q' to return to the main menu) " -NoNewline
     while (-not $newCity) {
@@ -2339,8 +2348,7 @@ function Jet {
     # If the new city is different from the current city, then travel to the new city.
     if ($script:Player.City -ne $destinationCity) {
         Write-Host
-        Write-Centered ('You hit he airport and catch a flight to {0}.' -f $destinationCity.Name)
-        $ticketPrice = 100
+        Write-Centered ('You hit the airport and catch a flight to {0}.' -f $destinationCity.Name)
         Start-Sleep -Milliseconds 500
         Write-Centered ('The ticket costs you ${0}, and the trip takes a day.' -f $ticketPrice) -ForegroundColor Yellow
 
@@ -2348,6 +2356,7 @@ function Jet {
         $script:Player.Cash -= $ticketPrice
 
         Start-Sleep 3
+        Write-Host
 
         # Travel takes a day, change clothes
         AdvanceGameDay -ChangeOutfit
@@ -2368,7 +2377,7 @@ function Jet {
 
         $arrivalMessage = Get-Random -InputObject $arrivalMessages
         Write-Host
-        Write-Centered ($arrivalMessage -f $destinationCity.Name, $destinationCity.HomeDrugNames[0])
+        Write-Centered ($arrivalMessage -f $destinationCity.Name, $destinationCity.HomeDrugNames[0]) -ForegroundColor Green
     }
     else {
         Write-Host
