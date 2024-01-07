@@ -2012,6 +2012,8 @@ function InitGame {
     $cityDrugCount = 6
     $script:GameDays = 30
     $script:GameOver = $false
+    $script:RandomEventChance_Start = 10 # Percentage
+    $script:RandomEventChance_Current = $script:RandomEventChance_Start
 
     # Create and populate the drugs available for this game session.
     [Drug[]]$script:GameDrugs = InitGameDrugs -DrugCount $gameDrugCount
