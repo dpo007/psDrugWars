@@ -1033,10 +1033,11 @@ $script:RandomEvents = @(
                             AdvanceGameDay -SkipPriceUpdate
                         }
                         else {
-                            $script:Player.Cash += Get-Random -Minimum 20 -Maximum 501
                             Write-Centered ('The cocktail of {0} gives you an otherworldly experience.' -f $randomDrugs)
                             Start-Sleep -Seconds 2
-                            Write-Centered ('You find some extra cash in your pocket (after you barf and come down)!') -ForegroundColor DarkGreen
+                            $cashToAdd = Get-Random -Minimum 20 -Maximum 501
+                            Write-Centered ('You find some extra cash in your pocket (after you barf and come down)... ${0}!' -f $cashToAdd) -ForegroundColor DarkGreen
+                            $script:Player.Cash += $cashToAdd
                         }
                     }
                     else {
