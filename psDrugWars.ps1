@@ -485,10 +485,10 @@ $script:RandomEvents = @(
         "Name"        = "Busted"
         "Description" = 'You were busted by the cops!'
         "Effect"      = {    
+            Start-Sleep -Seconds 3
             # If player has no drugs on them, the cops leave them alone
             if ($script:Player.Drugs.Count -eq 0) {
                 Write-Centered 'You were searched, but you didn''t have any drugs on you!'
-                Start-Sleep -Seconds 2
                 Write-Host
                 Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
                 
@@ -549,6 +549,8 @@ $script:RandomEvents = @(
                 # Display the message
                 Write-Centered $message -ForegroundColor DarkGreen
             }
+
+            Start-Sleep -Seconds 3
         }
     },
     @{
