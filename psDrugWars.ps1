@@ -105,9 +105,19 @@ class Player {
         return $this.Pockets
     }
 
-    # Method to adjust pocket count (up or down)
+    # Method to set pocket count
     [void]set_PocketCount([int]$Pockets) {
         $this.Pockets = $Pockets
+    }
+
+    # Method to adjust pocket count up or down
+    [void]AdjustPocketCount([int]$Pockets) {
+        if ($Pockets -lt 0) {
+            $this.Pockets -= $Pockets
+        }
+        else {
+            $this.Pockets += $Pockets
+        }
     }
 
     # Method to add drugs to the player's Drugs collection.
@@ -709,7 +719,7 @@ $script:RandomEvents = @(
             Write-Host
             if ($script:Player.AddClothing('Cargo Pants')) {
                 $extraPockets = 20
-                $script:Player.Pockets += $extraPockets
+                $script:Player.AdjustPocketCount($extraPockets)
                 Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
@@ -727,7 +737,7 @@ $script:RandomEvents = @(
             Write-Host
             if ($script:Player.AddClothing('Hemp Backpack')) {
                 $extraPockets = 50
-                $script:Player.Pockets += $extraPockets
+                $script:Player.AdjustPocketCount($extraPockets)
                 Write-Centered ('Far out! You''ve now got {0} extra pockets! Carryin'' more of your magic stash just got easier.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
@@ -745,7 +755,7 @@ $script:RandomEvents = @(
             Write-Host
             if ($script:Player.AddClothing('Hemp Poncho')) {
                 $extraPockets = 10
-                $script:Player.Pockets += $extraPockets
+                $script:Player.AdjustPocketCount($extraPockets)
                 Write-Centered ('Trippy, right? This tie-dyed hemp poncho adds {0} extra pockets to your cosmic wardrobe. Carry on, peace traveler.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
@@ -763,7 +773,7 @@ $script:RandomEvents = @(
             Write-Host
             if ($script:Player.AddClothing('Fanny Pack')) {
                 $extraPockets = 15
-                $script:Player.Pockets += $extraPockets
+                $script:Player.AdjustPocketCount($extraPockets)
                 Write-Centered ('Awesome! You''ve now got {0} extra pockets! Storing your stuff just got a whole lot easier.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
@@ -781,7 +791,7 @@ $script:RandomEvents = @(
             Write-Host
             if ($script:Player.AddClothing('Fishing Vest')) {
                 $extraPockets = 75
-                $script:Player.Pockets += $extraPockets
+                $script:Player.AdjustPocketCount($extraPockets)
                 Write-Centered ('Incredible! You''ve now got {0} extra pockets! You''ll never run out of storage space.' -f $extraPockets) -ForegroundColor DarkGreen
             }
             else {
@@ -797,9 +807,9 @@ $script:RandomEvents = @(
         "Effect"      = {
             Start-Sleep -Seconds 2
             Write-Host
-            if ($script:Player.Pockets -gt 0) {
+            if ($script:Player.get_PocketCount() -gt 0) {
                 $lostPockets = Get-Random -Minimum 1 -Maximum 4
-                $script:Player.Pockets -= $lostPockets
+                $script:Player.AdjustPocketCount(-$lostPockets)
                 Write-Centered ('Yikes! You lost {0} pockets in the fence fumble fiasco. Perhaps stealth is more your style.' -f $lostPockets) -ForegroundColor DarkRed
             }
             else {
@@ -857,7 +867,7 @@ $script:RandomEvents = @(
                         }
                         if ($choice -eq 'Y') {
                             $script:Player.Cash -= $extraPocketsCost
-                            $script:Player.Pockets += $extraPockets
+                            $script:Player.AdjustPocketCount($extraPockets)
                             Write-Centered ('You made a wise investment and gained {0} extra pockets!' -f $extraPockets) -ForegroundColor DarkGreen
                         }
                         else {
@@ -884,7 +894,7 @@ $script:RandomEvents = @(
                         Write-Host
                         $success = Get-Random -Minimum 0 -Maximum 2
                         if ($success -eq 1) {
-                            $script:Player.Pockets += 10
+                            $script:Player.AdjustPocketCount(10)
                             Write-Centered 'After a deep meditation session, you feel your inner pocket energy expand. You gained 10 extra pockets!' -ForegroundColor DarkGreen
                         }
                         else {
@@ -896,7 +906,7 @@ $script:RandomEvents = @(
                     }
                 }
                 3 {
-                    if ($script:Player.Pockets -lt 5) {
+                    if ($script:Player.get_PocketCount() -lt 5) {
                         Write-Centered 'You see a DMT-induced alien shaman, but they''re uninterested in playing a game with someone who doesn''t even have 5 pockets. No extra pockets for you.' -ForegroundColor Red
                     }
                     else {
@@ -923,14 +933,14 @@ $script:RandomEvents = @(
                                 $cosmicGame = Get-Random -InputObject $cosmicGames
                                 Write-Centered ('You outwit the alien shaman in a cosmic game of {0}.' -f $cosmicGame)
                                 Start-Sleep -Seconds 2
-                                $script:Player.Pockets += 25
+                                $script:Player.AdjustPocketCount(25)
                                 Write-Host
                                 Write-Centered 'You gained 25 extra pockets!' -ForegroundColor DarkGreen
                             }
                             else {
                                 Write-Centered 'The alien shaman proves to be a cunning opponent.'
                                 Start-Sleep -Seconds 2
-                                $script:Player.Pockets -= 5
+                                $script:Player.AdjustPocketCount(-5)
                                 Write-Host
                                 Write-Centered 'You lose 5 pockets in the game. Better luck next time.' -ForegroundColor Red
                             }
@@ -955,7 +965,7 @@ $script:RandomEvents = @(
                         Write-Centered 'The magical dank kush aroma of the pocket flower works its wonders.'
                         Start-Sleep -Seconds 2
                         Write-Host
-                        $script:Player.Pockets += $pocketsToGain
+                        $script:Player.AdjustPocketCount($pocketsToGain)
                         Write-Centered ('You gained {0} extra pockets!' -f $pocketsToGain) -ForegroundColor DarkGreen
                     }
                     else {
