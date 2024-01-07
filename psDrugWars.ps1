@@ -1152,7 +1152,24 @@ $script:RandomEvents = @(
                     Write-Centered 'Unable to contain yourself, you burst into laughter. The cocaine expert looks offended, muttering something about "non-believers" before storming off.'
                 }
                 3 {
-                    Write-Centered 'In a bold move, you attempt to challenge their skills with your own absurd and entirely made-up cocaine "techniques." The fiend is left bewildered, questioning your sanity.'
+                    Write-Centered 'In a bold move, you attempt to challenge their skills with your own absurd and entirely made-up cocaine "techniques"...'
+                    Start-Sleep -Seconds 2
+                    $cokeTechniques = @(
+                        'You decided to try the latest trend and indulged in a refreshing Cocaine Snow Cone.  That''s some GOOD SLUSHIE!',
+                        'In a desperate attempt to boost your energy levels, you resorted to the unconventional Cocaine Coffee Enema, which left you feeling both invigorated and mortified.',
+                        'Three words... Cocaine Chocolate Fondue.',
+                        'You draw a steaming bubble bath and, with a wicked grin, added a generous dose of Cocaine Infused Bubble Bath, you hop in an scrub until your LIT!',
+                        'You shove copious amounts of cocaine where the sun don''t shine, and start dancing around while singing "White Lines" by Grandmaster Flash and Melle Mel.'
+                    )
+
+                    $cokeTechnique = Get-Random -InputObject $cokeTechniques
+                    Write-Host
+                    Write-Centered $cokeTechnique
+
+                    Start-Sleep -Seconds 2
+                    Write-Host
+                    Write-Centered 'The fiend is left bewildered, questioning your sanity, but now we all know'
+                    Write-Centered 'YOU''RE THE BEST AT DOING COCAINE!'
                 }
                 default {
                     Write-Centered 'You stand there, paralyzed by the absurdity of the situation. The cocaine fiend continues their monologue, oblivious to your internal crisis.'
