@@ -2401,7 +2401,7 @@ function Jet {
             'Welcome to beautiful {0}!',
             'You arrive in {0} and get to hustlin''.',
             'As you arrive in {0}, you can''t help but notice the smell of {1} in the air.',
-            'Welcome to {0}.  What a shit-hole.'
+            'Welcome to {0}. What a shit-hole.'
         )
 
         $arrivalMessage = Get-Random -InputObject $arrivalMessages
