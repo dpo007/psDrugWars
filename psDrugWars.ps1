@@ -520,7 +520,7 @@ $script:RandomEvents = @(
                 if ($script:Player.Cash -gt 50) {
                     Start-Sleep -Seconds 2
                     # Cops let you go, but take 5% of your cash
-                    Write-Host '...after a bit of a shake-down.' -ForegroundColor Yellow
+                    Write-Centered '...after a bit of a shake-down.' -ForegroundColor Yellow
                     Start-Sleep -Seconds 3
                     $loss = [int]([math]::Round($script:Player.Cash * 0.05))
                     $script:Player.Cash = $script:Player.Cash - $loss
