@@ -2442,6 +2442,7 @@ function EndGame {
                 [System.Console]::Write($upperCasedChar)
             }
         }
+        Write-Host
         
         # Convert the initials to uppercase, and save them to the player object.
         $script:Player.Initials = $initials.ToUpper()
