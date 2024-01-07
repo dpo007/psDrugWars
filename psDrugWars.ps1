@@ -105,6 +105,11 @@ class Player {
         return $this.Pockets
     }
 
+    # Method to adjust pocket count (up or down)
+    [void]set_PocketCount([int]$Pockets) {
+        $this.Pockets = $Pockets
+    }
+
     # Method to add drugs to the player's Drugs collection.
     [void]AddDrugs([Drug]$Drug) {
         # Minimum Add is 1
@@ -1973,7 +1978,7 @@ function InitGame {
     [Player]$script:Player = [Player]::new()
     $script:Player.Cash = $startingCash
     $script:Player.City = $script:GameCities | Get-Random
-    $script:Player.Pockets = $startingPockets
+    $script:Player.set_PocketCount($startingPockets)
 
     # Fill starting City with random drugs.
     $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
