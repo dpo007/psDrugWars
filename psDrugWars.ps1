@@ -613,8 +613,8 @@ $script:RandomEvents = @(
         "Name"        = "Bad Batch"
         "Description" = "You got a bad batch of drugs. You lose 10% of your cash trying to get rid of it."
         "Effect"      = {
-            # Calculate 10% of the player's cash.
-            $loss = $script:Player.Cash * 0.10
+            # Calculate 10% of the player's cash, rounded to the nearest dollar
+            $loss = [int]([math]::Round($script:Player.Cash * 0.10))
             # Subtract the loss from the player's cash.
             $script:Player.Cash -= $loss
 
