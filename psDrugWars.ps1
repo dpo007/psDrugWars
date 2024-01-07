@@ -1055,7 +1055,9 @@ $script:RandomEvents = @(
                         if ($script:Player.get_FreePockets() -ge $hashQuantity) {
                             Write-Host
                             Write-Centered ('As a bonus, the artist hands you {0} pockets of Hash.' -f $hashQuantity) -ForegroundColor DarkGreen
-                            $script:Player.AddDrugs($hash)
+                            $freeHash = [Drug]::new('Hash')
+                            $freeHash.Quantity = $hashQuantity
+                            $script:Player.AddDrugs($freeHash)
                         }
                         else {
                             Write-Centered 'The artist wanted to give you some Hash, but you don''t have enough free pockets. What a bummer!'
@@ -2425,14 +2427,20 @@ function EndGame {
 
     $highScores | ForEach-Object {
         $score = $_.Score.ToString().PadRight($maxScoreLength)
-        if ($_.Initials -eq $highScores[0].Initials -and $_.Score -eq $highScores[0].Score) {
-            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor "Yellow"
-        } elseif ($_.Initials -eq $highScores[1].Initials -and $_.Score -eq $highScores[1].Score) {
-            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor "Gray"
-        } elseif ($_.Initials -eq $highScores[2].Initials -and $_.Score -eq $highScores[2].Score) {
-            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor "DarkYellow"
-        } else {
-            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor "DarkGray"
+        if ($_Score -eq $script:Player.Cash) {
+            Write-Centered ('> {0} - ${1} <' -f $_.Initials, $score) -ForegroundColor Green
+        }
+        elseif ($_.Initials -eq $highScores[0].Initials -and $_.Score -eq $highScores[0].Score) {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor Yellow
+        }
+        elseif ($_.Initials -eq $highScores[1].Initials -and $_.Score -eq $highScores[1].Score) {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor Gray
+        }
+        elseif ($_.Initials -eq $highScores[2].Initials -and $_.Score -eq $highScores[2].Score) {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor DarkYellow
+        }
+        else {
+            Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor DarkGray
         }
     }
 
