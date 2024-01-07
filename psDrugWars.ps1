@@ -3060,8 +3060,16 @@ while ($script:Playing) {
         }
 
         # Random events have a 10% chance of happening each day.
-        if ($script:RandomEvents -and (Get-Random -Maximum 100) -lt 10) {
+        if ($script:RandomEvents -and (Get-Random -Maximum 100) -lt $script:RandomEventChance_Current) {
             StartRandomEvent
+
+            # Each time one random event fires off, the chance of getting another that day is halved.
+            $script:RandomEventChance_Current = [math]::Floor($script:RandomEventChance_Current / 2)
+
+            # If the chance is less than 1% set it to 0.
+            if ($script:RandomEventChance_Current -lt 1) {
+                $script:RandomEventChance_Current = 0
+            }
         }
 
         # No cash and no drugs, game over
