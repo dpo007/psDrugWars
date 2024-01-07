@@ -2906,7 +2906,7 @@ function GetHighScores {
         $highScores = 1..10 | ForEach-Object {
             [PSCustomObject]@{
                 Initials = ('{0}{1}{2}' -f [char](Get-Random -Minimum 65 -Maximum 91), [char](Get-Random -Minimum 65 -Maximum 91), [char](Get-Random -Minimum 65 -Maximum 91))
-                Score    = [int][Math]::Ceiling((Get-Random -Minimum 1000 -Maximum 10001) / 10) * 10
+                Score    = [int][Math]::Ceiling((Get-Random -Minimum 1000 -Maximum 100001) / 10) * 10
                 Date     = (Get-Date).ToString("yyyy-MM-dd")
             }
         }
