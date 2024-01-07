@@ -2338,8 +2338,10 @@ function Jet {
 
     # If the new city is different from the current city, then travel to the new city.
     if ($script:Player.City -ne $destinationCity) {
-        Write-Centered ('You hit he airport and catch a flight to {0}.' -f $destinationCity)
+        Write-Host
+        Write-Centered ('You hit he airport and catch a flight to {0}.' -f $destinationCity.Name)
         $ticketPrice = 100
+        Start-Sleep -Milliseconds 500
         Write-Centered ('The ticket costs you ${0}, and the trip takes a day.' -f $ticketPrice) -ForegroundColor Yellow
 
         # Subtract ticket price from player's cash.
@@ -2366,7 +2368,7 @@ function Jet {
 
         $arrivalMessage = Get-Random -InputObject $arrivalMessages
         Write-Host
-        Write-Centered ($arrivalMessage -f $destinationCity, $destinationCity.HomeDrugNames[0])
+        Write-Centered ($arrivalMessage -f $destinationCity.Name, $destinationCity.HomeDrugNames[0])
     }
     else {
         Write-Host
