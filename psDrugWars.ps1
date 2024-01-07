@@ -1045,7 +1045,8 @@ $script:RandomEvents = @(
                     }
                 }
                 2 {
-                    Write-Centered 'A grizzled junkie challenges you to a game of street smarts. Accept the challenge? (Y/N)'
+                    Write-Centered 'A grizzled junkie challenges you to a game of street smarts.'
+                    Write-Centered 'Accept the challenge? (Y/N)'
                     # Wait for user to press a valid key
                     $choices = @('Y', 'N')
                     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
