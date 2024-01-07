@@ -2334,22 +2334,35 @@ function Jet {
 
     # Alphabetize the cities by name, then assign the player's city to the selected city.
     [City[]]$alphabetizedCities = $script:GameCities | Sort-Object -Property Name
+    $destinationCity = $alphabetizedCities[$newCity - 1]
 
-    # If the new city is differnt from the current city, then travel to the new city.
-    if ($script:Player.City -ne $alphabetizedCities[$newCity - 1]) {
+    # If the new city is different from the current city, then travel to the new city.
+    if ($script:Player.City -ne $destinationCity) {
+        Write-Center ('You hit he airport and catch a flight to {0}.' -f $destinationCity)
+        $ticketPrice = 100
+        Write-Center ('The ticket costs you ${0}, and the trip takes a day.' -f $ticketPrice) -ForegroundColor Yellow
+
+        # Subtract ticket price from player's cash.
+        $script:Player.Cash -= $ticketPrice
+
+        Start-Sleep 3
+
         # Travel takes a day, change clothes
         AdvanceGameDay -ChangeOutfit
 
         # Set player's new location.
-        $script:Player.City = $alphabetizedCities[$newCity - 1]
+        $script:Player.City = $destinationCity
 
         # Fill landing City with random drugs.
         $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
+
+        Write-Host
+        Write-Center ('You arrive in {0} and immidiately hit the streets.' -f $destinationCity)
     }
     else {
         Write-Host
-        Write-Centered ('Lay off your stash man!  You''re already in {0}!' -f $script:Player.City.Name)
-        Start-Sleep 3
+        Write-Centered ('Lay off your stash man!  You''re already in {0}!' -f $script:Player.City.Name) -ForegroundColor Yellow
+        Start-Sleep 2
         PressEnterPrompt
     }
 }
