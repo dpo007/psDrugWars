@@ -222,21 +222,26 @@ class Player {
     }
 
     # Method to change base outfit.
-    [void]ChangeOutfit() {
+    [string]ChangeOutfit() {
         $currentStarterClothes = $this.starterClothes | Where-Object { $this.Clothing -contains $_ }
 
         # Remove any clothing that is in the starterClothes list.
         $this.Clothing = $this.Clothing | Where-Object { $this.starterClothes -notcontains $_ }
+
         # Put on a random new one, that isn't in $currentStarterClothes
         $newClothing = $this.starterClothes | Where-Object { $_ -notin $currentStarterClothes } | Get-Random
 
         # Add the new clothing to the top of the list
         $otherClothes = $this.Clothing
         $this.Clothing = @($newClothing)
+
         # Add the other clothing back to the list (unless it's null)
         if ($otherClothes) {
             $this.Clothing += $otherClothes
         }
+
+        # Return the new clothing
+        return $newClothing
     }
 }
 ###########################
@@ -2894,6 +2899,7 @@ function AdvanceGameDay {
 
     # Advance the game day
     $script:Player.GameDay += $Days
+    Write-Centered ('Welcome to day {0}! ({1} days left)' -f $script:Player.GameDay, ($script:GameDays - $script:Player.GameDay)) -ForegroundColor Yellow
 
     # Change your clothes
     if ($ChangeOutfit) {
@@ -2904,10 +2910,11 @@ function AdvanceGameDay {
             '''Cuz you gotta keep them threads fresh, homey.'
         )
 
-        Write-Centered 'You change your clothes.'
+        # Change the player's outfit, and capture the new outfit name.
+        $newOutfit = $script:Player.ChangeOutfit()
+        Write-Centered ('You change your clothes, putting on your favourite {0}.' -f $newOutfit)
         Start-Sleep -Milliseconds 500
         Write-Centered ('{0}' -f (Get-Random -InputObject $clothesChangePhrases)) -ForegroundColor DarkGray
-        $script:Player.ChangeOutfit()
     }
 
     if (!$SkipPriceUpdate) {
