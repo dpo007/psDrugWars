@@ -2838,6 +2838,16 @@ function AdvanceGameDay {
 
     # Change your clothes
     if ($ChangeOutfit) {
+        $clothesChangePhrases = @(
+            'Yo, gotta switch up the fit, you know?',
+            'Rollin'' with the fashion vibes, gotta keep them threads on point, staying icy for the streets, man.',
+            'It''s all about that wardrobe rotation, staying lit and rockin'' those looks that scream realness, keeping it one hunnid, ya feel?',
+            '''Cuz you gotta keep them threads fresh, homey.'
+        )
+
+        Write-Centered 'You change your clothes.'
+        Start-Sleep -Milliseconds 500
+        Write-Centered ('{0}' -f (Get-Random -InputObject $clothesChangePhrases)) -ForegroundColor DarkGray
         $script:Player.ChangeOutfit()
     }
 
