@@ -69,6 +69,7 @@ class Player {
     [int]$Pockets
     [string[]]$Clothing
     [int]$GameDay
+    [string]$Initials
 
     hidden [string[]]$starterClothes = @(
         'Bell-bottom pants',
