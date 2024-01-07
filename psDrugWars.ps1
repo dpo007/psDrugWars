@@ -1135,6 +1135,7 @@ $script:RandomEvents = @(
             }
     
             Start-Sleep -Seconds 2
+            Write-Host
             Write-Host 'How would you like to react?'
             Write-Host '1. Politely nod and pretend to be impressed.'
             Write-Host '2. Burst into laughter and call their bluff.'
@@ -1142,6 +1143,7 @@ $script:RandomEvents = @(
     
             $playerChoice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
     
+            Write-Host
             switch ($playerChoice) {
                 1 {
                     Write-Centered 'You decide to play along, nodding as if genuinely impressed. The cocaine fiend beams with pride, convinced they''ve found an admirer.'
@@ -1162,10 +1164,15 @@ $script:RandomEvents = @(
             Write-Centered 'You finally manage to escape the cocaine connoisseur, but not before losing a day to their ramblings.' -ForegroundColor Red
             $cocaine = [Drug]::new('Cocaine')
             $cocaine.Quantity = Get-Random -Minimum 2 -Maximum 6
-            $script:Player.AddDrugs($cocaine)
-            Write-Host
-            Write-Centered 'But at least they gave you some cocaine to make up for it!'
-            Write-Centered ('You gained {0} pockets of Cocaine.' -f $cocaine.Quantity) -ForegroundColor DarkGreen
+            
+            # If the user has enough free pockets, add the cocaine to their inventory
+            if ($script:Player.get_FreePockets() -ge $cocaine.Quantity) {
+                Write-Host
+                Write-Centered 'But at least they gave you some cocaine to make up for it!'
+                $script:Player.AddDrugs($cocaine)
+                Write-Centered ('You gained {0} pockets of Cocaine.' -f $cocaine.Quantity) -ForegroundColor DarkGreen
+            }
+
             Write-Host
             AdvanceGameDay -SkipPriceUpdate
         }
