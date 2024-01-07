@@ -66,7 +66,7 @@ class Player {
     [int]$Cash
     [City]$City
     [Drug[]]$Drugs
-    [int]$Pockets
+    hidden [int]$Pockets
     [string[]]$Clothing
     [int]$GameDay
     [string]$Initials
@@ -94,10 +94,15 @@ class Player {
     }
 
     # FreePockets method returns the number of pockets minus the total Quntity of all Drugs
-    [int]get_FreePockets() {
+    [int]get_FreePocketCount() {
         $totalQuantity = 0
         $this.Drugs | ForEach-Object { $totalQuantity += $_.Quantity }
         return $this.Pockets - $totalQuantity
+    }
+
+    # Method to get pocket count
+    [int]get_PocketCount() {
+        return $this.Pockets
     }
 
     # Method to add drugs to the player's Drugs collection.
@@ -109,7 +114,7 @@ class Player {
         }
 
         # Check if there's enough free pockets
-        if ($this.get_FreePockets() -ge $Drug.Quantity) {
+        if ($this.get_FreePocketCount() -ge $Drug.Quantity) {
             # If the player already has some of the drug, add the quantity to the existing drug, otherwise add the drug to the player's Drugs collection.
             $myMatchingDrug = $this.Drugs | Where-Object { $_.Name -eq $Drug.Name }
             if ($myMatchingDrug) {
@@ -170,7 +175,7 @@ class Player {
                     break
                 }
                 # If the quantity being bought is greater than the number of free pockets, print a message and return
-                $freePockets = $this.get_FreePockets()
+                $freePockets = $this.get_FreePocketCount()
                 if ($Drug.Quantity -gt $freePockets) {
                     Write-Host ('You don''t have enough free pockets to hold that much {0}.' -f $Drug.Name)
                     break
@@ -576,12 +581,12 @@ $script:RandomEvents = @(
             Write-Host
 
             # If they have free pockets to hold the Hash, add as much to their inventory as possible.
-            if ($script:Player.get_FreePockets() -ge 1) {
-                if ($script:Player.get_FreePockets() -lt $giveAwayQuantity) {
-                    Write-Centered ('You only have room for {0} pockets of free Hash.' -f $script:Player.get_FreePockets()) -ForegroundColor Yellow
+            if ($script:Player.get_FreePocketCount() -ge 1) {
+                if ($script:Player.get_FreePocketCount() -lt $giveAwayQuantity) {
+                    Write-Centered ('You only have room for {0} pockets of free Hash.' -f $script:Player.get_FreePocketCount()) -ForegroundColor Yellow
                     Start-Sleep -Seconds 2
                     Write-Centered 'But that''s still better than a kick in the ass''! :)'
-                    $giveAwayQuantity = $script:Player.get_FreePockets()
+                    $giveAwayQuantity = $script:Player.get_FreePocketCount()
                 }
 
                 $freeHash = $script:Player.Drugs | Where-Object { $_.Name -eq 'Hash' }
@@ -1095,7 +1100,7 @@ $script:RandomEvents = @(
                         Write-Centered ('The artist captures your essence in a gritty portrait. You pay him ${0} for his unique creation.' -f $portraitCost)
     
                         $hashQuantity = Get-Random -Minimum 1 -Maximum 6
-                        if ($script:Player.get_FreePockets() -ge $hashQuantity) {
+                        if ($script:Player.get_FreePocketCount() -ge $hashQuantity) {
                             Write-Host
                             Write-Centered ('As a bonus, the artist hands you {0} pockets of Hash.' -f $hashQuantity) -ForegroundColor DarkGreen
                             $freeHash = [Drug]::new('Hash')
@@ -1188,7 +1193,7 @@ $script:RandomEvents = @(
             $cocaine.Quantity = Get-Random -Minimum 2 -Maximum 6
             
             # If the user has enough free pockets, add the cocaine to their inventory
-            if ($script:Player.get_FreePockets() -ge $cocaine.Quantity) {
+            if ($script:Player.get_FreePocketCount() -ge $cocaine.Quantity) {
                 Write-Host
                 Write-Centered 'But at least they gave you some cocaine to make up for it!'
                 $script:Player.AddDrugs($cocaine)
@@ -2088,7 +2093,7 @@ function ShowMenuHeader {
 
     Write-Host ('·' + ('═' * ($Host.UI.RawUI.WindowSize.Width - 2)) + '·') -ForegroundColor DarkGray
     Write-Centered ('Drug Wars :: Day {3} :: {1} ({2})' -f $script:Player.Cash, $script:Player.City.Name, $homeDrugString, $script:Player.GameDay)
-    Write-centered ('Cash: ${0} :: Free Pockets: {1}/{2}' -f $script:Player.Cash, $script:Player.get_FreePockets(), $script:Player.Pockets)
+    Write-centered ('Cash: ${0} :: Free Pockets: {1}/{2}' -f $script:Player.Cash, $script:Player.get_FreePocketCount(), $script:Player.Pockets)
     Write-Host ('·' + ('═' * ($Host.UI.RawUI.WindowSize.Width - 2)) + '·') -ForegroundColor DarkGray
 }
 
