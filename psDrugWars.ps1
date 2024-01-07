@@ -817,14 +817,16 @@ $script:RandomEvents = @(
         "Description" = "You stumble upon a mysterious portal while high. Curiosity gets the better of you, and you step through!"
         "Effect"      = {
             Write-Centered 'Whoa, man! This portal takes you to a pocket dimension of infinite possibilities!'
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds 3
+            Write-Host
             $choice = Get-Random -Minimum 1 -Maximum 5
             $pocketCost = 10
             switch ($choice) {
                 1 {
                     $extraPockets = 75
                     $extraPocketsCost = $pocketCost * $extraPockets
-                    Write-Centered ('You encounter a cosmic, drugged-out vendor selling magical pockets. Spend ${0} to get {1} extra pockets? (Y/N)' -f $extraPocketsCost, $extraPockets)
+                    Write-Centered ('You encounter a cosmic, drugged-out vendor selling magical pockets.')
+                    Write-Centered ('Spend ${0} to get {1} extra pockets? (Y/N)' -f $extraPocketsCost, $extraPockets)
                     if ($script:Player.Cash -ge $extraPocketsCost) {
                         # Wait for user to press a valid key
                         $choices = @('Y', 'N')
@@ -846,7 +848,7 @@ $script:RandomEvents = @(
                     }
                 }
                 2 {
-                    Write-Centered 'You meet a luded-out pocket guru who offers to enhance your inner pocket energy. Meditate for a chance to gain 10 extra pockets? (Y/N)'
+                    Write-Centered 'You meet a luded-out pocket guru who offers to enhance your inner pocket energy.' Write-Centered 'Meditate for a chance to gain 10 extra pockets? (Y/N)'
                     # Wait for user to press a valid key
                     $choices = @('Y', 'N')
                     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
@@ -854,10 +856,15 @@ $script:RandomEvents = @(
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
                     if ($choice -eq 'Y') {
+                        Write-Centered 'Meditating... ' -NoNewline
+                        Start-Sleep -Seconds 3
+                        Write-Centered 'Ohhhmmmmmm...'
+                        Start-Sleep -Seconds 3
+                        Write-Host
                         $success = Get-Random -Minimum 0 -Maximum 2
                         if ($success -eq 1) {
                             $script:Player.Pockets += 10
-                            Write-Centered 'After a deep meditation session, you feel your inner pocket energy expand. You gained 10 extra pockets!'
+                            Write-Centered 'After a deep meditation session, you feel your inner pocket energy expand. You gained 10 extra pockets!' -ForegroundColor DarkGreen
                         }
                         else {
                             Write-Centered 'Your meditation doesn''t quite hit the mark, and you gain no extra pockets. Bummer, man.'
@@ -869,10 +876,11 @@ $script:RandomEvents = @(
                 }
                 3 {
                     if ($script:Player.Pockets -lt 5) {
-                        Write-Centered 'You see a DMT-induced alien shaman, but they''re uninterested in playing a game with someone who doesn''t even have 5 pockets. No extra pockets for you.'
+                        Write-Centered 'You see a DMT-induced alien shaman, but they''re uninterested in playing a game with someone who doesn''t even have 5 pockets. No extra pockets for you.' -ForegroundColor Red
                     }
                     else {
-                        Write-Centered 'A mischievous DMT-induced alien shaman challenges you to a game. Win, and you gain 25 extra pockets. Lose, and you lose 5 pockets. Play the game? (Y/N)'
+                        Write-Centered 'A mischievous DMT-induced alien shaman challenges you to a game. Win, and you gain 25 extra pockets. Lose, and you lose 5 pockets.'
+                        Write-Centered 'Play the game? (Y/N)'
                         # Wait for user to press a valid key
                         $choices = @('Y', 'N')
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
@@ -882,12 +890,28 @@ $script:RandomEvents = @(
                         if ($choice -eq 'Y') {
                             $win = Get-Random -Minimum 0 -Maximum 2
                             if ($win -eq 1) {
+                                $cosmicGames = @(
+                                    'Hopscotch',
+                                    'Duck, Duck, Goose',
+                                    'Simon Says',
+                                    'Musical Chairs',
+                                    'Hide and Seek',
+                                    'Tic-Tac-Toe'
+                                )
+                               
+                                $cosmicGame = Get-Random -InputObject $cosmicGames
+                                Write-Centered ('You outwit the alien shaman in a cosmic game of {0}.' -f $cosmicGame)
+                                Start-Sleep -Seconds 2
                                 $script:Player.Pockets += 25
-                                Write-Centered 'You outwit the alien shaman in a cosmic game of tic-tac-toe. You gained 25 extra pockets!'
+                                Write-Host
+                                Write-Centered 'You gained 25 extra pockets!' -ForegroundColor DarkGreen
                             }
                             else {
+                                Write-Centered 'The alien shaman proves to be a cunning opponent.'
+                                Start-Sleep -Seconds 2
                                 $script:Player.Pockets -= 5
-                                Write-Centered 'The alien shaman proves to be a cunning opponent. You lose 5 pockets in the game. Better luck next time.'
+                                Write-Host
+                                Write-Centered 'You lose 5 pockets in the game. Better luck next time.' -ForegroundColor Red
                             }
                         }
                         else {
@@ -896,7 +920,8 @@ $script:RandomEvents = @(
                     }
                 }
                 4 {
-                    Write-Centered 'You find a field of magical pocket flowers. Smelling one might grant you extra pockets. Smell a flower? (Y/N)'
+                    Write-Centered 'You find a field of magical pocket flowers. Smelling one might grant you extra pockets.'
+                    Write-Centered 'Smell a flower? (Y/N)'
                     # Wait for user to press a valid key
                     $choices = @('Y', 'N')
                     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
@@ -906,11 +931,17 @@ $script:RandomEvents = @(
                     if ($choice -eq 'Y') {
                         # Generate a random number between 5 and 26, divide it by 5, round up to the nearest whole number, then multiply by 5 to get the number of pockets to gain
                         $pocketsToGain = [Math]::Ceiling((Get-Random -Minimum 5 -Maximum 26) / 5) * 5
+                        Write-Centered 'The magical dank kush aroma of the pocket flower works its wonders.'
+                        Start-Sleep -Seconds 2
+                        Write-Host
                         $script:Player.Pockets += $pocketsToGain
-                        Write-Centered ('The magical dank kush aroma of the pocket flower works its wonders. You gained {0} extra pockets!' -f $pocketsToGain)
+                        Write-Centered ('You gained {0} extra pockets!' -f $pocketsToGain) -ForegroundColor DarkGreen
                     }
                     else {
-                        Write-Centered 'You decide not to risk it, and the field of pocket flowers fades away. No extra pockets for you.'
+                        Write-Centered 'You decide not to risk it, and the field of pocket flowers fades away.'
+                        Start-Sleep -Seconds 2
+                        Write-Host
+                        Write-Centered 'No extra pockets for you.' -ForegroundColor Red
                     }
                 }
             }
