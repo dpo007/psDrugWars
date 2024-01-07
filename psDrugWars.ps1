@@ -2356,15 +2356,26 @@ function Jet {
         # Fill landing City with random drugs.
         $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
 
+        $arrivalMessages = @(
+            'You arrive in {0} and immidiately hit the streets.',
+            'Welcome to beautiful {0}!',
+            'You arrive in {0} and get to hustlin''.',
+            'As you arrive in {0}, you can''t help but notice the smell of {1} in the air.',
+            'Welcome to {0}.  What a shit-hole.'
+        )
+
+        $arrivalMessage = Get-Random -InputObject $arrivalMessages
         Write-Host
-        Write-Centered ('You arrive in {0} and immidiately hit the streets.' -f $destinationCity)
+        Write-Centered ($arrivalMessage -f $destinationCity, $destinationCity.HomeDrugNames[0])
     }
     else {
         Write-Host
         Write-Centered ('Lay off your stash man!  You''re already in {0}!' -f $script:Player.City.Name) -ForegroundColor Yellow
-        Start-Sleep 2
-        PressEnterPrompt
     }
+
+    Start-Sleep 2
+    Write-Host
+    PressEnterPrompt
 }
 
 # This function handles a random event.
