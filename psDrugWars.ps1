@@ -2338,9 +2338,9 @@ function Jet {
 
     # If the new city is different from the current city, then travel to the new city.
     if ($script:Player.City -ne $destinationCity) {
-        Write-Center ('You hit he airport and catch a flight to {0}.' -f $destinationCity)
+        Write-Centered ('You hit he airport and catch a flight to {0}.' -f $destinationCity)
         $ticketPrice = 100
-        Write-Center ('The ticket costs you ${0}, and the trip takes a day.' -f $ticketPrice) -ForegroundColor Yellow
+        Write-Centered ('The ticket costs you ${0}, and the trip takes a day.' -f $ticketPrice) -ForegroundColor Yellow
 
         # Subtract ticket price from player's cash.
         $script:Player.Cash -= $ticketPrice
@@ -2357,7 +2357,7 @@ function Jet {
         $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
 
         Write-Host
-        Write-Center ('You arrive in {0} and immidiately hit the streets.' -f $destinationCity)
+        Write-Centered ('You arrive in {0} and immidiately hit the streets.' -f $destinationCity)
     }
     else {
         Write-Host
