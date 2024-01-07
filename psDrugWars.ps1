@@ -488,14 +488,18 @@ $script:RandomEvents = @(
             # If player has no drugs on them, the cops leave them alone
             if ($script:Player.Drugs.Count -eq 0) {
                 Write-Centered 'You were searched, but you didn''t have any drugs on you!'
+                Start-Sleep -Seconds 2
                 Write-Host
                 Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
                 
                 if ($script:Player.Cash -gt 50) {
+                    Start-Sleep -Seconds 2
                     # Cops let you go, but take 5% of your cash
                     Write-Host '...after a bit of a shake-down.' -ForegroundColor Yellow
+                    Start-Sleep -Seconds 3
                     $loss = [int]([math]::Round($script:Player.Cash * 0.05))
                     $script:Player.Cash = $script:Player.Cash - $loss
+                    Write-Host
                     Write-Centered ('They took ${0}!' -f $loss) -ForegroundColor DarkRed
                 }
                 
@@ -2443,7 +2447,7 @@ function EndGame {
             }
         }
         Write-Host
-        
+
         # Convert the initials to uppercase, and save them to the player object.
         $script:Player.Initials = $initials.ToUpper()
         
