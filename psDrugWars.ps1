@@ -2412,10 +2412,11 @@ function EndGame {
             }
         }
         
-        # Convert the initials to uppercase
-        $initials = $initials.ToUpper()
+        # Convert the initials to uppercase, and save them to the player object.
+        $script:Player.Initials = $initials.ToUpper()
         
-        AddHighScore -Initials $initials -Score $script:Player.Cash
+        # Add the high score to the high score list.
+        AddHighScore -Initials $script:Player.Initials -Score $script:Player.Cash
     }
 
     # Display high scores center justified on screen, with a header
@@ -2428,8 +2429,8 @@ function EndGame {
 
     $highScores | ForEach-Object {
         $score = $_.Score.ToString().PadRight($maxScoreLength)
-        if ($_Score -eq $script:Player.Cash) {
-            Write-Centered ('> {0} - ${1} <' -f $_.Initials, $score) -ForegroundColor Green
+        if ($_.Initials -eq $script:Player.Initials -and $_.Score -eq $script:Player.Cash) {
+            Write-Centered ('-> {0} - ${1} <-' -f $_.Initials, $score) -ForegroundColor Green
         }
         elseif ($_.Initials -eq $highScores[0].Initials -and $_.Score -eq $highScores[0].Score) {
             Write-Centered ('{0} - ${1}' -f $_.Initials, $score) -ForegroundColor Yellow
