@@ -3100,8 +3100,8 @@ while ($script:Playing) {
             break
         }
 
-        # Random events have a 10% chance of happening each day.
-        if ($script:RandomEvents -and (Get-Random -Maximum 100) -lt $script:RandomEventChance_Current) {
+        # Random events have an X% chance of happening each day.
+        if ((Get-Random -Maximum 100) -lt $script:RandomEventChance_Current) {
             StartRandomEvent
 
             # Each time one random event fires off, the chance of getting another that day is halved.
