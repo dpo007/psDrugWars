@@ -2222,7 +2222,7 @@ function ShowDrugopedia {
         Write-Host
     
         # Check if the cursor position is near the bottom of the console window
-        if ($host.UI.RawUI.CursorPosition.Y -ge ($host.UI.RawUI.WindowSize.Height - 5)) {
+        if ($host.UI.RawUI.CursorPosition.Y -ge ($host.UI.RawUI.WindowSize.Height - 6)) {
             PressEnterPrompt
             Clear-Host
         }
