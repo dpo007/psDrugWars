@@ -2200,7 +2200,7 @@ function Tripout {
     }
 }
 
-# This function displays the "Drug-O-Peida".
+# This function displays the "Drug-o-peida".
 function ShowDrugopedia {
     Clear-Host
     ShowMenuHeader
@@ -2670,6 +2670,7 @@ function ShowHelp {
     Write-Host "[B]uy drugs"
     Write-Host "[S]ell drugs"
     Write-Host "[J]et to another city"
+    Write-Host "[D]rug-o-pedia"
     Write-Host "[Q]uit"
     Write-Host
     Write-Host "Buy Drugs"
@@ -2689,6 +2690,10 @@ function ShowHelp {
     Write-Host "This displays a list of cities you can travel to."
     Write-Host "Enter the number of the city you want to travel to."
     Write-Host "Traveling to another city takes a day."
+    Write-Host
+    Write-Host "Drug-o-pedia"
+    Write-Host "------------"
+    Write-Host "This displays detailed information about the drugs currently active in this game session."
     Write-Host
     Write-Host "Quit"
     Write-Host "----"
