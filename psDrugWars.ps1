@@ -2606,8 +2606,9 @@ function EndGame {
 
     # Display high scores center justified on screen, with a header
     Write-Host
+    Write-Centered '-----------------'
     Write-Centered 'Highest Dealers'
-    Write-Centered '---------------'
+    Write-Centered '-----------------'
     Write-Host
     $highScores = GetHighScores
     $maxScoreLength = ($highScores | Measure-Object -Property Score -Maximum).Maximum.ToString().Length
