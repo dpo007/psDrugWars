@@ -707,6 +707,11 @@ $script:RandomEvents = @(
                     AdvanceGameDay -SkipPriceUpdate
                 }
                 else {
+                    Start-Sleep -Milliseconds 500
+                    Write-Centered 'Puff...'
+                    Start-Sleep -Milliseconds 500
+                    Write-Centered 'Puff...'
+                    Start-Sleep -Seconds 2
                     $randomScore = Get-Random -Minimum 1 -Maximum 12
                     switch ($randomScore) {
                         { $_ -le 3 } {
@@ -722,10 +727,11 @@ $script:RandomEvents = @(
                             Write-Centered ('Whoa, enlightenment achieved! {0}/10 - Amazing hit. Best vape ever, man!' -f $randomScore)
                         }
                         { $_ -gt 10 } {
-                            Write-Centered ('You got so damn high, you actually GAINED A DAY!') -ForegroundColor DarkGreen
-                            $script:GameDays++
                             Write-Host
-                            Write-Centered ('You now have {0} days to make as much cash as possible.' -f $script:GameDays)
+                            Write-Centered ('You got so damn high, you actually GAINED A DAY!') -ForegroundColor Yellow
+                            $script:GameDays++                          
+                            Start-Sleep -Milliseconds 750
+                            Write-Centered ('You now have {0} days to make as much cash as possible.' -f $script:GameDays) -ForegroundColor DarkGreen
                         }
                     }
                     
