@@ -2222,7 +2222,7 @@ function ShowDrugopedia {
         Write-Host
     
         # Check if the cursor position is near the bottom of the console window
-        if ($host.UI.RawUI.CursorPosition.Y -ge ($host.UI.RawUI.WindowSize.Height - 1)) {
+        if ($host.UI.RawUI.CursorPosition.Y -ge ($host.UI.RawUI.WindowSize.Height - 5)) {
             PressEnterPrompt
             Clear-Host
         }
@@ -3014,7 +3014,7 @@ function AdvanceGameDay {
             'Clothing alchemy in progress: Turning basics into bold statements.'
         )
 
-        # Change the player's outfit, and capture the new outfit name.
+        # Change the player's outfit, and capture the new outfit name
         $newOutfit = $script:Player.ChangeOutfit()
         # Lower-case the first character
         $newOutfit = $newOutfit.Substring(0, 1).ToLower() + $newOutfit.Substring(1)
