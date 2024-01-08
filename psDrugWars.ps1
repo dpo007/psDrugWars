@@ -81,7 +81,7 @@ class Player {
         'Smelly socks',
         'Smelly socks with a hole in them',
         'Terry-cloth bath robe',
-        'Underwear hanging out',
+        'Underwear, hanging out',
         'Velour track suit',
         'Wife-beater'
     )
@@ -3000,6 +3000,8 @@ function AdvanceGameDay {
 
         # Change the player's outfit, and capture the new outfit name.
         $newOutfit = $script:Player.ChangeOutfit()
+        # Lower-case the first character
+        $newOutfit = $newOutfit.Substring(0, 1).ToLower() + $newOutfit.Substring(1)
         Write-Centered ('You change your clothes, putting on your favourite {0}.' -f $newOutfit)
         Start-Sleep -Milliseconds 500
         Write-Centered ('{0}' -f (Get-Random -InputObject $clothesChangePhrases)) -ForegroundColor DarkGray
