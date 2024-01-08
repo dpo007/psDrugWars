@@ -2986,6 +2986,9 @@ function AdvanceGameDay {
     $script:Player.GameDay += $Days
     Write-Centered ('Welcome to day {0}! ({1} days left)' -f $script:Player.GameDay, ($script:GameDays - $script:Player.GameDay)) -ForegroundColor Yellow
 
+    # Reset the random event chance for the day.
+    $script:RandomEventChance_Current = $script:RandomEventChance_Start
+
     # Change your clothes
     if ($ChangeOutfit) {
         $clothesChangePhrases = @(
