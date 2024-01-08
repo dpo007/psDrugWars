@@ -2240,6 +2240,7 @@ function ShowMainMenu {
 
     Write-Host
 
+    #region Display Inventory
     # Define the column width
     $columnWidth = 38
 
@@ -2268,7 +2269,9 @@ function ShowMainMenu {
 
         Write-Centered ("{0,-$columnWidth}{1,-$columnWidth}" -f $dispDrug, $dispClothing)
     }
+    #endregion Display Inventory
 
+    #region Display menu options
     Write-Host
     Write-Host '[B]uy drugs'
     Write-Host '[S]ell drugs'
@@ -2278,6 +2281,7 @@ function ShowMainMenu {
     Write-Host '[?]Help'
     Write-Host
     Write-Host 'What now, boss? ' -NoNewline
+    #endregion Display menu options
 
     # Wait for user to press a valid key
     $choices = @('B', 'S', 'J', 'Q', '?', 'D', '!')
