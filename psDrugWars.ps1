@@ -2995,7 +2995,23 @@ function AdvanceGameDay {
             'Yo, gotta switch up the fit, you know?',
             'Rollin'' with the fashion vibes, gotta keep them threads on point, staying icy for the streets, man.',
             'It''s all about that wardrobe rotation, staying lit and rockin'' those looks that scream realness, keeping it one hunnid, ya feel?',
-            '''Cuz you gotta keep them threads fresh, homey.'
+            '''Cuz you gotta keep them threads fresh, homey.',
+            'Time for a style upgrade, switchin'' it up like a boss!',
+            'Stepping into a new aesthetic, changing lanes in the fashion game.',
+            'Closet remix time, gotta keep the outfit playlist on shuffle!',
+            'Switchin'' gears, stayin'' fierce in every wardrobe transition.',
+            'Fresh threads alert! Changing the game one outfit at a time.',
+            'Wardrobe evolution in progress, level up those fashion stats!',
+            'Transforming the look, embracing the fashion chameleon within.',
+            'Outfit switch: Engage! It''s like a style mission every day.',
+            'Breaking out the fashion artillery, time for a sartorial revolution.',
+            'Clothes swap mode: ON. Let the style adventure begin!',
+            'Changin'' the attire game, making every outfit a masterpiece.',
+            'Adios, old threads! Time for a stylish reincarnation.',
+            'Fashion forward, always. Switchin'' up the narrative, one outfit at a time.',
+            'Clothes metamorphosis unlocked: Embrace the style transformation!',
+            'Upgrade the threads, amplify the vibes. It''s a fashion manifesto!',
+            'Clothing alchemy in progress: Turning basics into bold statements.'
         )
 
         # Change the player's outfit, and capture the new outfit name.
