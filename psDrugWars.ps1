@@ -1,4 +1,5 @@
-﻿param (
+﻿#Requires -Version 5.1
+param (
     [switch]$SkipConsoleSizeCheck
 )
 
@@ -2210,7 +2211,8 @@ function ShowDrugopedia {
     Write-Host
     Write-Centered 'Information about the drugs currently active in this game session.'
     Write-Host
-    $script:GameDrugs | ForEach-Object {
+    $script:GameDrugs | ForEach-Object -Process {
+        # This block is executed for each element in the array
         Write-Host ('· {0} ({1})' -f $_.Name, $_.Code)
         Write-Host ('· Price Range: ${0}-${1}' -f $_.PriceRange[0], $_.PriceRange[1])
         Write-Host ('· History: {0}' -f $script:DrugsInfo[$_.Code].History)        
@@ -2218,8 +2220,17 @@ function ShowDrugopedia {
         $streetNames = $script:DrugsInfo[$_.Code].StreetNames -join ', '
         Write-Host ('· Other Street Names: {0}' -f $streetNames)
         Write-Host
+    
+        # Check if the cursor position is near the bottom of the console window
+        if ($host.UI.RawUI.CursorPosition.Y -ge ($host.UI.RawUI.WindowSize.Height - 1)) {
+            PressEnterPrompt
+            Clear-Host
+        }
+    } -End {
+        # This block is executed once after processing all elements
+        Write-Host 'End of list.'
+        PressEnterPrompt
     }
-    PressEnterPrompt
 }
 
 # This function displays the main menu of the game.
