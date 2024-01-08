@@ -922,7 +922,7 @@ $script:RandomEvents = @(
                     }
                     if ($choice -eq 'Y') {
                         Write-Centered 'Meditating... ' -NoNewline
-                        Start-Sleep -Seconds 3
+                        Start-Sleep -Seconds 2
                         Write-Centered 'Ohhhmmmmmm...'
                         Start-Sleep -Seconds 3
                         Write-Host
