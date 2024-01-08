@@ -741,6 +741,8 @@ $script:RandomEvents = @(
                 Write-Centered 'You decided not to use the vape pen, and instead sell it to some skid for $5.'
                 $script:Player.Cash += 5
             }
+
+            Start-Sleep -Seconds 2
         }
     },
     @{
