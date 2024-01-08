@@ -114,8 +114,8 @@ class Player {
     # Method to adjust pocket count up or down
     [void]AdjustPocketCount([int]$Pockets) {
         if ($Pockets -lt 0) {
-            # Remove specified number of pockets
-            $this.Pockets -= $Pockets
+            # Remove specified number of pockets (by adding the negative amount provided)
+            $this.Pockets += $Pockets
 
             # Get a count of all drugs in the player's inventory
             $totalQuantity = 0
