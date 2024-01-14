@@ -2514,7 +2514,7 @@ function ShowFlushDrugsMenu {
 
     # Ask which drug they want to flush.
     $drugCount = $drugMenu.Count
-    Write-Centered ('Enter the number of the drug you want to flush (1-{0}, or ''Q'' to return to the main menu) ' -f $drugCount) -NoNewline
+    Write-Centered ('Enter the number of the drug you want to flush (1-{0}, or ''Q'' to return to the main menu)' -f $drugCount) -NoNewline
     $drugNumber = $null
     while (-not $drugNumber) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
@@ -2525,12 +2525,13 @@ function ShowFlushDrugsMenu {
     }
 
     # Get quantity to flush.
-    Write-Centered ('Enter the quantity you want to flush (max {0}) ' -f $drugMenu[$drugNumber - 1].Quantity) -NoNewline
-    $quantity = $null
+    $maxQuantity = $drugMenu[$drugNumber - 1].Quantity
+    Write-Centered ('Enter the quantity you want to flush (max {0})' -f $maxQuantity) -NoNewline
+    $quantityToFlush = $null
     while (-not $quantity) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
         switch ($key) {
-            { $_ -in '1'.."$drugCount" } { $quantity = [int]$key; break }
+            { $_ -in '1'.."$maxQuantity" } { $quantityToFlush = [int]$key; break }
             { $_ -in '0' } { return } 
         }
     }
@@ -2541,9 +2542,9 @@ function ShowFlushDrugsMenu {
     $drugToFlush = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToFlush }
 
     # Flush the drugs.
-    $script:Player.RemoveDrugs($drugToFlush, $quantity)
+    $script:Player.RemoveDrugs($drugToFlush, $quantityToFlush)
 
-    Write-BlockLetters ('Flushed {0} {1}!' -f $quantity, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
+    Write-BlockLetters ('Flushed {0} {1}!' -f $quantityToFlush, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
     Write-Host
     Write-Host
     PressEnterPrompt
