@@ -2473,7 +2473,7 @@ function ShowFlushDrugsMenu {
         Write-Host
         Write-Centered ('What are you gonna flush, {0}?' -f (Get-Random -InputObject $insults))
         Start-Sleep 2
-        Write-Centered 'Nothing, that''s what!' -ForegroundColor Red
+        Write-Centered 'Nothing, that''s what!' -ForegroundColor Magenta
         Write-Host
         Start-Sleep 1
         PressEnterPrompt
@@ -2606,7 +2606,6 @@ function ShowFlushDrugsMenu {
             PressEnterPrompt
             return
         }
-
     }
 
     # Flush the drugs.
