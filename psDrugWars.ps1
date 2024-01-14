@@ -2903,7 +2903,7 @@ function ShowHelp {
     Write-Host "This displays the current drugs in your inventory."
     Write-Host "Enter the name of the drug you want to flush, and the quantity you want to flush."
     Write-Host "You can only flush as much as you have in your inventory."
-    Write-Host "Flushing drugs is a good way to get rid of evidence, and unmarketable drugs."
+    Write-Host "Flushing drugs is a good way to get rid of evidence and unmarketable drugs, and sometimes leads to a good time."
     Write-Host
     Write-Host "Jet to Another City"
     Write-Host "-------------------"
