@@ -2881,6 +2881,7 @@ function ShowHelp {
     Write-Host "---------"
     Write-Host "[B]uy drugs"
     Write-Host "[S]ell drugs"
+    Write-Host "[F]lush drugs"
     Write-Host "[J]et to another city"
     Write-Host "[D]rug-o-pedia"
     Write-Host "[Q]uit"
@@ -2897,11 +2898,18 @@ function ShowHelp {
     Write-Host "Enter the name of the drug you want to sell, and the quantity you want to sell."
     Write-Host "You can only sell as much as you have in your inventory."
     Write-Host
+    Write-Host "Flush Drugs"
+    Write-Host "-----------"
+    Write-Host "This displays the current drugs in your inventory."
+    Write-Host "Enter the name of the drug you want to flush, and the quantity you want to flush."
+    Write-Host "You can only flush as much as you have in your inventory."
+    Write-Host "Flushing drugs is a good way to get rid of evidence, and unmarketable drugs."
+    Write-Host
     Write-Host "Jet to Another City"
     Write-Host "-------------------"
     Write-Host "This displays a list of cities you can travel to."
     Write-Host "Enter the number of the city you want to travel to."
-    Write-Host "Traveling to another city takes a day."
+    Write-Host "Traveling to another city takes a day, and costs $100."
     Write-Host
     Write-Host "Drug-o-pedia"
     Write-Host "------------"
