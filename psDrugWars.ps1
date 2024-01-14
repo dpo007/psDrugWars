@@ -2528,7 +2528,7 @@ function ShowFlushDrugsMenu {
     $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
     while ((-not ([int]::TryParse($quantityToFlush, [ref]$null))) -or ($quantityToFlush -gt $maxQuantity) -or ($quantityToFlush -lt 0)) {
         # Move up a line and back to the start.
-        $host.UI.RawUI.CursorPosition.Y--
+        $host.UI.RawUI.CursorPosition.Y--        
         $host.UI.RawUI.CursorPosition.X = 0
         
         # Clear the line
@@ -2543,7 +2543,7 @@ function ShowFlushDrugsMenu {
     # If the quality to flush is 0, exit the function.
     if ($quantityToFlush -eq 0) {
         Write-Centered 'You decide not to flush the stuff.'
-        Start-Sleep 1
+        Start-Sleep 2
         Write-Host
         PressEnterPrompt
         return
