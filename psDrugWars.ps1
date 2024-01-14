@@ -2214,7 +2214,7 @@ function ShowDrugopedia {
     $script:GameDrugs | ForEach-Object -Process {
         # This block is executed for each element in the array
         Write-Host ('· {0} ({1})' -f $_.Name, $_.Code)
-        Write-Host ('· Price Range: ${0}-${1}' -f $_.PriceRange[0], $_.PriceRange[1])
+        Write-Host ('· Base Price Range: ${0}-${1}' -f $_.PriceRange[0], $_.PriceRange[1])
         Write-Host ('· History: {0}' -f $script:DrugsInfo[$_.Code].History)        
         Write-Host ('· Effects: {0}' -f $script:DrugsInfo[$_.Code].Effects)
         $streetNames = $script:DrugsInfo[$_.Code].StreetNames -join ', '
