@@ -2525,11 +2525,11 @@ function ShowFlushDrugsMenu {
 
     # Get quantity to flush.
     $maxQuantity = $drugMenu[$drugNumber - 1].Quantity
-    $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0}): ' -f $maxQuantity)
+    $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
     while (-not ([int]::TryParse($quantityToFlush, [ref]$null)) -or $quantityToFlush -gt $maxQuantity -or $quantityToFlush -lt 0) {
         # Clear the current line
         Write-Host -NoNewline "`r"
-        $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0}): ' -f $maxQuantity)
+        $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
     }
     $quantityToFlush = [int]$quantityToFlush
 
@@ -2560,7 +2560,7 @@ function ShowFlushDrugsMenu {
         
         Write-Host
 
-        Write-Centered ('{0} {1} {2} looking pretty {2}!' -f $wordsToUse[0], $nameOfDrugToFlush, $wordsToUse[1], (Get-Random -InputObject $drugCompliments)) -ForegroundColor Yellow
+        Write-Centered ('{0} {1} {2} looking pretty {3}!' -f $wordsToUse[0], $nameOfDrugToFlush, $wordsToUse[1], (Get-Random -InputObject $drugCompliments)) -ForegroundColor Yellow
         Start-Sleep 2
         Write-Centered 'You want to take them instead of flushing them (Y/N)?'
         $choice = $null
