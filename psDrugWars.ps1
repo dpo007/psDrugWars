@@ -2276,9 +2276,10 @@ function ShowMainMenu {
     Write-Host '[B]uy drugs'
     Write-Host '[S]ell drugs'
     Write-Host '[F]lush drugs'
-    Write-Host '[J]et to another city'
     Write-Host
+    Write-Host '[J]et to another city'
     Write-Host '[D]rug-o-pedia'
+    Write-Host
     Write-Host '[Q]uit'
     Write-Host '[?]Help'
     Write-Host
