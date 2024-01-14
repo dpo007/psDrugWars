@@ -2433,8 +2433,6 @@ function ShowSellDrugsMenu {
 function ShowFlushDrugsMenu {
     Clear-Host
     ShowMenuHeader
-    Write-Host    
-    Write-Centered "Flush Drugs"
     Write-Host
 
     # If the user has no drugs, display a message and exit the function.
@@ -2474,7 +2472,7 @@ function ShowFlushDrugsMenu {
         Start-Sleep 1
         Write-Host
         Write-Centered ('What are you gonna flush, {0}?' -f (Get-Random -InputObject $insults))
-        Start-Sleep 1
+        Start-Sleep 2
         Write-Centered 'Nothing, that''s what!' -ForegroundColor Red
         Write-Host
         Start-Sleep 1
