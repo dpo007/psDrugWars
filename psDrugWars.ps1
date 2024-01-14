@@ -2540,6 +2540,11 @@ function ShowFlushDrugsMenu {
     }
     $quantityToFlush = [int]$quantityToFlush
 
+    # If the quality to flush is 0, exit the function.
+    if ($quantityToFlush -eq 0) {
+        return
+    }
+
     Write-Host
     # Create clone of drug object for flushing action.
     $nameOfDrugToFlush = $drugMenu[$drugNumber - 1].Name
