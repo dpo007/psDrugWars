@@ -2275,6 +2275,7 @@ function ShowMainMenu {
     Write-Host
     Write-Host '[B]uy drugs'
     Write-Host '[S]ell drugs'
+    Write-Host '[F]lush drugs'
     Write-Host '[J]et to another city'
     Write-Host
     Write-Host '[D]rug-o-pedia'
@@ -2425,6 +2426,85 @@ function ShowSellDrugsMenu {
     $script:Player.SellDrugs($drugToSell, $quantityInt)
 
     PressEnterPrompt
+}
+
+# This function displays the drug flushing menu.
+function ShowFlushDrugsMenu {
+    Clear-Host
+    ShowMenuHeader
+    Write-Host    
+    Write-Centered "Flush Drugs"
+    Write-Host
+
+    #region Display Drug Inventory
+    Write-Centered "Your drugs:"
+
+    # Create an empty array to store the drug menu
+    $drugMenu = @()
+    $drugNumber = 1
+
+    # Iterate through each drug in the player's inventory
+    foreach ($drug in $script:Player.Drugs) {
+        # Create a custom object to store drug information
+        $drugInfo = [PSCustomObject]@{
+            Number = $drugNumber
+            Name = $drug.Name
+            Quantity = $drug.Quantity
+        }
+        # Add the drug information to the drug menu array
+        $drugMenu += $drugInfo
+        $drugNumber++
+    }
+
+    # Display the drug list
+    foreach ($drugInfo in $drugMenu) {
+        $dispDrug = '{0}. {1} ({2})' -f $drugInfo.Number, $drugInfo.Name, $drugInfo.Quantity
+        $paddedDispDrug = $dispDrug.PadLeft($longestLength)
+        Write-Centered ($paddedDispDrug)
+    }
+    #endregion Display Drug Inventory
+    TODO
+    Write-Host
+
+    # Ask which drug they want to flush.
+    $drugCount = $drugMenu.Count
+    Write-Centered ('Enter the number of the drug you want to flush (1-{0}, or ''Q'' to return to the main menu) ' -f $drugCount) -NoNewline
+    $drugNumber = $null
+    while (-not $drugNumber) {
+        $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+        switch ($key) {
+            { $_ -in '1'.."$drugCount" } { $drugNumber = [int]$key; break }
+            { $_ -in 'q', 'Q' } { return }
+        }
+    }
+
+    # Get quantity to flush.
+    Write-Centered ('Enter the quantity you want to flush (max {0})' -f $drugMenu[$drugNumber - 1].Quantity) -NoNewline
+    $quantity = $null
+    while (-not $quantity) {
+        $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+        switch ($key) {
+            { $_ -in '1'.."$drugCount" } { $quantity = [int]$key; break }
+            { $_ -in 'q', 'Q' } { return }
+        }
+    }
+
+    Write-Host
+    $nameOfDrugToFlush = $script:Player.City.Drugs[$drugNumber - 1].Name
+    $drugToFlush = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToFlush }
+
+    if (!$drugToFlush) {
+        Write-Centered ('You don''t have any {0} to flush!' -f $nameOfDrugToFlush)
+        PressEnterPrompt
+        return
+    }
+
+    # Flush the drugs.
+    $script:Player.FlushDrugs($drugToFlush)
+
+    PressEnterPrompt
+
+
 }
 
 # This function displays a list of cities to the console, and prompts the user to select a city to travel to.
@@ -3095,6 +3175,9 @@ while ($script:Playing) {
             }
             "D" {
                 ShowDrugopedia
+            }
+            "F" {
+                ShowFlushDrugsMenu
             }
             "!" {
                 StartRandomEvent
