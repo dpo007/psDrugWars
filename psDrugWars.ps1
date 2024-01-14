@@ -2525,20 +2525,89 @@ function ShowFlushDrugsMenu {
 
     # Get quantity to flush.
     $maxQuantity = $drugMenu[$drugNumber - 1].Quantity
-    Write-Centered ('Enter the quantity you want to flush (max {0})' -f $maxQuantity) -NoNewline
-    $quantityToFlush = $null
-    while (-not $quantityToFlush) {
-        $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
-        switch ($key) {
-            { $_ -in '1'.."$maxQuantity" } { $quantityToFlush = [int]$key; break }
-            { $_ -in '0' } { return } 
-        }
+    Write-Centered ('Enter the quantity you want to flush (max {0}): ' -f $maxQuantity) -NoNewline
+    $quantityToFlush = Read-Host
+    while (-not ([int]::TryParse($quantityToFlush, [ref]$null)) -or $quantityToFlush -gt $maxQuantity -or $quantityToFlush -lt 0) {
+        # Clear the current line
+        Write-Host -NoNewline "`r"
+        Write-Centered ('Enter a valid quantity you want to flush (max {0}): ' -f $maxQuantity) -NoNewline
+        $quantityToFlush = Read-Host
     }
+    $quantityToFlush = [int]$quantityToFlush
 
     Write-Host
     # Create clone of drug object for flushing action.
     $nameOfDrugToFlush = $drugMenu[$drugNumber - 1].Name
     $drugToFlush = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToFlush }
+
+    # There's a 1 in 3 chance it'll offer you to take the drugs instead of flushing them
+    if ((Get-Random -Minimum 1 -Maximum 4) -eq 1) {
+
+        $drugCompliments = @(
+            'tempting',
+            'tasty',
+            'yummy',
+            'inviting',
+            'finger-lickin''',
+            'scrum-dilly-umptious'
+        )
+
+        Write-Host
+        Write-Centered ('That {0} is looking pretty {1}!' -f $nameOfDrugToFlush, (Get-Random -InputObject $drugCompliments)) -ForegroundColor Yellow
+        Start-Sleep 2
+        Write-Centered 'You want to take them instead of flushing them (Y/N)?'
+        $choice = $null
+        while (-not $choice) {
+            $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+            switch ($key) {
+                { $_ -in 'y', 'Y' } { $choice = $true; break }
+                { $_ -in 'n', 'N' } { $choice = $false; break }
+            }
+        }
+
+        if ($choice) {
+            # Ingest the drugs.
+            $script:Player.RemoveDrugs($drugToFlush, $quantityToFlush)
+            Write-Host
+
+            # Generate a random number between 1 and 10.
+            $randomNumber = Get-Random -Minimum 1 -Maximum 11
+
+            # There's a 20% chance (2 out of 10) for a bad trip.
+            if ($randomNumber -le 2) {
+                Write-Centered 'Uh oh...'
+                Start-Sleep 2
+                Write-BlockLetters 'Bad Trip!' -Align Center -ForegroundColor DarkMagenta -VerticalPadding 1
+                Tripout
+            }
+            # There's a 20% chance (2 out of 10) for feeling euphoric.
+            elseif ($randomNumber -le 4) {
+                Write-Centered 'You feel euphoric.' -ForegroundColor Cyan
+                Start-Sleep 2
+                # There's a 50% chance at this point (1 out of 2) for gaining a game day
+                if ((Get-Random -Minimum 1 -Maximum 3) -eq 1) {
+                    Write-Centered 'You feel like you could do anything!'
+                    Start-Sleep 2
+                    Write-BlockLetters 'Gained a day!' -ForegroundColor Green -VerticalPadding 1
+
+                    # Add a day to the game
+                    $script:GameDays++
+                    Write-Centered 'Days left: {0}' -f ($script:GameDays - $script:Player.GameDay)
+                    
+                    $script:Player.GameDay++
+                }
+            }
+            # There's a 60% chance (6 out of 10) for feeling a little buzzed.
+            else {
+                Write-Centered 'You feel a little buzzed.' -ForegroundColor Yellow
+            }
+
+            Write-Host
+            PressEnterPrompt
+            return
+        }
+
+    }
 
     # Flush the drugs.
     Clear-Host
