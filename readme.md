@@ -7,7 +7,7 @@ A thrilling PowerShell game where you navigate through multiple locations, deali
 - :earth_americas: Multiple locations to visit
 - :pill: Different types of drugs to buy and sell
 - :game_die: Random events that can affect the game
-- :underage: NSFW/18+ content :wink:
+- :underage: NSFW/16+ content :wink:
 
 ## Usage :computer:
 
