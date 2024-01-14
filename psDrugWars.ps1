@@ -2536,18 +2536,15 @@ function ShowFlushDrugsMenu {
     }
 
     Write-Host
-    $nameOfDrugToFlush = $script:Player.City.Drugs[$drugNumber - 1].Name
+    $nameOfDrugToFlush = $drugMenu[$drugNumber - 1].Name
     $drugToFlush = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToFlush }
 
-    if (!$drugToFlush) {
-        Write-Centered ('You don''t have any {0} to flush!' -f $nameOfDrugToFlush)
-        PressEnterPrompt
-        return
-    }
-
     # Flush the drugs.
-    $script:Player.FlushDrugs($drugToFlush)
+    $script:Player.RemoveDrugs($drugToFlush, $quantity)
 
+    Write-BlockLetters ('Flushed {0} {1}!' -f $quantity, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
+    Write-Host
+    Write-Host
     PressEnterPrompt
 }
 
