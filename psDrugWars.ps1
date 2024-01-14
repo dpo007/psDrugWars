@@ -2600,8 +2600,6 @@ function ShowFlushDrugsMenu {
                     # Add a day to the game
                     $script:GameDays++
                     Write-Centered ('Days left: {0}' -f ($script:GameDays - $script:Player.GameDay))
-                    
-                    $script:Player.GameDay++
                 }
             }
             # There's a 60% chance (6 out of 10) for feeling a little buzzed.
