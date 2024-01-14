@@ -2529,11 +2529,11 @@ function ShowFlushDrugsMenu {
     $parseResult = $null
     while ((-not [int]::TryParse($quantityToFlush, [ref]$parseResult)) -or ($quantityToFlush -gt $maxQuantity) -or ($quantityToFlush -lt 0)) {
         # Move up a line and back to the start.
-        $host.UI.RawUI.CursorPosition.Y--        
-        $host.UI.RawUI.CursorPosition.X = 0
-        
+        $y = $host.UI.RawUI.CursorPosition.Y - 1
+        $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, $y
+                 
         # Clear the line
-        Write-Host (' ' * $host.UI.RawUI.BufferSize.Width)
+        Write-Host (' ' * $host.UI.RawUI.BufferSize.Width) -NoNewline
 
         # Re-display the prompt
         $host.UI.RawUI.CursorPosition.X = 0
