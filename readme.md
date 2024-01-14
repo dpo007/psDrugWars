@@ -2,7 +2,7 @@
 
 A thrilling PowerShell game where you navigate through multiple locations, dealing with different types of drugs. But beware! Random events can affect your game.
 
-Loosly based on [John E. Dell's 1984 classic "Drug Wars"](https://en.wikipedia.org/wiki/Drug_Wars_(video_game)), and inspired by many of its clones from the decades since.
+*Loosly* based on [John E. Dell's 1984 classic "Drug Wars"](https://en.wikipedia.org/wiki/Drug_Wars_(video_game)), and inspired by many of its clones from the decades since.
 
 ## Features :sparkles:
 
