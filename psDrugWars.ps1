@@ -2542,6 +2542,10 @@ function ShowFlushDrugsMenu {
 
     # If the quality to flush is 0, exit the function.
     if ($quantityToFlush -eq 0) {
+        Write-Centered 'You decide not to flush the stuff.'
+        Start-Sleep 1
+        Write-Host
+        PressEnterPrompt
         return
     }
 
