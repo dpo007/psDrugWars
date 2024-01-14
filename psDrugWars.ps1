@@ -2588,11 +2588,11 @@ function ShowFlushDrugsMenu {
                 if ((Get-Random -Minimum 1 -Maximum 3) -eq 1) {
                     Write-Centered 'You feel like you could do anything!'
                     Start-Sleep 2
-                    Write-BlockLetters 'Gained a day!' -ForegroundColor Green -VerticalPadding 1
+                    Write-BlockLetters 'Gained a day!' -ForegroundColor Green -VerticalPadding 1 -Align Center
 
                     # Add a day to the game
                     $script:GameDays++
-                    Write-Centered 'Days left: {0}' -f ($script:GameDays - $script:Player.GameDay)
+                    Write-Centered ('Days left: {0}' -f ($script:GameDays - $script:Player.GameDay))
                     
                     $script:Player.GameDay++
                 }
