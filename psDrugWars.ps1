@@ -2502,10 +2502,20 @@ function ShowFlushDrugsMenu {
     }
 
     # Display the drug list
+
+    $longestLength = 0
+    foreach ($drugInfo in $drugMenu) {
+        $currentLength = ('{0}. {1} ({2})' -f $drugInfo.Number, $drugInfo.Name, $drugInfo.Quantity).Length
+        if ($currentLength -gt $longestLength) {
+            $longestLength = $currentLength
+        }
+    }
+
     foreach ($drugInfo in $drugMenu) {
         $dispDrug = '{0}. {1} ({2})' -f $drugInfo.Number, $drugInfo.Name, $drugInfo.Quantity
-        $paddedDispDrug = $dispDrug.PadLeft($longestLength)
-        Write-Centered ($paddedDispDrug)
+        $paddedDispDrug = $dispDrug.PadRight($longestLength)
+        $centeredDispDrug = $paddedDispDrug.PadLeft(($paddedDispDrug.Length + $longestLength) / 2)
+        Write-Centered $centeredDispDrug
     }
     #endregion Display Drug Inventory
     
@@ -2527,7 +2537,7 @@ function ShowFlushDrugsMenu {
     $maxQuantity = $drugMenu[$drugNumber - 1].Quantity
     $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
     $parseResult = $null
-    while ((-not [int]::TryParse($quantityToFlush, [ref]$parseResult)) -or ($quantityToFlush -gt $maxQuantity) -or ($quantityToFlush -lt 0)) {
+    while (-not [int]::TryParse($quantityToFlush, [ref]$parseResult)) {
         # Move up a line and back to the start.
         $y = $host.UI.RawUI.CursorPosition.Y - 1
         $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, $y
@@ -2538,6 +2548,19 @@ function ShowFlushDrugsMenu {
 
         # Re-display the prompt
         $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
+
+        while ($quantityToFlush -gt $maxQuantity -or $quantityToFlush -lt 0) {
+            # Move up a line and back to the start.
+            $y = $host.UI.RawUI.CursorPosition.Y - 1
+            $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, $y
+                     
+            # Clear the line
+            Write-Host (' ' * $host.UI.RawUI.BufferSize.Width) -NoNewline
+            $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, $host.UI.RawUI.CursorPosition.Y
+
+            # Re-display the prompt
+            $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
+        }
     }
     $quantityToFlush = [int]$quantityToFlush
 
