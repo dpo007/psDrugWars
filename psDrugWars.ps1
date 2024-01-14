@@ -2534,9 +2534,9 @@ function ShowFlushDrugsMenu {
                  
         # Clear the line
         Write-Host (' ' * $host.UI.RawUI.BufferSize.Width) -NoNewline
+        $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, $host.UI.RawUI.CursorPosition.Y
 
         # Re-display the prompt
-        $host.UI.RawUI.CursorPosition.X = 0
         $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
     }
     $quantityToFlush = [int]$quantityToFlush
