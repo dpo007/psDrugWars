@@ -2484,6 +2484,7 @@ function ShowFlushDrugsMenu {
 
     #region Display Drug Inventory
     Write-Centered "Your drugs:"
+    Write-Host
 
     # Create an empty array to store the drug menu
     $drugMenu = @()
@@ -2528,7 +2529,7 @@ function ShowFlushDrugsMenu {
     $maxQuantity = $drugMenu[$drugNumber - 1].Quantity
     Write-Centered ('Enter the quantity you want to flush (max {0})' -f $maxQuantity) -NoNewline
     $quantityToFlush = $null
-    while (-not $quantity) {
+    while (-not $quantityToFlush) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
         switch ($key) {
             { $_ -in '1'.."$maxQuantity" } { $quantityToFlush = [int]$key; break }
@@ -2544,8 +2545,9 @@ function ShowFlushDrugsMenu {
     # Flush the drugs.
     $script:Player.RemoveDrugs($drugToFlush, $quantityToFlush)
 
-    Write-BlockLetters ('Flushed {0} {1}!' -f $quantityToFlush, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
-    Write-Host
+    Write-BlockLetters ('Flushed' -f $quantityToFlush, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
+    Write-BlockLetters ('{0} {1}!' -f $quantityToFlush, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
+
     Write-Host
     PressEnterPrompt
 }
