@@ -13,8 +13,8 @@ A thrilling PowerShell game where you navigate through multiple locations, deali
 
 ## Requires :clipboard:
 
-- :computer: Powershell Version 5.1 or newer.
-- :triangular_ruler: A console window of at least 120 x 25.
+- Powershell Version 5.1 or newer.
+- A console window of at least 120 x 25.
 
 ## Usage :computer:
 
