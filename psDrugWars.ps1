@@ -2536,6 +2536,7 @@ function ShowFlushDrugsMenu {
     }
 
     Write-Host
+    # Create clone of drug object for flushing action.
     $nameOfDrugToFlush = $drugMenu[$drugNumber - 1].Name
     $drugToFlush = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToFlush }
 
