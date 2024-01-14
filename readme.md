@@ -11,9 +11,9 @@ A thrilling PowerShell game where you navigate through multiple locations, deali
 - :game_die: *Many* different random events that can affect the game
 - :underage: NSFW/16+ content :wink:
 
-## Requires
+## Requires :white_check_mark:
 - :computer: Powershell Version 5.1 or newer.
-- :arrow_upper_right: A console windows of at least 120 x 25.
+- :left_right_arrow: A console window of at least 120 x 25.
 
 ## Usage :computer:
 
