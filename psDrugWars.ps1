@@ -2526,9 +2526,16 @@ function ShowFlushDrugsMenu {
     # Get quantity to flush.
     $maxQuantity = $drugMenu[$drugNumber - 1].Quantity
     $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
-    while (-not ([int]::TryParse($quantityToFlush, [ref]$null)) -or $quantityToFlush -gt $maxQuantity -or $quantityToFlush -lt 0) {
-        # Clear the current line
-        Write-Host -NoNewline "`r"
+    while ((-not ([int]::TryParse($quantityToFlush, [ref]$null))) -or ($quantityToFlush -gt $maxQuantity) -or ($quantityToFlush -lt 0)) {
+        # Move up a line and back to the start.
+        $host.UI.RawUI.CursorPosition.Y--
+        $host.UI.RawUI.CursorPosition.X = 0
+        
+        # Clear the line
+        Write-Host (' ' * $host.UI.RawUI.BufferSize.Width)
+
+        # Re-display the prompt
+        $host.UI.RawUI.CursorPosition.X = 0
         $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0})' -f $maxQuantity)
     }
     $quantityToFlush = [int]$quantityToFlush
@@ -2567,12 +2574,12 @@ function ShowFlushDrugsMenu {
         while (-not $choice) {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
             switch ($key) {
-                { $_ -in 'y', 'Y' } { $choice = $true; break }
-                { $_ -in 'n', 'N' } { $choice = $false; break }
+                { $_ -in 'y', 'Y' } { $choice = 'take'; break }
+                { $_ -in 'n', 'N' } { $choice = 'flush'; break }
             }
         }
 
-        if ($choice) {
+        if ($choice -eq 'take') {
             # Ingest the drugs.
             $script:Player.RemoveDrugs($drugToFlush, $quantityToFlush)
             Write-Host
