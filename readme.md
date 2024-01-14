@@ -6,7 +6,7 @@ A thrilling PowerShell console game where you navigate through multiple location
 
 ## Warning :warning:
 
-This game contains NSFW/16+ content, including immature, possibly offensive humor, and satirical references to illegal drugs and drug use. It is not suitable for younger audiences. Parental discretion is advised.
+This game contains NSFW/16+ content, including immature, possibly offensive humor, and satirical references to illegal drugs and drug use. Parental discretion is advised.
 
 ## Features :sparkles:
 
