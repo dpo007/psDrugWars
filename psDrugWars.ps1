@@ -2439,18 +2439,20 @@ function ShowFlushDrugsMenu {
 
     # If the user has no drugs, display a message and exit the function.
     if ($script:Player.Drugs.Count -eq 0) {
+
         $phrases = @(
-            'You high?',
-            'How high are you?',
-            'In case you didn''t notice...',
-            'Pssst...',
-            'You must be so broke, you can''t even pay attention!',
             'Are you on cloud nine?',
-            'On a scale from 1 to 10, how lifted are you?',
-            'Just a heads up...',
+            'Ever notice that...',
             'Hey, guess what?',
-            'You seem spaced out.',
-            'Ever notice that...'
+            'How high are you?',
+            'I guess you missed it on the main screen...?',
+            'In case you didn''t notice...',
+            'Just a heads up...',
+            'On a scale from 1 to 10, how lifted are you?',
+            'Pssst...',
+            'You high?',
+            'You must be so broke, you can''t even pay attention!',
+            'You seem spaced out.'
         )
 
         $insults = @(
