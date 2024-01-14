@@ -2,6 +2,8 @@
 
 A thrilling PowerShell game where you navigate through multiple locations, dealing with different types of drugs. But beware! Random events can affect your game.
 
+Loosly based on John E. Dell's 1984 classic, and inspired by many of its clones from the decades since.
+
 ## Features :sparkles:
 
 - :earth_americas: Multiple locations to visit
