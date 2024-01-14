@@ -2525,13 +2525,11 @@ function ShowFlushDrugsMenu {
 
     # Get quantity to flush.
     $maxQuantity = $drugMenu[$drugNumber - 1].Quantity
-    Write-Centered ('Enter the quantity you want to flush (max {0}): ' -f $maxQuantity) -NoNewline
-    $quantityToFlush = Read-Host
+    $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0}): ' -f $maxQuantity)
     while (-not ([int]::TryParse($quantityToFlush, [ref]$null)) -or $quantityToFlush -gt $maxQuantity -or $quantityToFlush -lt 0) {
         # Clear the current line
         Write-Host -NoNewline "`r"
-        Write-Centered ('Enter a valid quantity you want to flush (max {0}): ' -f $maxQuantity) -NoNewline
-        $quantityToFlush = Read-Host
+        $quantityToFlush = Read-Host -Prompt ('Enter the quantity you want to flush (max {0}): ' -f $maxQuantity)
     }
     $quantityToFlush = [int]$quantityToFlush
 
@@ -2552,8 +2550,17 @@ function ShowFlushDrugsMenu {
             'scrum-dilly-umptious'
         )
 
+        # Determine if the drug name ends in an 's' or not, and use the appropriate words in the sentence.
+        $wordsToUse = if ($nameOfDrugToFlush.EndsWith('s')) {
+            @('Those', 'are')
+        }
+        else {
+            @('That', 'is')
+        }
+        
         Write-Host
-        Write-Centered ('That {0} is looking pretty {1}!' -f $nameOfDrugToFlush, (Get-Random -InputObject $drugCompliments)) -ForegroundColor Yellow
+
+        Write-Centered ('{0} {1} {2} looking pretty {2}!' -f $wordsToUse[0], $nameOfDrugToFlush, $wordsToUse[1], (Get-Random -InputObject $drugCompliments)) -ForegroundColor Yellow
         Start-Sleep 2
         Write-Centered 'You want to take them instead of flushing them (Y/N)?'
         $choice = $null
