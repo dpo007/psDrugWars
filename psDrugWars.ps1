@@ -2439,16 +2439,43 @@ function ShowFlushDrugsMenu {
 
     # If the user has no drugs, display a message and exit the function.
     if ($script:Player.Drugs.Count -eq 0) {
-        Write-Centered 'You high?'
+        $phrases = @(
+            'You high?',
+            'How high are you?',
+            'In case you didn''t notice...',
+            'Pssst...',
+            'You must be so broke, you can''t even pay attention!',
+            'Are you on cloud nine?',
+            'On a scale from 1 to 10, how lifted are you?',
+            'Just a heads up...',
+            'Hey, guess what?',
+            'You seem spaced out.',
+            'Ever notice that...'
+        )
+
+        $insults = @(
+            'amigo',
+            'bud',
+            'chump',
+            'homey',
+            'mate',
+            'pal',
+            'punk',
+            'tea-head',
+            'wiseguy'
+        )
+        
+        Write-Centered (Get-Random -InputObject $phrases)
         Start-Sleep 1
         Write-Host
         Write-BlockLetters 'You have 0 marijuanas!' -Align Center -ForegroundColor White -BackgroundColor DarkRed -VerticalPadding 1
         Start-Sleep 1
         Write-Host
-        Write-Centered 'What are you gonna flush, homey?'
+        Write-Centered ('What are you gonna flush, {0}?' -f (Get-Random -InputObject $insults))
         Start-Sleep 1
         Write-Centered 'Nothing, that''s what!' -ForegroundColor Red
         Write-Host
+        Start-Sleep 1
         PressEnterPrompt
         return
     }
