@@ -2585,7 +2585,12 @@ function ShowFlushDrugsMenu {
                 Write-Centered 'Uh oh...'
                 Start-Sleep 2
                 Write-BlockLetters 'Bad Trip!' -Align Center -ForegroundColor DarkMagenta -VerticalPadding 1
+                Write-Host
                 Tripout
+                Write-Centered 'You lose a day exploring the insides of your mind.' -ForegroundColor Red
+                Start-Sleep 3
+                $script:GameDays--
+                Write-Centered ('Days left: {0}' -f ($script:GameDays - $script:Player.GameDay))
             }
             # There's a 20% chance (2 out of 10) for feeling euphoric.
             elseif ($randomNumber -le 4) {
