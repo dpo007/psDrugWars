@@ -2286,7 +2286,7 @@ function ShowMainMenu {
     #endregion Display menu options
 
     # Wait for user to press a valid key
-    $choices = @('B', 'S', 'J', 'Q', '?', 'D', '!')
+    $choices = @('B', 'S', 'F', 'J', 'Q', '?', 'D', '!')
     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
     while (-not $choices.Contains($choice)) {
         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
@@ -2447,8 +2447,8 @@ function ShowFlushDrugsMenu {
     foreach ($drug in $script:Player.Drugs) {
         # Create a custom object to store drug information
         $drugInfo = [PSCustomObject]@{
-            Number = $drugNumber
-            Name = $drug.Name
+            Number   = $drugNumber
+            Name     = $drug.Name
             Quantity = $drug.Quantity
         }
         # Add the drug information to the drug menu array
@@ -2463,7 +2463,7 @@ function ShowFlushDrugsMenu {
         Write-Centered ($paddedDispDrug)
     }
     #endregion Display Drug Inventory
-    TODO
+    
     Write-Host
 
     # Ask which drug they want to flush.
@@ -2479,13 +2479,13 @@ function ShowFlushDrugsMenu {
     }
 
     # Get quantity to flush.
-    Write-Centered ('Enter the quantity you want to flush (max {0})' -f $drugMenu[$drugNumber - 1].Quantity) -NoNewline
+    Write-Centered ('Enter the quantity you want to flush (max {0}) ' -f $drugMenu[$drugNumber - 1].Quantity) -NoNewline
     $quantity = $null
     while (-not $quantity) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
         switch ($key) {
             { $_ -in '1'.."$drugCount" } { $quantity = [int]$key; break }
-            { $_ -in 'q', 'Q' } { return }
+            { $_ -in '0' } { return } 
         }
     }
 
@@ -2503,8 +2503,6 @@ function ShowFlushDrugsMenu {
     $script:Player.FlushDrugs($drugToFlush)
 
     PressEnterPrompt
-
-
 }
 
 # This function displays a list of cities to the console, and prompts the user to select a city to travel to.
