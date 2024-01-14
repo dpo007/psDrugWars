@@ -2651,7 +2651,7 @@ function Jet {
     $cityCount = $script:GameCities.Count
 
     $ticketPrice = 100
-    # If the player cna't pay the ticket price, tell them and then exit the function.
+    # If the player can't pay the ticket price, tell them and then exit the function.
     if ($script:Player.Cash -lt $ticketPrice) {
         Write-Centered ('You don''t have enough cash to buy a ticket, Chum...p!') -ForegroundColor Red
         Start-Sleep 3
@@ -2909,7 +2909,7 @@ function ShowHelp {
     Write-Host "-------------------"
     Write-Host "This displays a list of cities you can travel to."
     Write-Host "Enter the number of the city you want to travel to."
-    Write-Host "Traveling to another city takes a day, and costs $100."
+    Write-Host "Traveling to another city takes a day, and costs some cash (don't get stuck!)."
     Write-Host
     Write-Host "Drug-o-pedia"
     Write-Host "------------"
