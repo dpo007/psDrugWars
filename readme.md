@@ -13,7 +13,7 @@ A thrilling PowerShell game where you navigate through multiple locations, deali
 
 ## Requires :clipboard:
 
-- Powershell Version 5.1 or newer.
+- PowerShell Version 5.1 or newer.
 - A console window of at least 120 x 25.
 
 ## Usage :computer:
