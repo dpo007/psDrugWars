@@ -2541,11 +2541,15 @@ function ShowFlushDrugsMenu {
     $drugToFlush = $script:Player.Drugs | Where-Object { $_.Name -eq $nameOfDrugToFlush }
 
     # Flush the drugs.
-    $script:Player.RemoveDrugs($drugToFlush, $quantityToFlush)
+    Clear-Host
+    ShowMenuHeader
+    Write-Host
 
+    $script:Player.RemoveDrugs($drugToFlush, $quantityToFlush)
     Write-BlockLetters ('Flushed' -f $quantityToFlush, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
     Write-BlockLetters ('{0} {1}!' -f $quantityToFlush, $nameOfDrugToFlush) -Align Center -ForegroundColor White -BackgroundColor DarkGreen -VerticalPadding 1
 
+    Start-Sleep 2
     Write-Host
     PressEnterPrompt
 }
