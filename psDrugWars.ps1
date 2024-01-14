@@ -2584,7 +2584,7 @@ function ShowFlushDrugsMenu {
             elseif ($randomNumber -le 4) {
                 Write-Centered 'You feel euphoric.' -ForegroundColor Cyan
                 Start-Sleep 2
-                # There's a 50% chance at this point (1 out of 2) for gaining a game day
+                # There's a 50% chance at this point (1 out of 2) for gaining a game day.
                 if ((Get-Random -Minimum 1 -Maximum 3) -eq 1) {
                     Write-Centered 'You feel like you could do anything!'
                     Start-Sleep 2
