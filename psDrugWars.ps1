@@ -2437,6 +2437,22 @@ function ShowFlushDrugsMenu {
     Write-Centered "Flush Drugs"
     Write-Host
 
+    # If the user has no drugs, display a message and exit the function.
+    if ($script:Player.Drugs.Count -eq 0) {
+        Write-Centered 'You high?'
+        Start-Sleep 1
+        Write-Host
+        Write-BlockLetters 'You have 0 marijuanas!' -Align Center -ForegroundColor White -BackgroundColor DarkRed -VerticalPadding 1
+        Start-Sleep 1
+        Write-Host
+        Write-Centered 'What are you gonna flush, homey?'
+        Start-Sleep 1
+        Write-Centered 'Nothing, that''s what!' -ForegroundColor Red
+        Write-Host
+        PressEnterPrompt
+        return
+    }
+
     #region Display Drug Inventory
     Write-Centered "Your drugs:"
 
