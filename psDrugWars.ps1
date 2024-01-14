@@ -2501,8 +2501,7 @@ function ShowFlushDrugsMenu {
         $drugNumber++
     }
 
-    # Display the drug list
-
+    # Get the length of the longest line
     $longestLength = 0
     foreach ($drugInfo in $drugMenu) {
         $currentLength = ('{0}. {1} ({2})' -f $drugInfo.Number, $drugInfo.Name, $drugInfo.Quantity).Length
@@ -2511,6 +2510,7 @@ function ShowFlushDrugsMenu {
         }
     }
 
+    # Display the drug list
     foreach ($drugInfo in $drugMenu) {
         $dispDrug = '{0}. {1} ({2})' -f $drugInfo.Number, $drugInfo.Name, $drugInfo.Quantity
         $paddedDispDrug = $dispDrug.PadRight($longestLength)
