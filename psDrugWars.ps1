@@ -682,8 +682,7 @@ $script:RandomEvents = @(
             Write-Centered ('The shady character tells you that the next Home Drug sale day is in {0} days.' -f $daysUntilNextSale) -ForegroundColor DarkYellow
             Start-Sleep -Seconds 2
         }
-    },
-    
+    },  
     @{
         "Name"        = "Someone's Wallet"
         "Description" = "You found a wallet full of cash laying in the gutter!"
