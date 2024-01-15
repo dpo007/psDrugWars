@@ -947,7 +947,7 @@ $script:RandomEvents = @(
                         }
                     }
                     else {
-                        Write-Centered 'You don''t have enough cash to buy the magical pockets. The cosmic vendor disappears in disappointment. No extra pockets for you.' -ForegroundColor Red
+                        Write-Centered ('You don''t have enough cash to buy the magical pockets. The cosmic vendor disappears in disappointment. No extra pockets for you.') -ForegroundColor Red
                     }
                 }
                 2 {
@@ -979,7 +979,7 @@ $script:RandomEvents = @(
                 }
                 3 {
                     if ($script:Player.get_PocketCount() -lt 5) {
-                        Write-Centered 'You see a DMT-induced alien shaman, but they''re uninterested in playing a game with someone who doesn''t even have 5 pockets. No extra pockets for you.' -ForegroundColor Red
+                        Write-Centered ('You see a DMT-induced alien shaman, but they''re uninterested in playing a game with someone who doesn''t even have 5 pockets. No extra pockets for you.') -ForegroundColor Red
                     }
                     else {
                         Write-Centered 'A mischievous DMT-induced alien shaman challenges you to a game. Win, and you gain 25 extra pockets. Lose, and you lose 5 pockets.'
@@ -1007,14 +1007,14 @@ $script:RandomEvents = @(
                                 Start-Sleep -Seconds 2
                                 $script:Player.AdjustPocketCount(25)
                                 Write-Host
-                                Write-Centered 'You gained 25 extra pockets!' -ForegroundColor DarkGreen
+                                Write-Centered ('You gained 25 extra pockets!') -ForegroundColor DarkGreen
                             }
                             else {
                                 Write-Centered 'The alien shaman proves to be a cunning opponent.'
                                 Start-Sleep -Seconds 2
                                 $script:Player.AdjustPocketCount(-5)
                                 Write-Host
-                                Write-Centered 'You lose 5 pockets in the game. Better luck next time.' -ForegroundColor Red
+                                Write-Centered ('You lose 5 pockets in the game. Better luck next time.') -ForegroundColor Red
                             }
                         }
                         else {
