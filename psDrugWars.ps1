@@ -3274,6 +3274,14 @@ function AdvanceGameDay {
     $script:Player.GameDay += $Days
     Write-Centered ('Welcome to day {0}! ({1} days left)' -f $script:Player.GameDay, ($script:GameDays - $script:Player.GameDay)) -ForegroundColor Yellow
 
+    # If today is a Home drug Sale day (see $script:HomeDrugSaleDays), announce it
+    if ($script:HomeDrugSaleDays -contains $script:Player.GameDay) {
+        Write-Host
+        Write-Centered ('*** Today is a home drug sale day! ***' -f $script:Player.City.Name) -ForegroundColor Green
+        Write-Centered 'Cities will be selling their home drugs for CHEAP!' -ForegroundColor DarkGray
+        Start-Sleep 3
+    }
+
     # Reset the random event chance for the day.
     $script:RandomEventChance_Current = $script:RandomEventChance_Start
 
