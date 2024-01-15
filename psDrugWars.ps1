@@ -3285,8 +3285,8 @@ function AdvanceGameDay {
     # If today is a Home Drug Sale day, announce it
     if (isHomeDrugSaleDay) {
         Write-Host
-        Write-Centered ('*** Today is a home drug sale day! ***' -f $script:Player.City.Name) -ForegroundColor Green
-        Write-Centered 'Cities will be selling their home drugs for CHEAP!' -ForegroundColor DarkGray
+        Write-Centered ('*** Today is a home drug sale day! ***') -ForegroundColor Green
+        Write-Centered ('Cities will be selling their home drugs for CHEAP!') -ForegroundColor DarkGray
         Start-Sleep 3
 
         SetDrugPriceMultiplier -DrugNames $script:Player.City.HomeDrugNames -Multiplier $script:Player.City.HomeDrugSaleMultiplier
