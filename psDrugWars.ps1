@@ -2043,12 +2043,12 @@ function GenerateSaleDays {
     return $saleDays
 }
 
-function isHomeDrugSaleDay {
+function IsHomeDrugSaleDay {
     param (
         [int]$Day = $script:Player.GameDay
     )
 
-    return $script:HomeDrugSaleDays -contains $Day
+    return [bool]($script:HomeDrugSaleDays -contains $Day)
 }
 
 # Initialize game state
@@ -2353,17 +2353,17 @@ function ShowCityDrugs {
             [Parameter(Mandatory)]
             [string]$DrugName,
             [Parameter(Mandatory)]
-            [array]$HomeDrugs,
+            [string[]]$HomeDrugNames,
             [Parameter(Mandatory)]
             [bool]$IsHomeDrugSaleDay
         )
 
-        if ($DrugName -in $HomeDrugs) {
+        if ($DrugName -in $HomeDrugNames) {
             if ($IsHomeDrugSaleDay) {
                 $DrugName += " (Sale!)"
             }
             else {
-                $DrugName += " *" # Asterisk indicates a 'home drug' that is not on sale.
+                $DrugName += "*" # Asterisk indicates a 'home drug' that is not on sale.
             }
         }
         return $DrugName
@@ -2380,8 +2380,9 @@ function ShowCityDrugs {
     Write-Centered ('┌' + ('─' * ($boxWidth - 1)) + '┐')
 
     for ($i = 0; $i -lt $halfCount; $i++) {
-        $leftDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i].Name -HomeDrugs $city.HomeDrugs -IsHomeDrugSaleDay $isHomeDrugSaleDay
-        $rightDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i + $halfCount].Name -HomeDrugs $city.HomeDrugs -IsHomeDrugSaleDay $isHomeDrugSaleDay
+        $isSaleDay = IsHomeDrugSaleDay
+        $leftDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i].Name -HomeDrugNames $city.HomeDrugNames -IsHomeDrugSaleDay $isSaleDay
+        $rightDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i + $halfCount].Name -HomeDrugNames $city.HomeDrugNames -IsHomeDrugSaleDay $isSaleDay
 
         $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $leftDrugName, $city.Drugs[$i].get_Price())
         $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $rightDrugName, $city.Drugs[$i + $halfCount].get_Price())
@@ -3307,7 +3308,7 @@ function AdvanceGameDay {
     Write-Centered ('Welcome to day {0}! ({1} days left)' -f $script:Player.GameDay, ($script:GameDays - $script:Player.GameDay)) -ForegroundColor Yellow
 
     # If today is a Home Drug Sale day, announce it
-    if (isHomeDrugSaleDay) {
+    if (IsHomeDrugSaleDay) {
         Write-Host
         Write-Centered ('*** Today is a home drug sale day! ***') -ForegroundColor Green
         Write-Centered ('Cities will be selling their home drugs for CHEAP!') -ForegroundColor DarkGray
