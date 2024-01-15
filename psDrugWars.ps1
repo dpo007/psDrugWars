@@ -2359,9 +2359,11 @@ function ShowCityDrugs {
         )
 
         if ($DrugName -in $HomeDrugs) {
-            $DrugName += " *"
             if ($IsHomeDrugSaleDay) {
                 $DrugName += " (Sale!)"
+            }
+            else {
+                $DrugName += " *" # Asterisk indicates a 'home drug' that is not on sale.
             }
         }
         return $DrugName
