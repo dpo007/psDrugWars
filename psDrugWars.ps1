@@ -695,15 +695,15 @@ $script:RandomEvents = @(
             if ($chance -eq 0) {
                 $cashToGive = [math]::Round($script:Player.Cash * 0.05)
                 $script:Player.Cash += $cashToGive
-                Write-Centered ('You got lucky! The shady character gave you ${0}.' -f $cashToGive) -ForegroundColor DarkGreen
+                Write-Centered ('You got lucky! The shadowy figure gave you ${0}.' -f $cashToGive) -ForegroundColor DarkGreen
             }
             elseif ($chance -eq 1) {
                 $cashToTake = [math]::Round($script:Player.Cash * 0.05)
                 $script:Player.Cash -= $cashToTake
-                Write-Centered ('Oh no! The shady character stuck you up and took ${0}.' -f $cashToTake) -ForegroundColor DarkRed
+                Write-Centered ('Oh no! The shadowy figure stuck you up and took ${0}.' -f $cashToTake) -ForegroundColor DarkRed
             }
             else {
-                Write-Centered 'Nothing happened. Get back ot hustlin''!' -ForegroundColor DarkYellow
+                Write-Centered 'Nothing happened. Get back ot hustlin''!'
             }
 
             Start-Sleep -Seconds 2
