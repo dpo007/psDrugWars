@@ -60,7 +60,6 @@ class City {
         # Home Drugs are drugs that are always sold at a discount (if in stock).
         $this.HomeDrugPriceMultiplier = .80
     }
-
 }
 
 class Player {
@@ -2011,6 +2010,39 @@ function Write-BlockLetters {
     }
 }
 
+# Generates a list of distinct sale days, ensuring each is a certain number of days apart.
+function GenerateSaleDays {
+    param (
+        [Parameter(Mandatory = $true)]
+        [int]$SaleDaysCount,   
+        [Parameter(Mandatory = $true)]
+        [int]$DaysApart
+    )
+
+    $saleDays = @()
+
+    while ($saleDays.Count -lt $SaleDaysCount) {
+        $randomDay = Get-Random -Minimum 1 -Maximum $script:GameDays
+        if ($saleDays.Count -eq 0) {
+            $saleDays += $randomDay
+        }
+        else {
+            $validDay = $true
+            foreach ($day in $saleDays) {
+                if ([math]::Abs($day - $randomDay) -lt $DaysApart) {
+                    $validDay = $false
+                    break
+                }
+            }
+            if ($validDay) {
+                $saleDays += $randomDay
+            }
+        }
+    }
+
+    return $saleDays
+}
+
 # Initialize game state
 function InitGame {
     # Game settings
@@ -2019,10 +2051,14 @@ function InitGame {
     $cityCount = 8
     $gameDrugCount = 10
     $cityDrugCount = 6
+
     $script:GameDays = 30
     $script:GameOver = $false
     $script:RandomEventChance_Start = 10 # Percentage
     $script:RandomEventChance_Current = $script:RandomEventChance_Start
+
+    # Setup Home Drug sale days
+    $script:HomeDrugSaleDays = GenerateSaleDays -SaleDaysCount 4 -DaysApart 5
 
     # Create and populate the drugs available for this game session.
     [Drug[]]$script:GameDrugs = InitGameDrugs -DrugCount $gameDrugCount
