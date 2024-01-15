@@ -2043,6 +2043,14 @@ function GenerateSaleDays {
     return $saleDays
 }
 
+function isHomeDrugSaleDay {
+    param (
+        [int]$Day = $script:Player.GameDay
+    )
+
+    return $script:HomeDrugSaleDays -contains $Day
+}
+
 # Initialize game state
 function InitGame {
     # Game settings
@@ -3274,8 +3282,8 @@ function AdvanceGameDay {
     $script:Player.GameDay += $Days
     Write-Centered ('Welcome to day {0}! ({1} days left)' -f $script:Player.GameDay, ($script:GameDays - $script:Player.GameDay)) -ForegroundColor Yellow
 
-    # If today is a Home drug Sale day (see $script:HomeDrugSaleDays), announce it
-    if ($script:HomeDrugSaleDays -contains $script:Player.GameDay) {
+    # If today is a Home Drug Sale day, announce it
+    if (isHomeDrugSaleDay) {
         Write-Host
         Write-Centered ('*** Today is a home drug sale day! ***' -f $script:Player.City.Name) -ForegroundColor Green
         Write-Centered 'Cities will be selling their home drugs for CHEAP!' -ForegroundColor DarkGray
@@ -3321,19 +3329,32 @@ function AdvanceGameDay {
 
     if (!$SkipPriceUpdate) {
         # Randomize the drug prices for the day
-        SetDrugPriceMultiplier
+        SetGameDrugMultipliers
     }
     
+
 }
 
 # This function sets a random price multiplier for each drug in the game.
-function SetDrugPriceMultiplier {
+function SetGameDrugMultipliers {
     $drugs = $script:GameDrugs
     foreach ($drug in $drugs) {
         $drug.PriceMultiplier = Get-Random -Minimum 0.5 -Maximum 2.6
     }
 }
 
+# This function sets the price multiplier for a specified game drug to a specified multipler.
+function SetDrugPriceMultiplier {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$DrugName,
+        [Parameter(Mandatory = $true)]
+        [double]$Multiplier
+    )
+
+    $drug = $script:GameDrugs | Where-Object { $_.Name -eq $DrugName }
+    $drug.PriceMultiplier = $Multiplier
+}
 ##############################
 #endregion Function Definitions
 ################################
@@ -3388,7 +3409,8 @@ while ($script:Playing) {
                 StartRandomEvent
             }
             default {
-                Write-Host 'Invalid choice'
+                Write-Host
+                Write-Centered 'Invalid choice'
                 Start-Sleep -Milliseconds 500
             }
         }
