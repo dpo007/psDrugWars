@@ -1068,6 +1068,10 @@ $script:RandomEvents = @(
                     while (-not $choices.Contains($choice)) {
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
+
+                    Start-Sleep 2
+                    Write-Host
+                    
                     if ($choice -eq 'Y') {
                         $randomDrugs = ($script:GameDrugs | Get-Random -Count 4).Name -join ', '
                         # repalce the last ',' with "and"
@@ -1100,6 +1104,10 @@ $script:RandomEvents = @(
                     while (-not $choices.Contains($choice)) {
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
+
+                    Start-Sleep 2
+                    Write-Host
+
                     if ($choice -eq 'Y') {
                         $win = Get-Random -Minimum 0 -Maximum 2
                         $amount = Get-Random -Minimum 10 -Maximum 301
@@ -1124,6 +1132,10 @@ $script:RandomEvents = @(
                     while (-not $choices.Contains($choice)) {
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
+
+                    Start-Sleep 2
+                    Write-Host
+
                     if ($choice -eq 'Y') {
                         $randomDrug = $script:GameDrugs | Get-Random
                         $randomDrug.Quantity = Get-Random -Minimum 5 -Maximum 16
@@ -1165,6 +1177,10 @@ $script:RandomEvents = @(
                     while (-not $choices.Contains($choice)) {
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
+
+                    Start-Sleep 2
+                    Write-Host
+
                     if ($choice -eq 'Y') {
                         Write-Centered 'You cautiously enter the door and discover a hidden underground club. The beats are pumping, and the atmosphere is wild.'
                         Start-Sleep -Seconds 2
@@ -1184,6 +1200,10 @@ $script:RandomEvents = @(
                     while (-not $choices.Contains($choice)) {
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
+
+                    Start-Sleep 2
+                    Write-Host
+
                     if ($choice -eq 'Y') {
                         $portraitCost = [math]::Round((Get-Random -Minimum 5 -Maximum 16) / 5) * 5
                         $script:Player.Cash -= $portraitCost
