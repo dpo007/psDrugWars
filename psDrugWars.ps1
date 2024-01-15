@@ -3288,6 +3288,8 @@ function AdvanceGameDay {
         Write-Centered ('*** Today is a home drug sale day! ***' -f $script:Player.City.Name) -ForegroundColor Green
         Write-Centered 'Cities will be selling their home drugs for CHEAP!' -ForegroundColor DarkGray
         Start-Sleep 3
+
+        SetDrugPriceMultiplier -DrugNames $script:Player.City.HomeDrugNames -Multiplier $script:Player.City.HomeDrugSaleMultiplier
     }
 
     # Reset the random event chance for the day.
@@ -3333,6 +3335,7 @@ function AdvanceGameDay {
     }
     
 
+
 }
 
 # This function sets a random price multiplier for each drug in the game.
@@ -3347,13 +3350,15 @@ function SetGameDrugMultipliers {
 function SetDrugPriceMultiplier {
     param (
         [Parameter(Mandatory = $true)]
-        [string]$DrugName,
+        [string[]]$DrugNames,
         [Parameter(Mandatory = $true)]
         [double]$Multiplier
     )
 
-    $drug = $script:GameDrugs | Where-Object { $_.Name -eq $DrugName }
-    $drug.PriceMultiplier = $Multiplier
+    foreach ($name in $DrugNames) {
+        $drug = $script:GameDrugs | Where-Object { $_.Name -eq $name }
+        $drug.PriceMultiplier = $Multiplier
+    }
 }
 ##############################
 #endregion Function Definitions
