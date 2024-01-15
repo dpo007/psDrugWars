@@ -3289,7 +3289,11 @@ function AdvanceGameDay {
         Write-Centered ('Cities will be selling their home drugs for CHEAP!') -ForegroundColor DarkGray
         Start-Sleep 3
 
-        SetDrugPriceMultiplier -DrugNames $script:Player.City.HomeDrugNames -Multiplier $script:Player.City.HomeDrugSaleMultiplier
+        $params = @{
+            DrugNames = $script:Player.City.HomeDrugNames
+            Multiplier = $script:Player.City.HomeDrugSaleMultiplier
+        }
+        SetDrugPriceMultiplier @params
     }
 
     # Reset the random event chance for the day.
@@ -3333,9 +3337,6 @@ function AdvanceGameDay {
         # Randomize the drug prices for the day
         SetGameDrugMultipliers
     }
-    
-
-
 }
 
 # This function sets a random price multiplier for each drug in the game.
