@@ -682,8 +682,8 @@ $script:RandomEvents = @(
             Write-Centered ('The shady character tells you that the next Home Drug sale day is in {0} days.' -f $daysUntilNextSale) -ForegroundColor DarkYellow
             Start-Sleep -Seconds 2
 
-            Write-Centers ('He looks around and then...')
-            Start-Sleep -Seconds 2
+            Write-Centered ('He then looks around and...')
+            Start-Sleep -Seconds 3
             $chance = Get-Random -Minimum 0 -Maximum 3
             if ($chance -eq 0) {
                 $cashToGive = [math]::Round($script:Player.Cash * 0.05)
@@ -698,7 +698,7 @@ $script:RandomEvents = @(
             else {
                 Write-Centered 'Nothing happened. Get back ot hustlin''!' -ForegroundColor DarkYellow
             }
-            
+
             Start-Sleep -Seconds 2
         }
     },  
