@@ -2381,8 +2381,16 @@ function ShowCityDrugs {
 
     for ($i = 0; $i -lt $halfCount; $i++) {
         $isSaleDay = IsHomeDrugSaleDay
-        $leftDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i].Name -HomeDrugNames $city.HomeDrugNames -IsHomeDrugSaleDay $isSaleDay
-        $rightDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i + $halfCount].Name -HomeDrugNames $city.HomeDrugNames -IsHomeDrugSaleDay $isSaleDay
+
+        $leftDrugName = GetFormattedDrugName `
+            -DrugName $city.Drugs[$i].Name `
+            -HomeDrugNames $city.HomeDrugNames `
+            -IsHomeDrugSaleDay $isSaleDay
+
+        $rightDrugName = GetFormattedDrugName `
+            -DrugName $city.Drugs[$i + $halfCount].Name `
+            -HomeDrugNames $city.HomeDrugNames `
+            -IsHomeDrugSaleDay $isSaleDay
 
         $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $leftDrugName, $city.Drugs[$i].get_Price())
         $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $rightDrugName, $city.Drugs[$i + $halfCount].get_Price())
