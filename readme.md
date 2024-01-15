@@ -30,4 +30,4 @@ To run the game, follow these steps:
 
 ## Warning :warning:
 
-This game contains NSFW/16+ content, including immature, possibly offensive humor, and satirical references to illegal drugs and drug use. Parental discretion is advised.
+This game contains NSFW/16+ content, including immature, possibly offensive humor, and satirical references to illegal drugs and drug use. Parental discretion is advised. :clown:
