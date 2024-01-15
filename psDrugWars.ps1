@@ -46,7 +46,7 @@ class City {
     [Drug[]]$Drugs
     [int]$MaxDrugCount
     [string[]]$HomeDrugNames
-    [float]$HomeDrugPriceMultiplier
+    [float]$HomeDrugSaleMultiplier
 
     # Default constructor
     City() {
@@ -57,8 +57,8 @@ class City {
         $homeDrugCount = Get-Random -Minimum 1 -Maximum 3
         $this.HomeDrugNames = $script:DrugCodes.Keys | Get-Random -Count $homeDrugCount
 
-        # Home Drugs are drugs that are always sold at a discount (if in stock).
-        $this.HomeDrugPriceMultiplier = .80
+        # Home Drugs are drugs that are always sold at a discount (if in stock). Default is 20% of the base price.
+        $this.HomeDrugSaleMultiplier = .20
     }
 }
 
@@ -2092,7 +2092,7 @@ function InitGameCities {
         $city.Drugs = @()
         $city.MaxDrugCount = $MaxDrugCount
         $city.HomeDrugNames = @()
-        $city.HomeDrugPriceMultiplier = .80
+        $city.HomeDrugSaleMultiplier = .20
 
         # Assign 1 or 2 random 'Home Drugs' to each city. These will stay the same for the entire game.
         # Home Drugs are drugs that are always sold at a discount (if in stock).
