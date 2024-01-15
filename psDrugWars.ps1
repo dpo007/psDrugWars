@@ -3,6 +3,8 @@ param (
     [switch]$SkipConsoleSizeCheck
 )
 
+[float]$script:GameVersion = 1.0
+
 ########################
 #region Class Definitions
 ##########################
@@ -3294,6 +3296,16 @@ function ShowTitleScreen {
     $titleBlock | ForEach-Object {
         Write-Host (' ' * $leftPadding) $_ -ForegroundColor $foreColour
     }
+
+    # Capture the curent cursor position
+    $originalCursorPosition = $host.UI.RawUI.CursorPosition
+
+    # Move the cursor to the bottom left corner of the UI
+    $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, ($consoleHeight - 2)
+    # Show GameVersion as "v1.0" padded to one decimal minmum
+    Write-Host ('(v{0:0.0})' -f $script:GameVersion) -NoNewline -ForegroundColor DarkGray
+    # Move the cursor back to the original position
+    $host.UI.RawUI.CursorPosition = $originalCursorPosition
 
     Write-Host
     ShowTaglinePrompt
