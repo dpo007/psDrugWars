@@ -1071,7 +1071,7 @@ $script:RandomEvents = @(
 
                     Start-Sleep 2
                     Write-Host
-                    
+
                     if ($choice -eq 'Y') {
                         $randomDrugs = ($script:GameDrugs | Get-Random -Count 4).Name -join ', '
                         # repalce the last ',' with "and"
@@ -2417,13 +2417,8 @@ function ShowCityDrugs {
             [bool]$IsHomeDrugSaleDay
         )
 
-        if ($DrugName -in $HomeDrugNames) {
-            if ($IsHomeDrugSaleDay) {
-                $DrugName += " (Sale!)"
-            }
-            else {
-                $DrugName += "*" # Asterisk indicates a 'home drug' that is not on sale.
-            }
+        if (($DrugName -in $HomeDrugNames) -and $IsHomeDrugSaleDay) {
+            $DrugName += " (Sale!)"
         }
         return $DrugName
     }
