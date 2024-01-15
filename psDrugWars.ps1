@@ -2347,6 +2347,25 @@ function ShowCityDrugs {
         [Parameter(Mandatory)]
         [City]$City
     )
+
+    function GetFormattedDrugName {
+        param (
+            [Parameter(Mandatory)]
+            [string]$DrugName,
+            [Parameter(Mandatory)]
+            [array]$HomeDrugs,
+            [Parameter(Mandatory)]
+            [bool]$IsHomeDrugSaleDay
+        )
+
+        if ($DrugName -in $HomeDrugs) {
+            $DrugName += " *"
+            if ($IsHomeDrugSaleDay) {
+                $DrugName += " (Sale!)"
+            }
+        }
+        return $DrugName
+    }
         
     $drugCount = $city.Drugs.Count
     $halfCount = [math]::Ceiling($drugCount / 2)
@@ -2359,8 +2378,11 @@ function ShowCityDrugs {
     Write-Centered ('┌' + ('─' * ($boxWidth - 1)) + '┐')
 
     for ($i = 0; $i -lt $halfCount; $i++) {
-        $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $city.Drugs[$i].Name, $city.Drugs[$i].get_Price())
-        $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $city.Drugs[$i + $halfCount].Name, $city.Drugs[$i + $halfCount].get_Price())
+        $leftDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i].Name -HomeDrugs $city.HomeDrugs -IsHomeDrugSaleDay $isHomeDrugSaleDay
+        $rightDrugName = GetFormattedDrugName -DrugName $city.Drugs[$i + $halfCount].Name -HomeDrugs $city.HomeDrugs -IsHomeDrugSaleDay $isHomeDrugSaleDay
+
+        $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $leftDrugName, $city.Drugs[$i].get_Price())
+        $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $rightDrugName, $city.Drugs[$i + $halfCount].get_Price())
 
         $leftDrug = $leftDrug.PadRight($leftColumnWidth)
         $rightDrug = $rightDrug.PadRight($rightColumnWidth)
@@ -3290,7 +3312,7 @@ function AdvanceGameDay {
         Start-Sleep 3
 
         $params = @{
-            DrugNames = $script:Player.City.HomeDrugNames
+            DrugNames  = $script:Player.City.HomeDrugNames
             Multiplier = $script:Player.City.HomeDrugSaleMultiplier
         }
         SetDrugPriceMultiplier @params
