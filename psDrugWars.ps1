@@ -2440,14 +2440,14 @@ function ShowMainMenu {
     $columnWidth = 38
 
     # Print the headers
-    Write-Centered ("{0,-$columnWidth}{1,-$columnWidth}" -f "Your drugs:", "Your clothes:")
+    Write-Centered ("{0,-$columnWidth} {1,-$columnWidth} {2,-$columnWidth}" -f "Your drugs:", "Your clothes:", "Weapons:")
 
-    # Get the maximum count between the two collections
-    $maxCount = [Math]::Max($script:Player.Drugs.Count, $script:Player.Clothing.Count)
+    # Get the maximum count between the three collections
+    $maxCount = [Math]::Max([Math]::Max($script:Player.Drugs.Count, $script:Player.Clothing.Count), $script:Player.Guns.Count)
 
     # Loop that many times
     for ($i = 0; $i -lt $maxCount; $i++) {
-        # Get the drug and clothing at the current index, or null if the index is out of range
+        # Get the drug, clothing, and gun at the current index, or null if the index is out of range
         $dispDrug = if ($i -lt $script:Player.Drugs.Count) { 
             '· {0} {1}' -f $script:Player.Drugs[$i].Quantity, $script:Player.Drugs[$i].Name 
         }
@@ -2462,7 +2462,14 @@ function ShowMainMenu {
             '· You are naked.' 
         }
 
-        Write-Centered ("{0,-$columnWidth}{1,-$columnWidth}" -f $dispDrug, $dispClothing)
+        $dispGun = if ($i -lt $script:Player.Guns.Count) { 
+            '· {0}' -f $script:Player.Guns[$i].Name 
+        }
+        elseif ($i -eq 0) {
+            '· You have no guns.' 
+        }
+
+        Write-Centered ("{0,-$columnWidth} {1,-$columnWidth} {2,-$columnWidth}" -f $dispDrug, $dispClothing, $dispGun)
     }
     #endregion Display Inventory
 
