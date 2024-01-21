@@ -3582,8 +3582,11 @@ while ($script:Playing) {
             "B" {
                 ShowBuyDrugsMenu
             }
-            "S" {
-                ShowSellDrugsMenu
+            "D" {
+                ShowDrugopedia
+            }
+            "F" {
+                ShowFlushDrugsMenu
             }
             "J" {
                 Jet
@@ -3591,14 +3594,11 @@ while ($script:Playing) {
             "Q" {
                 QuitGame
             }
+            "S" {
+                ShowSellDrugsMenu
+            }
             "?" {
                 ShowHelp
-            }
-            "D" {
-                ShowDrugopedia
-            }
-            "F" {
-                ShowFlushDrugsMenu
             }
             "!" {
                 StartRandomEvent
