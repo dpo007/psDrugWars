@@ -3213,11 +3213,15 @@ function ShowTaglinePrompt {
         $useTagLines = $true
     }
     
-    # Define an array of colors to be used for the text
-    $colours = @("DarkGray", "Gray", "White", "Gray", "DarkGray", "Black")
-
-   
-
+    # Define an array of colors to be used for the tag text fade steps
+    $colours = @('DarkGray', 'Gray')
+    for ($i=0; $i -lt 20; $i++) {
+        $colours += 'White'
+    }
+    $colours += @('Gray', 'DarkGray')
+    for ($i=0; $i -lt 10; $i++) {
+        $colours += 'Black'
+    }
 
     # Store the original cursor position
     $originalCursorPosition = $host.UI.RawUI.CursorPosition
@@ -3246,12 +3250,6 @@ function ShowTaglinePrompt {
 
             # Set the sleep duration based on the current color
             $sleepDuration = 125
-            if ($colour -eq "White") {
-                $sleepDuration *= 20
-            }
-            elseif ($colour -eq "Black") {
-                $sleepDuration *= 10
-            }
 
             # Pause execution for the specified duration
             Start-Sleep -Milliseconds $sleepDuration
