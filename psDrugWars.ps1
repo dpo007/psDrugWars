@@ -3177,6 +3177,26 @@ function ShowTaglinePrompt {
         [string]$Text
     )
 
+    function GetTagLineAlternateText {
+        $startPromptWords = @(
+            'activate',
+            'begin',
+            'blaze up',
+            'do this',
+            'fire it up',
+            'hit it off',
+            'launch',
+            'lift off',
+            'roll out',
+            'spark one up',
+            'square off',
+            'start',
+            'throw down'
+        )
+
+        return ('Press Enter to {0}' -f (Get-Random -InputObject $startPromptWords))
+    }
+
     # Define an array of taglines to be used for the text
     $tagLines = @(
         '"My version is better." - John E. Dell',
@@ -3215,19 +3235,18 @@ function ShowTaglinePrompt {
     
     # Define an array of colors to be used for the tag text fade steps
     $colours = @('DarkGray', 'Gray')
-    for ($i=0; $i -lt 20; $i++) {
+    for ($i = 0; $i -lt 20; $i++) {
         $colours += 'White'
     }
     $colours += @('Gray', 'DarkGray')
-    for ($i=0; $i -lt 10; $i++) {
+    for ($i = 0; $i -lt 10; $i++) {
         $colours += 'Black'
     }
 
     # Store the original cursor position
     $originalCursorPosition = $host.UI.RawUI.CursorPosition
 
-    # Define the alternate text
-    $alternateText = "Press Enter to begin"
+    $alternateText = GetTagLineAlternateText
 
     $counter = 1
 
@@ -3273,7 +3292,7 @@ function ShowTaglinePrompt {
                 $Text = Get-Random -InputObject $tagLines
             }
             else {
-                $Text = $alternateText
+                $Text = GetTagLineAlternateText
             }
             $counter++
         }
