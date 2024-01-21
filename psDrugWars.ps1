@@ -91,6 +91,7 @@ class Player {
     # Default constructor
     Player() {
         $this.Drugs = @()
+        $this.Guns = @()
         $this.Clothing = $this.starterClothes | Get-Random
         $this.Pockets = 0
         $this.GameDay = 1
