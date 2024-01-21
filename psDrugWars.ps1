@@ -3214,7 +3214,10 @@ function ShowTaglinePrompt {
     }
     
     # Define an array of colors to be used for the text
-    $colors = @("DarkGray", "Gray", "White", "Gray", "DarkGray", "Black")
+    $colours = @("DarkGray", "Gray", "White", "Gray", "DarkGray", "Black")
+
+   
+
 
     # Store the original cursor position
     $originalCursorPosition = $host.UI.RawUI.CursorPosition
@@ -3227,26 +3230,26 @@ function ShowTaglinePrompt {
     # Start an infinite loop
     while ($true) {
         # Loop through each color in the colors array
-        foreach ($color in $colors) {
+        foreach ($colour in $colours) {
             # Reset the cursor position to the original position
             $host.UI.RawUI.CursorPosition = $originalCursorPosition
             
             # Write the text to the host with the current color, without a newline at the end
-            if ($color -eq "Black") {
+            if ($colour -eq "Black") {
                 # If the color is black, clear the line instead.
                 Write-Centered (' ' * $Text.Length) -NoNewline
                 $host.UI.RawUI.CursorPosition = $originalCursorPosition
             }
             else {
-                Write-Centered $Text -ForegroundColor $color -NoNewline
+                Write-Centered $Text -ForegroundColor $colour -NoNewline
             }
 
             # Set the sleep duration based on the current color
             $sleepDuration = 125
-            if ($color -eq "White") {
+            if ($colour -eq "White") {
                 $sleepDuration *= 20
             }
-            elseif ($color -eq "Black") {
+            elseif ($colour -eq "Black") {
                 $sleepDuration *= 10
             }
 
