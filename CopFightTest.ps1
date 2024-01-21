@@ -14,7 +14,21 @@ function GetArrested {
 
 # Function to simulate getting shot dead by cops
 function GetShotDead {
-    Write-Host "The cops shoot you dead!"
+	$shotDeadStrings = @(
+		"The cops shoot you dead!",
+		"The pigs spray you with lead!",
+		"The cops turn you into a human pinata!",
+		"The pigs serve you a hot plate of justice!",
+		"The flatfoots send you on a one-way ticket to the afterlife!",
+		"The pigs give you a front-row seat to the great beyond!",
+		"The flatfoots send you on an express elevator to the afterlife!",
+		"The cops give you a golden ticket to paradise!",
+		"The flatfoots whisk you away on a magical mystery tour of the great beyond!",
+		"The pigs upgrade your ticket to first class on the cosmic express!",
+		"The flatfoots give you a VIP pass to the celestial realm!"
+	)
+
+    Write-Host (Get-Random -InputObject $shotDeadStrings)
     $playerMoney = 0
     $playerInventoryCount = 0
 }
