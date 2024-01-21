@@ -177,6 +177,11 @@ class Player {
         $this.Cash -= $Gun.Price
         $this.AddGun($Gun)
         Write-Centered ('You bought a {0} for ${1}.' -f $Gun.Name, $Gun.Price)
+        Start-Sleep -Milliseconds 1500
+        Write-Centered $Gun.Description
+        Start-Sleep -Milliseconds 1500
+        Write-Centered $Gun.History
+        Start-Sleep 3
     }
 
     # Method to adjust pocket count up or down
