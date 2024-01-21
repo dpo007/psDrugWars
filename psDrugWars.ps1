@@ -72,6 +72,7 @@ class Player {
     [string[]]$Clothing
     [int]$GameDay
     [string]$Initials
+    [Gun[]]$Guns
 
     hidden [string[]]$starterClothes = @(
         'Bell-bottom pants',
@@ -290,6 +291,24 @@ class Player {
 
         # Return the new clothing
         return $newClothing
+    }
+}
+
+class Gun {
+    [string]$Name
+    [string]$Type
+    [int]$Price
+    [int]$StoppingPower
+    [string]$Description
+    [string]$History
+
+    Gun ($gunInfo) {
+        $this.Name = $gunInfo.Name
+        $this.Type = $gunInfo.Type
+        $this.Price = $gunInfo.Price
+        $this.StoppingPower = $gunInfo.StoppingPower
+        $this.Description = $gunInfo.Description
+        $this.History = $gunInfo.History
     }
 }
 ###########################
