@@ -65,14 +65,14 @@ class City {
 }
 
 class Player {
-    [int]$Cash
-    [City]$City
-    [Drug[]]$Drugs
-    hidden [int]$Pockets
     [string[]]$Clothing
+    [City]$City
+    [int]$Cash
+    [Drug[]]$Drugs
     [int]$GameDay
+    hidden [Gun[]]$Guns
     [string]$Initials
-    [Gun[]]$Guns
+    hidden [int]$Pockets
 
     hidden [string[]]$starterClothes = @(
         'Bell-bottom pants',
@@ -112,6 +112,71 @@ class Player {
     # Method to set pocket count
     [void]set_PocketCount([int]$Pockets) {
         $this.Pockets = $Pockets
+    }
+
+    # Method to get guns
+    [Gun[]]get_Guns() {
+        return $this.Guns
+    }
+
+    # Method to dump all guns
+    [void]DumpGuns() {
+        $this.Guns = @()
+    }
+
+    # Method to add a gun
+    [void]AddGun([Gun]$Gun) {
+        if ($this.Guns.Count -ge 2) {
+            $tooManyGunsExpressions = @(
+                'Whoa, slow down, Rambo! Two strapped guns are your limit, fam. We don''t want you to take off like a helicopter now.',
+                'Hold your horses, cowboy! You''re already packing a pair of heat, pal. Adding more would be like juggling flaming marshmallows - not a good idea, see?',
+                'Easy there, gunslinger! Two guns are the magic number, amico. Adding more would be like trying to salsa dance with three left feet, capisce?',
+                'Chill, action hero! You''ve already got a dynamic duo of guns, homey. Adding more would be like trying to breakdance on a tightrope, playa.',
+                'Steady on, sharpshooter! You''ve got a couple of guns already, fella. Adding another one would be like trying to balance a porcupine on your nose, you hear?',
+                'Whoa, trigger happy! Two guns are your lucky number, homey. Adding another one would be like trying to fit a giraffe into a phone booth.'
+            )
+            Write-Centered (Get-Random -InputObject $tooManyGunsExpressions) -ForegroundColor Red
+            return
+        }
+
+        $newGunExpressions = @(
+            ('You got a {0}! Nice! Just remember, with great firepower comes great responsibility.' -f $Gun.Name),
+            ('You got a {0}! Keep it strapped, fam! It''s like having a Swiss Army knife, but, you know, for the streets or some shit.' -f $Gun.Name),
+            ('Big man! Packin'' heat with a {0}! Who needs biceps when you''ve got barrels, am I right?' -f $Gun.Name),
+            ('Say hello to my little friend! "Hello {0}."' -f $Gun.Name),
+            ('Congrats, sharpshooter! You snagged a {0}! The only thing hotter than the barrel is your style.' -f $Gun.Name),
+            ('Hasta la vista, budget constraints! You''re now the proud owner of a {0}! Pew-pew dreams do come true.' -f $Gun.Name),
+            ('Well, look who''s the proud parent of a bouncing baby {0}! Parenthood, gun-style, fam.' -f $Gun.Name),
+            ('You got a {0}! Time to start practicing your action movie one-liners. "Yippee-ki-yay, {0}-lover!"' -f $Gun.Name),
+            ('Boom shakalaka! You''ve upgraded to a {0}! Watch out, world - you''re armed and hilarious.' -f $Gun.Name),
+            ('Woo-hoo! You got a {0}! It''s like winning the lottery, but with more pew-pew and fewer numbers.' -f $Gun.Name)
+        )
+        Write-Centered (Get-Random -InputObject $newGunExpressions)
+        $this.Guns += $Gun
+        Start-Sleep 2
+    }
+
+    # Method to Buy a gun
+    [void]BuyGun([Gun]$Gun) {
+        # If the player doesn't have enough cash, print a message and return
+        if ($Gun.Price -gt $this.Cash) {
+            $gunPurchasePhrases = @(
+                'Oops! Your wallet''s on a diet - can''t afford that fancy {0} right now. Time to channel your inner magpie, my friend!',
+                'Uh-oh! Your cash stash is more elusive than Bigfoot when it comes to buying a {0}, homey. Get those brainstorming wheels turning, pal!',
+                'Houston, we have a cash-flow problem! Buying a {0}, fam, requires some next-level haggling skills. Prepare for liftoff, friend!',
+                'Breaking news: Your wallet just declared bankruptcy in the face of that {0}, pal. Let''s brainstorm ways to turn pocket lint into gold, buddy!',
+                'Ay caramba! Your dinero isn''t playing nice with the idea of a {0}, amigo. Time for a financial fiesta, compadre!',
+                'Eh, capisce? Your wallet''s playing hard to get with that {0}. Let''s hustle, my nonna-lovin'' friend - maybe she''s got a secret stash!'
+            )
+            
+            Write-Centered (Get-Random -InputObject $gunPurchasePhrases) -ForegroundColor Yellow
+            return
+        }
+
+        # If the player has enough cash, buy the gun
+        $this.Cash -= $Gun.Price
+        $this.AddGun($Gun)
+        Write-Centered ('You bought a {0} for ${1}.' -f $Gun.Name, $Gun.Price)
     }
 
     # Method to adjust pocket count up or down
