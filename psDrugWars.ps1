@@ -804,7 +804,7 @@ $script:RandomEvents = @(
                 Write-Centered ('Oh no! The shadowy figure stuck you up and took ${0}.' -f $cashToTake) -ForegroundColor DarkRed
             }
             else {
-                Write-Centered 'Nothing happened. Get back ot hustlin''!'
+                Write-Centered 'Nothing happened. Get back to hustlin''!'
             }
 
             Start-Sleep -Seconds 2
@@ -1290,7 +1290,7 @@ $script:RandomEvents = @(
                             Write-Centered $_.Question -ForegroundColor DarkCyan 
                             Start-Sleep -Milliseconds (Get-Random -Minimum 500 -Maximum 3001)
                             Write-Host
-                            if (Get-Random -Minimum 0 -Maximum 2 -eq 1) {
+                            if ((Get-Random -Minimum 0 -Maximum 2) -eq 1) {
                                 Write-Centered $_.Answer -ForegroundColor DarkMagenta
                                 Write-Host
                                 Start-Sleep -Milliseconds 750
