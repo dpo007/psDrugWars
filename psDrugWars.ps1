@@ -1287,11 +1287,11 @@ $script:RandomEvents = @(
 
                         # Display 5 random questions and answers, with a 3 seconds pause between each.
                         $triviaQuestionsAnswers | Get-Random -Count 5 | ForEach-Object {
-                            Write-Centered $_.Question -ForegroundColor 
+                            Write-Centered $_.Question -ForegroundColor DarkCyan 
                             Start-Sleep -Milliseconds (Get-Random -Minimum 500 -Maximum 3001)
                             Write-Host
                             if (Get-Random -Minimum 0 -Maximum 2 -eq 1) {
-                                Write-Centered $_.Answer
+                                Write-Centered $_.Answer -ForegroundColor DarkMagenta
                                 Write-Host
                                 Start-Sleep -Milliseconds 750
                                 Write-Centered 'Right!' -ForegroundColor DarkGreen
@@ -1304,7 +1304,7 @@ $script:RandomEvents = @(
                                     'The answer is 42.',
                                     'Cows go moo.'
                                 )
-                                Write-Centered ($randomAnswers | Get-Random)
+                                Write-Centered ($randomAnswers | Get-Random) -ForegroundColor DarkYellow
                                 Write-Host
                                 Start-Sleep -Milliseconds 750
                                 $youWrongStatements = @(
