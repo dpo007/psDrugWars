@@ -1418,10 +1418,10 @@ $script:RandomEvents = @(
 
             # Check if player already has a slingshot
             $hasSlingshot = $script:Player.get_Guns | Where-Object { $_.Name -eq 'Slingshot' }
-
-            $slingshotInfo = $script:GunInfo | Where-Object { $_.Name -eq 'Slingshot' }
+           
             if (!$hasSlingshot) {
-                Write-Centered 'You bravely retrieve the slingshot, wiping off the filth as best as you can. It is now added to your Gun collection.'
+                Write-Centered 'You bravely retrieve the slingshot, wiping off the filth as best as you can. It is now added to your inventory.' -ForegroundColor Green
+                $slingshotInfo = $script:GunInfo | Where-Object { $_.Name -eq 'Slingshot' }
                 $script:Player.AddGun($slingshotInfo)
             }
             else {
