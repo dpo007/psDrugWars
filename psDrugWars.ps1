@@ -1054,7 +1054,8 @@ $script:RandomEvents = @(
                     }
                 }
                 2 {
-                    Write-Centered 'You meet a luded-out pocket guru who offers to enhance your inner pocket energy.' Write-Centered 'Meditate for a chance to gain 10 extra pockets? (Y/N)'
+                    Write-Centered 'You meet a luded-out pocket guru who offers to enhance your inner pocket energy.' 
+                    Write-Centered 'Meditate for a chance to gain 10 extra pockets? (Y/N)'
                     # Wait for user to press a valid key
                     $choices = @('Y', 'N')
                     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
