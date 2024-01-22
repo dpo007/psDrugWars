@@ -124,6 +124,10 @@ class Player {
         $this.Guns = @()
     }
 
+    [void]AddGun([Gun]$Gun) {
+        AddGun($Gun, $false)
+    }
+
     # Method to add a gun
     [void]AddGun([Gun]$Gun, [bool]$Silent = $false) {
         if ($this.Guns.Count -ge 2) {
@@ -136,6 +140,8 @@ class Player {
                 'Whoa, trigger happy! Two guns are your lucky number, homey. Adding another one would be like trying to fit a giraffe into a phone booth.'
             )
             Write-Centered (Get-Random -InputObject $tooManyGunsExpressions) -ForegroundColor Red
+            Start-Sleep 2
+            PressEnterPrompt
             return
         }
 
@@ -961,6 +967,7 @@ $script:RandomEvents = @(
                 $extraPockets = 75
                 $script:Player.AdjustPocketCount($extraPockets)
                 Write-Centered ('Incredible! You''ve now got {0} extra pockets! You''ll never run out of storage space.' -f $extraPockets) -ForegroundColor DarkGreen
+                Write-Centered '(The loons, Norman! The loons!)' -ForegroundColor DarkGray
             }
             else {
                 Write-Centered 'You already have a fishing vest. You decide to sell this one for $75.'
