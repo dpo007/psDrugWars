@@ -193,6 +193,15 @@ class Player {
         Start-Sleep 3
     }
 
+    # Method to get total stopping power of all guns
+    [int]get_StoppingPower() {
+        $stoppingPower = 0
+        foreach ($gun in $this.Guns) {
+            $stoppingPower += $gun.StoppingPower
+        }
+        return $stoppingPower
+    }
+
     # Method to adjust pocket count up or down
     [void]AdjustPocketCount([int]$Pockets) {
         if ($Pockets -lt 0) {
@@ -2588,7 +2597,11 @@ function ShowMainMenu {
 
     # Combine Clothing and Guns into OtherInventory for display.
     if ($script:Player.Guns.Count -gt 0) {
-        $otherInventory = $script:Player.Clothing + ($script:Player.Guns).Name
+        [string[]]$gunEntries = @()
+        foreach ($gun in $script:Player.Guns) {
+            $gunEntries += ('{0} (Power: {1})' -f $gun.Name, $gun.StoppingPower)
+        }
+        $otherInventory = $script:Player.Clothing + $gunEntries
     }
     else {
         $otherInventory = $script:Player.Clothing
