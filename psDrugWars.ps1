@@ -1172,6 +1172,8 @@ $script:RandomEvents = @(
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
 
+                    Write-Host
+                    Write-Centered 'Chug! Chug! Chug!'
                     Start-Sleep 2
                     Write-Host
 
@@ -1346,6 +1348,8 @@ $script:RandomEvents = @(
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
 
+                    Write-Host
+                    Write-Centered 'Yoink!'
                     Start-Sleep 2
                     Write-Host
 
