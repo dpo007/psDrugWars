@@ -1408,7 +1408,29 @@ $script:RandomEvents = @(
             Write-Host
             AdvanceGameDay -SkipPriceUpdate
         }
-    }      
+    },
+    @{
+        "Name"        = "Stanky Slingshot"
+        "Description" = "Eww! In the grimy depths under the sink of a public washroom, you stumble upon a slingshot taped to the bottom. It's covered in gunk, but it might come in handy."
+        "Effect"      = {
+            Start-Sleep -Seconds 2
+            Write-Host
+
+            # Check if player already has a slingshot
+            $hasSlingshot = $script:Player.get_Guns | Where-Object { $_.Name -eq 'Slingshot' }
+
+            $slingshotInfo = $script:GunInfo | Where-Object { $_.Name -eq 'Slingshot' }
+            if (!$hasSlingshot) {
+                Write-Centered 'You bravely retrieve the slingshot, wiping off the filth as best as you can. It is now added to your Gun collection.'
+                $script:Player.AddGun($slingshotInfo)
+            }
+            else {
+                Write-Centered 'You already have a slingshot. You decide to sell it to a hopped-up junkie for $150, making a quick profit.'
+                $script:Player.Cash += 150
+            }
+            Start-Sleep -Seconds 2
+        }
+    }  
 )
 
 # Define game guns
