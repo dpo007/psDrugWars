@@ -1545,15 +1545,17 @@ $script:RandomEvents = @(
             Start-Sleep -Seconds 2
             Write-Host
 
+            # Gather slingshot info
+            $slingshotInfo = $script:GunInfo | Where-Object { $_.Name -eq 'Slingshot' }
+
             # Check if player already has a slingshot
             $hasSlingshot = $script:Player.get_Guns() | Where-Object { $_.Name -eq 'Slingshot' }
            
             if (!$hasSlingshot) {
                 Write-Centered 'You bravely retrieve the slingshot, wiping off the filth as best as you can. It is now added to your inventory.' -ForegroundColor Green
-                $slingshotInfo = $script:GunInfo | Where-Object { $_.Name -eq 'Slingshot' }
                 $script:Player.AddGun($slingshotInfo)
             }
-            else {
+            else {                
                 $sellPrice = [math]::Round($slingshotInfo.Price / 2)
                 Write-Centered ('You already have a slingshot. You decide to sell it to a hopped-up junkie for ${0}, making a quick profit.' -f $sellPrice) -ForegroundColor Yellow
                 $script:Player.Cash += $sellPrice
@@ -2596,16 +2598,11 @@ function ShowMainMenu {
     $columnWidth = 40
 
     # Combine Clothing and Guns into OtherInventory for display.
-    if ($script:Player.Guns.Count -gt 0) {
-        [string[]]$gunEntries = @()
-        foreach ($gun in $script:Player.Guns) {
-            $gunEntries += ('{0} (Power: {1})' -f $gun.Name, $gun.StoppingPower)
-        }
-        $otherInventory = $script:Player.Clothing + $gunEntries
+    [string[]]$gunEntries = $script:Player.Guns | ForEach-Object {
+        '{0} (Power: {1})' -f $_.Name, $_.StoppingPower
     }
-    else {
-        $otherInventory = $script:Player.Clothing
-    }
+
+    $otherInventory = $script:Player.Clothing + $gunEntries
 
     # Print the headers
     Write-Centered ("{0,-$columnWidth} {1,-$columnWidth}" -f "Your drugs:", "Other Inventory:")
