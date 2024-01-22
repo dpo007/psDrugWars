@@ -1208,10 +1208,120 @@ $script:RandomEvents = @(
                         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                     }
 
-                    Start-Sleep 2
                     Write-Host
 
                     if ($choice -eq 'Y') {
+                        Write-Centered 'You and the junkie face off in a battle of wits.'
+                        Start-Sleep 2
+                        Write-Host
+                        $triviaQuestionsAnswers = @(
+                            @{
+                                "Question" = "What's the global party favour that's greener than the Hulk and chills everyone out?"
+                                "Answer"   = "Cannabis (marijuana)"
+                            },
+                            @{
+                                "Question" = "Which drug gets you zooming like The Flash and is known as the life of the party?"
+                                "Answer"   = "Amphetamines"
+                            },
+                            @{
+                                "Question" = "What's the name for the mood-killer that turns the party into a snoozefest, slowing everyone down?"
+                                "Answer"   = "Barbiturates"
+                            },
+                            @{
+                                "Question" = "What's the heavy hitter responsible for more dropouts than algebra class?"
+                                "Answer"   = "Fentanyl"
+                            },
+                            @{
+                                "Question" = "What do you call catching clouds for a mind-altering high in the vape nation?"
+                                "Answer"   = "Inhalant abuse"
+                            },
+                            @{
+                                "Question" = "Which drug, when injected, can turn your night into a speedball symphony when mixed with the right partner?"
+                                "Answer"   = "Cocaine"
+                            },
+                            @{
+                                "Question" = "What's the street name for the brain trip derived from a Mexican fungus that'll have you talking to cacti?"
+                                "Answer"   = "Psilocybin or 'magic mushrooms'"
+                            },
+                            @{
+                                "Question" = "What's the fancy term for playing chemical roulette with multiple substances, cranking up the risk for epic fails?"
+                                "Answer"   = "Polydrug use or poly-substance use"
+                            },
+                            @{
+                                "Question" = "Snort it, shoot it, and ride the rollercoaster from ecstasy to epic fail. What's the name of this wild ride?"
+                                "Answer"   = "Cocaine"
+                            },
+                            @{
+                                "Question" = "What's the street slang for the psychedelic joyride fuelled by morning glory seeds that'll have you liberating your mind?"
+                                "Answer"   = "LSA or 'liberation'"
+                            },
+                            @{
+                                "Question" = "What's the official term for using drugs as a therapist to kick stress, anxiety, and mental drama to the curb?"
+                                "Answer"   = "Substance use disorder or addiction"
+                            },
+                            @{
+                                "Question" = "What's the name of the stimulant straight outta Hollywood that'll have you buzzing like a hummingbird?"
+                                "Answer"   = "Khat"
+                            },
+                            @{
+                                "Question" = "What's the street lingo for the trippy journey with the yew tree bark that'll make you see colors even Tim Burton hasn't dreamt of?"
+                                "Answer"   = "Amanita muscaria"
+                            },
+                            @{
+                                "Question" = "What do you call the backstage pass to superhuman abilities, laser focus, and alertness?"
+                                "Answer"   = "Performance-enhancing drugs"
+                            },
+                            @{
+                                "Question" = "What's the white powder powerhouse derived from the coca plant that'll turn your night into a blockbuster?"
+                                "Answer"   = "Cocaine"
+                            },
+                            @{
+                                "Question" = "What's the remedy for a sleepless night that'll have you counting sheep like you're on a psychedelic farm?"
+                                "Answer"   = "Sleeping pills"
+                            },
+                            @{
+                                "Question" = "What's the street term for the cactus-powered psychedelic voyage that'll make you feel one with the desert?"
+                                "Answer"   = "Peyote"
+                            }
+                        )
+
+                        # Display 5 random questions and answers, with a 3 seconds pause between each.
+                        $triviaQuestionsAnswers | Get-Random -Count 5 | ForEach-Object {
+                            Write-Centered $_.Question -ForegroundColor 
+                            Start-Sleep -Milliseconds (Get-Random -Minimum 500 -Maximum 3001)
+                            Write-Host
+                            if (Get-Random -Minimum 0 -Maximum 2 -eq 1) {
+                                Write-Centered $_.Answer
+                                Write-Host
+                                Start-Sleep -Milliseconds 750
+                                Write-Centered 'Right!' -ForegroundColor DarkGreen
+                            }
+                            else {
+                                $randomAnswers = @(
+                                    'Noodle.',
+                                    'Dinosaur.',
+                                    'Yo'' momma!',
+                                    'The answer is 42.',
+                                    'Cows go moo.'
+                                )
+                                Write-Centered ($randomAnswers | Get-Random)
+                                Write-Host
+                                Start-Sleep -Milliseconds 750
+                                $youWrongStatements = @(
+                                    'Wrong!',
+                                    'Nope!',
+                                    'Not even close!',
+                                    'Dummy!',
+                                    'Are you high?',
+                                    'Incorrect, schmuck!',
+                                    'Lay off the smack, Jack.'
+                                )
+                                Write-Centered ($youWrongStatements | Get-Random) -ForegroundColor DarkRed
+                            }
+                            Start-Sleep -Seconds 2
+                            Write-Host
+                        }
+
                         $win = Get-Random -Minimum 0 -Maximum 2
                         $amount = Get-Random -Minimum 10 -Maximum 301
                         if ($win -eq 1) {
