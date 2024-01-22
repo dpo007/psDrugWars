@@ -125,7 +125,7 @@ class Player {
     }
 
     # Method to add a gun
-    [void]AddGun([Gun]$Gun) {
+    [void]AddGun([Gun]$Gun, [bool]$Silent = $false) {
         if ($this.Guns.Count -ge 2) {
             $tooManyGunsExpressions = @(
                 'Whoa, slow down, Rambo! Two strapped guns are your limit, fam. We don''t want you to take off like a helicopter now.',
@@ -139,21 +139,24 @@ class Player {
             return
         }
 
-        $newGunExpressions = @(
-            ('You got a {0}! Nice! Just remember, with great firepower comes great responsibility.' -f $Gun.Name),
-            ('You got a {0}! Keep it strapped, fam! It''s like having a Swiss Army knife, but, you know, for the streets or some shit.' -f $Gun.Name),
-            ('Big man! Packin'' heat with a {0}! Who needs biceps when you''ve got barrels, am I right?' -f $Gun.Name),
-            ('Say hello to my little friend! "Hello {0}."' -f $Gun.Name),
-            ('Congrats, sharpshooter! You snagged a {0}! The only thing hotter than the barrel is your style.' -f $Gun.Name),
-            ('Hasta la vista, budget constraints! You''re now the proud owner of a {0}! Pew-pew dreams do come true.' -f $Gun.Name),
-            ('Well, look who''s the proud parent of a bouncing baby {0}! Parenthood, gun-style, fam.' -f $Gun.Name),
-            ('You got a {0}! Time to start practicing your action movie one-liners. "Yippee-ki-yay, {0}-lover!"' -f $Gun.Name),
-            ('Boom shakalaka! You''ve upgraded to a {0}! Watch out, world - you''re armed and hilarious.' -f $Gun.Name),
-            ('Woo-hoo! You got a {0}! It''s like winning the lottery, but with more pew-pew and fewer numbers.' -f $Gun.Name)
-        )
-        Write-Centered (Get-Random -InputObject $newGunExpressions)
+        if (-not $Silent) {
+            $newGunExpressions = @(
+                ('You got a {0}! Nice! Just remember, with great firepower comes great responsibility.' -f $Gun.Name),
+                ('You got a {0}! Keep it strapped, fam! It''s like having a Swiss Army knife, but, you know, for the streets or some shit.' -f $Gun.Name),
+                ('Big man! Packin'' heat with a {0}! Who needs biceps when you''ve got barrels, am I right?' -f $Gun.Name),
+                ('Say hello to my little friend! "Hello {0}."' -f $Gun.Name),
+                ('Congrats, sharpshooter! You snagged a {0}! The only thing hotter than the barrel is your style.' -f $Gun.Name),
+                ('Hasta la vista, budget constraints! You''re now the proud owner of a {0}! Pew-pew dreams do come true.' -f $Gun.Name),
+                ('Well, look who''s the proud parent of a bouncing baby {0}! Parenthood, gun-style, fam.' -f $Gun.Name),
+                ('You got a {0}! Time to start practicing your action movie one-liners. "Yippee-ki-yay, {0}-lover!"' -f $Gun.Name),
+                ('Boom shakalaka! You''ve upgraded to a {0}! Watch out, world - you''re armed and hilarious.' -f $Gun.Name),
+                ('Woo-hoo! You got a {0}! It''s like winning the lottery, but with more pew-pew and fewer numbers.' -f $Gun.Name)
+            )
+            Write-Centered (Get-Random -InputObject $newGunExpressions)
+            Start-Sleep 2
+        }
+        
         $this.Guns += $Gun
-        Start-Sleep 2
     }
 
     # Method to Buy a gun
