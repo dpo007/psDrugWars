@@ -1536,7 +1536,7 @@ $script:RandomEvents = @(
             Write-Host
 
             # Check if player already has a slingshot
-            $hasSlingshot = $script:Player.get_Guns | Where-Object { $_.Name -eq 'Slingshot' }
+            $hasSlingshot = $script:Player.get_Guns() | Where-Object { $_.Name -eq 'Slingshot' }
            
             if (!$hasSlingshot) {
                 Write-Centered 'You bravely retrieve the slingshot, wiping off the filth as best as you can. It is now added to your inventory.' -ForegroundColor Green
@@ -3093,6 +3093,15 @@ function Jet {
         # Fill landing City with random drugs.
         $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
 
+        # If it's sale day, adjust multiplier for the new city's home drugs.
+        if (IsHomeDrugSaleDay) {
+            $params = @{
+                DrugNames  = $script:Player.City.HomeDrugNames
+                Multiplier = $script:Player.City.HomeDrugSaleMultiplier
+            }
+            SetDrugPriceMultiplier @params
+        }
+
         $arrivalMessages = @(
             'You arrive in {0} and immidiately hit the streets.',
             'Welcome to beautiful {0}!',
@@ -3117,7 +3126,16 @@ function Jet {
 
 # This function handles a random event.
 function StartRandomEvent {
-    $randomEvent = $script:RandomEvents | Get-Random
+    param (
+        [string]$EventName
+    )
+
+    if (!$EventName) {
+        $randomEvent = $script:RandomEvents | Get-Random
+    }
+    else {
+        $randomEvent = $script:RandomEvents | Where-Object { $_.Name -eq $EventName }
+    }
 
     Clear-Host
     ShowMenuHeader
@@ -3703,12 +3721,6 @@ function AdvanceGameDay {
         Write-Centered ('*** Today is a home drug sale day! ***') -ForegroundColor Green
         Write-Centered ('Cities will be selling their home drugs for CHEAP!') -ForegroundColor DarkGray
         Start-Sleep 3
-
-        $params = @{
-            DrugNames  = $script:Player.City.HomeDrugNames
-            Multiplier = $script:Player.City.HomeDrugSaleMultiplier
-        }
-        SetDrugPriceMultiplier @params
     }
 
     # Reset the random event chance for the day.
@@ -3741,11 +3753,13 @@ function AdvanceGameDay {
 
         # Change the player's outfit, and capture the new outfit name
         $newOutfit = $script:Player.ChangeOutfit()
+
         # Lower-case the first character
         $newOutfit = $newOutfit.Substring(0, 1).ToLower() + $newOutfit.Substring(1)
+        Write-Host
         Write-Centered ('You change your clothes, putting on your favourite {0}.' -f $newOutfit)
-        Start-Sleep -Milliseconds 500
-        Write-Centered ('{0}' -f (Get-Random -InputObject $clothesChangePhrases)) -ForegroundColor DarkGray
+        Write-Centered ('({0})' -f (Get-Random -InputObject $clothesChangePhrases)) -ForegroundColor DarkGray
+        Start-Sleep -Milliseconds 750
     }
 
     if (!$SkipPriceUpdate) {
@@ -3827,7 +3841,7 @@ while ($script:Playing) {
                 ShowHelp
             }
             "!" {
-                StartRandomEvent
+                StartRandomEvent -EventName (Read-Host -Prompt 'Enter event name')
             }
             default {
                 Write-Host
