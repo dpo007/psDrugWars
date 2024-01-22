@@ -1371,6 +1371,7 @@ $script:RandomEvents = @(
                             )                                                     
 
                             Write-Centered ('You find a stash of {0}, but before you can celebrate {1} jumps you!' -f $randomDrug.Name, (Get-Random -InputObject $mobBosses))
+                            Start-Sleep 2
                             Write-Centered ('They beat you up, take back their drugs, and you spend a day recovering in the hospital.') -ForegroundColor Red
                             AdvanceGameDay -SkipPriceUpdate
                         }
@@ -1544,8 +1545,9 @@ $script:RandomEvents = @(
                 $script:Player.AddGun($slingshotInfo)
             }
             else {
-                Write-Centered 'You already have a slingshot. You decide to sell it to a hopped-up junkie for $150, making a quick profit.'
-                $script:Player.Cash += 150
+                $sellPrice = [math]::Round($slingshotInfo.Price / 2)
+                Write-Centered ('You already have a slingshot. You decide to sell it to a hopped-up junkie for ${0}, making a quick profit.' -f $sellPrice) -ForegroundColor Yellow
+                $script:Player.Cash += $sellPrice
             }
             Start-Sleep -Seconds 2
         }
