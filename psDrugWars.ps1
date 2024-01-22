@@ -1540,8 +1540,9 @@ $script:GunInfo = @(
 #############################
 # Function that will Exit if console size is not at least 80x25.
 function CheckConsoleSize {
-    if ($Host.UI.RawUI.WindowSize.Width -lt 120 -or $Host.UI.RawUI.WindowSize.Height -lt 25) {
-        Write-Host 'Please resize your console window to at least 120 x 25 and run the script again.' -ForegroundColor Red
+    if ($Host.UI.RawUI.WindowSize.Width -lt 120 -or $Host.UI.RawUI.WindowSize.Height -lt 30) {
+        # If resize fiaed for some reason, exit.
+        Write-Host 'Please resize your console window to at least 120 x 30 and run the script again.' -ForegroundColor Red
         Write-Host ('Current size: {0}x{1}' -f $Host.UI.RawUI.WindowSize.Width, $Host.UI.RawUI.WindowSize.Height) -ForegroundColor Red
         Exit 666
     }
@@ -2231,6 +2232,10 @@ function InitGame {
     $script:Player.City = $script:GameCities | Get-Random
     $script:Player.set_PocketCount($startingPockets)
 
+    # Add the slingshot to the user's guns
+    $slingshotInfo = $script:GunInfo | Where-Object { $_.Name -eq 'Slingshot' }
+    $script:Player.AddGun($slingshotInfo)
+
     # Fill starting City with random drugs.
     $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
 }
@@ -2437,13 +2442,21 @@ function ShowMainMenu {
 
     #region Display Inventory
     # Define the column width
-    $columnWidth = 38
+    $columnWidth = 40
+
+    # Combine Clothing and Guns into OtherInventory for display.
+    if ($script:Player.Guns.Count -gt 0) {
+        $otherInventory = $script:Player.Clothing + ($script:Player.Guns).Name
+    }
+    else {
+        $otherInventory = $script:Player.Clothing
+    }
 
     # Print the headers
-    Write-Centered ("{0,-$columnWidth} {1,-$columnWidth} {2,-$columnWidth}" -f "Your drugs:", "Your clothes:", "Weapons:")
+    Write-Centered ("{0,-$columnWidth} {1,-$columnWidth}" -f "Your drugs:", "Other Inventory:")
 
     # Get the maximum count between the three collections
-    $maxCount = [Math]::Max([Math]::Max($script:Player.Drugs.Count, $script:Player.Clothing.Count), $script:Player.Guns.Count)
+    $maxCount = [Math]::Max($script:Player.Drugs.Count, $otherInventory.Count)
 
     # Loop that many times
     for ($i = 0; $i -lt $maxCount; $i++) {
@@ -2455,21 +2468,14 @@ function ShowMainMenu {
             '· You have 0 marijuanas.' 
         }
 
-        $dispClothing = if ($i -lt $script:Player.Clothing.Count) { 
-            '· {0}' -f $script:Player.Clothing[$i] 
+        $dispOtherInventory = if ($i -lt $otherInventory.Count) { 
+            '· {0}' -f $otherInventory[$i] 
         }
         elseif ($i -eq 0) {
             '· You are naked.' 
         }
 
-        $dispGun = if ($i -lt $script:Player.Guns.Count) { 
-            '· {0}' -f $script:Player.Guns[$i].Name 
-        }
-        elseif ($i -eq 0) {
-            '· You have no guns.' 
-        }
-
-        Write-Centered ("{0,-$columnWidth} {1,-$columnWidth} {2,-$columnWidth}" -f $dispDrug, $dispClothing, $dispGun)
+        Write-Centered ("{0,-$columnWidth} {1,-$columnWidth}" -f $dispDrug, $dispOtherInventory)
     }
     #endregion Display Inventory
 
