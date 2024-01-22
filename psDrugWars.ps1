@@ -2232,10 +2232,6 @@ function InitGame {
     $script:Player.City = $script:GameCities | Get-Random
     $script:Player.set_PocketCount($startingPockets)
 
-    # Add the slingshot to the user's guns
-    $slingshotInfo = $script:GunInfo | Where-Object { $_.Name -eq 'Slingshot' }
-    $script:Player.AddGun($slingshotInfo)
-
     # Fill starting City with random drugs.
     $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
 }
