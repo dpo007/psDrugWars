@@ -125,7 +125,7 @@ class Player {
     }
 
     [void]AddGun([Gun]$Gun) {
-        AddGun($Gun, $false)
+        $this.AddGun($Gun, $false)
     }
 
     # Method to add a gun
