@@ -3884,7 +3884,9 @@ while ($script:Playing) {
         # No cash and no drugs, game over
         if ($script:Player.Cash -le 0 -and $script:Player.Drugs.Count -eq 0) {
             Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
+            Start-Sleep -Seconds 2
             Write-Centered 'You''re not really cut out for this business.' -ForegroundColor DarkGray
+            Start-Sleep -Seconds 2
             Write-Host
             Write-BlockLetters 'Game over.' -ForegroundColor Black -BackgroundColor DarkRed -VerticalPadding 1 -Align Center
             Write-Host
@@ -3895,8 +3897,10 @@ while ($script:Playing) {
         # Out of days, game over.
         if ($script:Player.GameDay -gt $script:GameDays) {
             Write-BlockLetters ('Day {0}!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
+            Start-Sleep -Seconds 2
             Write-Host
             Write-Centered 'Time''s up!' -ForegroundColor Green
+            Start-Sleep -Seconds 2
             Write-Host
             Write-Host
             PressEnterPrompt
