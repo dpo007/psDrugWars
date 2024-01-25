@@ -39,7 +39,7 @@ class Drug {
         if ($price -lt 5) {
             $price = 5
         }
-        return $price 
+        return $price
     }
 }
 
@@ -161,7 +161,7 @@ class Player {
             Write-Centered (Get-Random -InputObject $newGunExpressions)
             Start-Sleep 2
         }
-        
+
         $this.Guns += $Gun
     }
 
@@ -177,7 +177,7 @@ class Player {
                 'Ay caramba! Your dinero isn''t playing nice with the idea of a {0}, amigo. Time for a financial fiesta, compadre!',
                 'Eh, capisce? Your wallet''s playing hard to get with that {0}. Let''s hustle, my nonna-lovin'' friend - maybe she''s got a secret stash!'
             )
-            
+
             Write-Centered (Get-Random -InputObject $gunPurchasePhrases) -ForegroundColor Yellow
             return
         }
@@ -317,7 +317,7 @@ class Player {
                 $this.Cash -= $totalPrice
                 Write-Host ('You bought {0} {1} for ${2}.' -f $Drug.Quantity, $Drug.Name, $totalPrice)
                 $this.AddDrugs($Drug)
-                
+
             }
         }
         # Pause for 3 seconds before returning
@@ -326,10 +326,10 @@ class Player {
 
     # Method to sell drugs.
     [void]SellDrugs([Drug]$Drug, [int]$Quantity) {
-        
+
         # Look up the drug by name in the current City's drug list.
         $cityDrug = $this.City.Drugs | Where-Object { $_.Name -eq $Drug.Name }
-        
+
         # Calculate the total price (using the city's price for the drug)
         $totalPrice = $cityDrug.get_Price() * $Quantity
 
@@ -645,14 +645,14 @@ $script:RandomEvents = @(
     @{
         "Name"        = "Busted"
         "Description" = 'You were busted by the cops!'
-        "Effect"      = {    
+        "Effect"      = {
             Start-Sleep -Seconds 3
             # If player has no drugs on them, the cops leave them alone
             if ($script:Player.Drugs.Count -eq 0) {
                 Write-Centered 'You were searched, but you didn''t have any drugs on you!'
                 Write-Host
                 Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
-                
+
                 if ($script:Player.Cash -gt 50) {
                     Start-Sleep -Seconds 2
                     # Cops let you go, but take 5% of your cash
@@ -663,7 +663,7 @@ $script:RandomEvents = @(
                     Write-Host
                     Write-Centered ('They took ${0}!' -f $loss) -ForegroundColor DarkRed
                 }
-                
+
                 Start-Sleep -Seconds 3
                 return
             }
@@ -701,7 +701,7 @@ $script:RandomEvents = @(
                     'You were almost caught, but you executed the perfect ninja smoke bomb escape!',
                     'They attempted to search you, but you pulled out a trombone and started a parade distracting them!',
                     'You narrowly avoided being searched by unleashing your inner contortionist and slipping through their fingers!',
-                    'They let you go with a warning, probably because they were impressed by your interpretive dance routine!'       
+                    'They let you go with a warning, probably because they were impressed by your interpretive dance routine!'
                 )
 
                 # Select a random message
@@ -785,7 +785,7 @@ $script:RandomEvents = @(
         "Description" = "A shadowy figure approaches you and whispers, 'Psst... I know when the next Home Drug Sale Day is. Interested?'"
         "Effect"      = {
             # Figure out when next Home Drug sale day is from $script:HomeDrugSaleDays list
-            $nextSaleday = $script:HomeDrugSaleDays | Sort-Object | Where-Object { $_ -gt $script:Player.GameDay } |      Select-Object -First 1
+            $nextSaleday = $script:HomeDrugSaleDays | Sort-Object | Where-Object { $_ -gt $script:Player.GameDay } | Select-Object -First 1
             $daysUntilNextSale = $nextSaleday - $script:Player.GameDay
 
             Start-Sleep -Seconds 2
@@ -796,7 +796,7 @@ $script:RandomEvents = @(
             else {
                 Write-Centered 'There''s no more Home Drug Sale Days left.' -ForegroundColor DarkYellow
             }
-            
+
             Start-Sleep -Seconds 2
 
             Write-Centered ('He then looks around and...')
@@ -818,7 +818,7 @@ $script:RandomEvents = @(
 
             Start-Sleep -Seconds 2
         }
-    },  
+    },
     @{
         "Name"        = "Someone's Wallet"
         "Description" = "You found a wallet full of cash laying in the gutter!"
@@ -878,12 +878,12 @@ $script:RandomEvents = @(
                         { $_ -gt 10 } {
                             Write-Host
                             Write-Centered ('You got so damn high, you actually GAINED A DAY!') -ForegroundColor Yellow
-                            $script:GameDays++                          
+                            $script:GameDays++
                             Start-Sleep -Milliseconds 750
                             Write-Centered ('You now have {0} days to make as much cash as possible.' -f $script:GameDays) -ForegroundColor DarkGreen
                         }
                     }
-                    
+
                 }
             }
             else {
@@ -1001,7 +1001,7 @@ $script:RandomEvents = @(
             }
             Start-Sleep -Seconds 2
         }
-    },    
+    },
     @{
         "Name"        = "Lemonade Stand"
         "Description" = "Wandering through the gritty streets of Skid-Row, your eyes catch a peculiar sight - a little girl gleefully running a lemonade stand. But, as you approach, you realize this stand has a mysterious twist!"
@@ -1026,7 +1026,7 @@ $script:RandomEvents = @(
                 $script:Player.AddDrugs($extraDrug)
             }
         }
-    },    
+    },
     @{
         "Name"        = "Pocket Portal"
         "Description" = "You stumble upon a mysterious portal while high. Curiosity gets the better of you, and you step through!"
@@ -1063,7 +1063,7 @@ $script:RandomEvents = @(
                     }
                 }
                 2 {
-                    Write-Centered 'You meet a luded-out pocket guru who offers to enhance your inner pocket energy.' 
+                    Write-Centered 'You meet a luded-out pocket guru who offers to enhance your inner pocket energy.'
                     Write-Centered 'Meditate for a chance to gain 10 extra pockets? (Y/N)'
                     # Wait for user to press a valid key
                     $choices = @('Y', 'N')
@@ -1114,7 +1114,7 @@ $script:RandomEvents = @(
                                     'Hide and Seek',
                                     'Tic-Tac-Toe'
                                 )
-                               
+
                                 $cosmicGame = Get-Random -InputObject $cosmicGames
                                 Write-Centered ('You outwit the alien shaman in a cosmic game of {0}.' -f $cosmicGame)
                                 Start-Sleep -Seconds 2
@@ -1170,7 +1170,7 @@ $script:RandomEvents = @(
             Write-Host
             Start-Sleep -Seconds 2
             $choice = Get-Random -Minimum 1 -Maximum 6
-    
+
             switch ($choice) {
                 1 {
                     Write-Centered 'A shady dealer offers you a mysterious drug cocktail. Want to try it? (Y/N)'
@@ -1298,7 +1298,7 @@ $script:RandomEvents = @(
 
                         # Display 5 random questions and answers, with a 3 seconds pause between each.
                         $triviaQuestionsAnswers | Get-Random -Count 5 | ForEach-Object {
-                            Write-Centered $_.Question -ForegroundColor DarkCyan 
+                            Write-Centered $_.Question -ForegroundColor DarkCyan
                             Start-Sleep -Milliseconds (Get-Random -Minimum 1000 -Maximum 3001)
                             if ((Get-Random -Minimum 0 -Maximum 2) -eq 1) {
                                 Write-Centered $_.Answer -ForegroundColor DarkMagenta
@@ -1377,7 +1377,7 @@ $script:RandomEvents = @(
                                 'Rocco "Coke Cowboy" Colombo',
                                 'Maria "The Mixer" Martino',
                                 'Angela "Angel Dust" Amato'
-                            )                                                     
+                            )
 
                             Write-Centered ('You find a stash of {0}, but before you can celebrate {1} jumps you!' -f $randomDrug.Name, (Get-Random -InputObject $mobBosses))
                             Start-Sleep 2
@@ -1432,7 +1432,7 @@ $script:RandomEvents = @(
                         $portraitCost = [math]::Round((Get-Random -Minimum 5 -Maximum 16) / 5) * 5
                         $script:Player.Cash -= $portraitCost
                         Write-Centered ('The artist captures your essence in a gritty portrait. You pay him ${0} for his unique creation.' -f $portraitCost)
-    
+
                         $hashQuantity = Get-Random -Minimum 1 -Maximum 6
                         if ($script:Player.get_FreePocketCount() -ge $hashQuantity) {
                             Write-Host
@@ -1460,9 +1460,9 @@ $script:RandomEvents = @(
             Write-Host
             Write-Centered 'You try to escape, but the self-proclaimed cocaine expert has you trapped in a pointless conversation about their "skills."'
             Start-Sleep -Seconds 3
-    
+
             $awkwardnessLevel = Get-Random -Minimum 1 -Maximum 4
-    
+
             switch ($awkwardnessLevel) {
                 1 {
                     Write-Centered 'The cocaine aficionado insists their nose is the most finely tuned instrument for the job.'
@@ -1477,16 +1477,16 @@ $script:RandomEvents = @(
                     Write-Centered 'You can''t help but wonder how you ended up in this peculiar conversation about someone being the BEST at doing cocaine.'
                 }
             }
-    
+
             Start-Sleep -Seconds 2
             Write-Host
             Write-Host 'How would you like to react?'
             Write-Host '1. Politely nod and pretend to be impressed.'
             Write-Host '2. Burst into laughter and call their bluff.'
             Write-Host '3. Attempt to challenge them with your own made-up cocaine "skills."'
-    
+
             $playerChoice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
-    
+
             Write-Host
             switch ($playerChoice) {
                 1 {
@@ -1525,7 +1525,7 @@ $script:RandomEvents = @(
             Write-Centered 'You finally manage to escape the cocaine connoisseur, but not before losing a day to their ramblings.' -ForegroundColor Red
             $cocaine = [Drug]::new('Cocaine')
             $cocaine.Quantity = Get-Random -Minimum 2 -Maximum 6
-            
+
             # If the user has enough free pockets, add the cocaine to their inventory
             if ($script:Player.get_FreePocketCount() -ge $cocaine.Quantity) {
                 Write-Host
@@ -1550,19 +1550,19 @@ $script:RandomEvents = @(
 
             # Check if player already has a slingshot
             $hasSlingshot = $script:Player.get_Guns() | Where-Object { $_.Name -eq 'Slingshot' }
-           
+
             if (!$hasSlingshot) {
                 Write-Centered 'You bravely retrieve the slingshot, wiping off the filth as best as you can. It is now added to your inventory.' -ForegroundColor Green
                 $script:Player.AddGun($slingshotInfo)
             }
-            else {                
+            else {
                 $sellPrice = [math]::Round($slingshotInfo.Price / 2)
                 Write-Centered ('You already have a slingshot. You decide to sell it to a hopped-up junkie for ${0}, making a quick profit.' -f $sellPrice) -ForegroundColor Yellow
                 $script:Player.Cash += $sellPrice
             }
             Start-Sleep -Seconds 2
         }
-    }  
+    }
 )
 
 # Define game guns
@@ -1804,7 +1804,7 @@ function Write-BlockLetters {
         [ConsoleColor]$BackgroundColor = $Host.UI.RawUI.BackgroundColor,
         [int]$VerticalPadding = 0
     )
-    
+
     # Define the mapping of characters to their block letter representations
     $blockLetters = @{
         'A'  = @(
@@ -2228,7 +2228,7 @@ function Write-BlockLetters {
             "   "
         )
     }
-    
+
     # Convert the input text to block letters and create an array of lines containing the block letters
     $TextUpper = $Text.ToUpper()
     $lines = for ($i = 0; $i -lt 5; $i++) {
@@ -2245,18 +2245,18 @@ function Write-BlockLetters {
         $joinedLine = $line -join ""
         $joinedLine.Substring(0, $joinedLine.Length - 1)
     }
-    
+
     # Get width of the longest line (as integer)
     $longestLine = ($lines | Measure-Object -Property Length -Maximum).Maximum
-    
+
     # Add blank vertical padding lines to the top and bottom $lines array that are as wide as the longest line.
     for ($i = 0; $i -lt $VerticalPadding; $i++) {
         $lines = @(" " * $longestLine) + $lines + @(" " * $longestLine)
     }
-    
+
     # Get the console width
     $consoleWidth = $Host.UI.RawUI.WindowSize.Width
-    
+
     # Calculate the padding based on the chosen alignment and console width
     switch ($Align) {
         "Left" {
@@ -2276,7 +2276,7 @@ function Write-BlockLetters {
             $leftPadding = $consoleWidth - $longestLine
         }
     }
-    
+
     if ($consoleWidth -lt ($longestLine + 2)) {
         # If the console width is less than the longest line plus 2, return false
         return $false
@@ -2285,7 +2285,7 @@ function Write-BlockLetters {
         # Write the text to the console as block characters, line by line.
         $lines | ForEach-Object {
             $line = $_
-    
+
             if ($Align -eq "Center") {
                 # Right padding is added so we can fill it with spaces/background colour when using centered alignment.
                 $line = (" " * $leftPadding) + $line + (" " * $rightPadding)
@@ -2293,26 +2293,26 @@ function Write-BlockLetters {
             else {
                 $line = (" " * $leftPadding) + $line
             }
-    
+
             # If $line is empty (i.e. all spaces), write the line as a whole
             if ($line.Trim().Length -eq 0) {
-                Write-Host $line -NoNewLine -BackgroundColor $BackgroundColor
+                Write-Host $line -NoNewline -BackgroundColor $BackgroundColor
             }
             else {
                 # Write the line to the console, character by character
                 for ($i = 0; $i -lt $line.Length; $i++) {
                     $char = $line[$i]
-    
+
                     # If the character is a space, write a space with the background color, otherwise write a space with the foreground color (to represent a lit pixel in the character).
                     if ($char -eq " ") {
                         Write-Host " " -NoNewline -BackgroundColor $BackgroundColor
                     }
                     else {
-                        Write-Host " " -NoNewline -BackgroundColor $ForegroundColor 
-                    }        
+                        Write-Host " " -NoNewline -BackgroundColor $ForegroundColor
+                    }
                 }
             }
-    
+
             # Add New Line to end.
             Write-Host
         }
@@ -2323,7 +2323,7 @@ function Write-BlockLetters {
 function GenerateSaleDays {
     param (
         [Parameter(Mandatory = $true)]
-        [int]$SaleDaysCount,   
+        [int]$SaleDaysCount,
         [Parameter(Mandatory = $true)]
         [int]$DaysApart
     )
@@ -2568,12 +2568,12 @@ function ShowDrugopedia {
         # This block is executed for each element in the array
         Write-Host ('· {0} ({1})' -f $_.Name, $_.Code)
         Write-Host ('· Base Price Range: ${0}-${1}' -f $_.PriceRange[0], $_.PriceRange[1])
-        Write-Host ('· History: {0}' -f $script:DrugsInfo[$_.Code].History)        
+        Write-Host ('· History: {0}' -f $script:DrugsInfo[$_.Code].History)
         Write-Host ('· Effects: {0}' -f $script:DrugsInfo[$_.Code].Effects)
         $streetNames = $script:DrugsInfo[$_.Code].StreetNames -join ', '
         Write-Host ('· Other Street Names: {0}' -f $streetNames)
         Write-Host
-    
+
         # Check if the cursor position is near the bottom of the console window
         if ($host.UI.RawUI.CursorPosition.Y -ge ($host.UI.RawUI.WindowSize.Height - 6)) {
             PressEnterPrompt
@@ -2613,18 +2613,18 @@ function ShowMainMenu {
     # Loop that many times
     for ($i = 0; $i -lt $maxCount; $i++) {
         # Get the drug, clothing, and gun at the current index, or null if the index is out of range
-        $dispDrug = if ($i -lt $script:Player.Drugs.Count) { 
-            '· {0} {1}' -f $script:Player.Drugs[$i].Quantity, $script:Player.Drugs[$i].Name 
+        $dispDrug = if ($i -lt $script:Player.Drugs.Count) {
+            '· {0} {1}' -f $script:Player.Drugs[$i].Quantity, $script:Player.Drugs[$i].Name
         }
         elseif ($i -eq 0) {
-            '· You have 0 marijuanas.' 
+            '· You have 0 marijuanas.'
         }
 
-        $dispOtherInventory = if ($i -lt $otherInventory.Count) { 
-            '· {0}' -f $otherInventory[$i] 
+        $dispOtherInventory = if ($i -lt $otherInventory.Count) {
+            '· {0}' -f $otherInventory[$i]
         }
         elseif ($i -eq 0) {
-            '· You are naked.' 
+            '· You are naked.'
         }
 
         Write-Centered ("{0,-$columnWidth} {1,-$columnWidth}" -f $dispDrug, $dispOtherInventory)
@@ -2679,7 +2679,7 @@ function ShowCityDrugs {
         }
         return $DrugName
     }
-        
+
     $drugCount = $city.Drugs.Count
     $halfCount = [math]::Ceiling($drugCount / 2)
     $boxWidth = 76
@@ -2726,7 +2726,7 @@ function ShowCityDrugs {
 function ShowBuyDrugsMenu {
     Clear-Host
     ShowMenuHeader
-    Write-Host    
+    Write-Host
     Write-Centered "Buy Drugs"
     Write-Host
     ShowCityDrugs $script:Player.City
@@ -2763,7 +2763,7 @@ function ShowBuyDrugsMenu {
     # Buy the drugs.
     $drugToBuy.Quantity = $quantityInt
     $script:Player.BuyDrugs($drugToBuy)
-    
+
     PressEnterPrompt
 }
 
@@ -2771,7 +2771,7 @@ function ShowBuyDrugsMenu {
 function ShowSellDrugsMenu {
     Clear-Host
     ShowMenuHeader
-    Write-Host    
+    Write-Host
     Write-Centered "Sell Drugs"
     Write-Host
     ShowCityDrugs $script:Player.City
@@ -2852,7 +2852,7 @@ function ShowFlushDrugsMenu {
             'tea-head',
             'wiseguy'
         )
-        
+
         Write-Centered (Get-Random -InputObject $phrases)
         Start-Sleep 1
         Write-Host
@@ -2906,7 +2906,7 @@ function ShowFlushDrugsMenu {
         Write-Centered $centeredDispDrug
     }
     #endregion Display Drug Inventory
-    
+
     Write-Host
 
     # Ask which drug they want to flush.
@@ -2929,7 +2929,7 @@ function ShowFlushDrugsMenu {
         # Move up a line and back to the start.
         $y = $host.UI.RawUI.CursorPosition.Y - 1
         $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, $y
-                 
+
         # Clear the line
         Write-Host (' ' * $host.UI.RawUI.BufferSize.Width) -NoNewline
         $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, $host.UI.RawUI.CursorPosition.Y
@@ -2973,7 +2973,7 @@ function ShowFlushDrugsMenu {
         else {
             @('That', 'is')
         }
-        
+
         Write-Host
 
         Write-Centered ('{0} {1} {2} looking pretty {3}!' -f $wordsToUse[0], $nameOfDrugToFlush, $wordsToUse[1], (Get-Random -InputObject $drugCompliments)) -ForegroundColor Yellow
@@ -3171,7 +3171,7 @@ function PressEnterPrompt {
     while ($choice.VirtualKeyCode -ne 13) {
         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     }
-    
+
 }
 
 # This function is called when the player chooses to quit the game.
@@ -3209,7 +3209,7 @@ function EndGame {
     if ((Write-BlockLetters 'Thanks for playing!' -Align Center -BackgroundColor Blue -VerticalPadding 1) -eq $false) {
         Write-Centered 'Thanks for playing!' -BackgroundColor Blue
     }
-    
+
     if (IsHighScore -Score $script:Player.Cash) {
         Write-Host
         Write-Centered 'You got a high score!' -ForegroundColor Green
@@ -3243,7 +3243,7 @@ function EndGame {
 
         # Convert the initials to uppercase, and save them to the player object.
         $script:Player.Initials = $initials.ToUpper()
-        
+
         # Add the high score to the high score list.
         AddHighScore -Initials $script:Player.Initials -Score $script:Player.Cash
     }
@@ -3277,7 +3277,7 @@ function EndGame {
     }
 
     $script:GameOver = $true
-    
+
     Write-Host
     Write-Centered 'Would you like to play again? (Y/N)' -NoNewline
     # Wait for user to press a valid key
@@ -3415,7 +3415,7 @@ function ShowTaglinePrompt {
         $Text = Get-Random -InputObject $tagLines
         $useTagLines = $true
     }
-    
+
     # Define an array of colors to be used for the tag text fade steps
     $colours = @('DarkGray', 'Gray')
     for ($i = 0; $i -lt 20; $i++) {
@@ -3439,7 +3439,7 @@ function ShowTaglinePrompt {
         foreach ($colour in $colours) {
             # Reset the cursor position to the original position
             $host.UI.RawUI.CursorPosition = $originalCursorPosition
-            
+
             # Write the text to the host with the current color, without a newline at the end
             if ($colour -eq "Black") {
                 # If the color is black, clear the line instead.
@@ -3598,7 +3598,7 @@ function ShowTitleScreen {
             '                    nP"     "*MMnx'
         )
     )
-    
+
     # Change the foreground and background colors to gray and black
     $host.UI.RawUI.ForegroundColor = "Gray"
     $host.UI.RawUI.BackgroundColor = "Black"
@@ -3698,11 +3698,11 @@ function IsHighScore {
 function AddHighScore {
     param (
         [Parameter(Mandatory = $true)]
-        [int]$Score, 
+        [int]$Score,
         [Parameter(Mandatory = $true)]
         [string]$Initials
     )
-    
+
     $highScores = @(GetHighScores)
     $newScore = [PSCustomObject]@{
         Initials = $Initials
@@ -3710,7 +3710,7 @@ function AddHighScore {
         Date     = (Get-Date).ToString("yyyy-MM-dd")
     }
     $highScores += $newScore
-    
+
     # Sort the high scores by score, descending, and keep the top 10
     $highScores | Sort-Object -Property Score -Descending | Select-Object -First 10 | ConvertTo-Json | Out-File -FilePath "highscores.json" -Force
 }
@@ -3818,6 +3818,7 @@ if (!$SkipConsoleSizeCheck) {
     CheckConsoleSize
 }
 
+# Commence playing!
 $script:Playing = $true
 
 while ($script:Playing) {
