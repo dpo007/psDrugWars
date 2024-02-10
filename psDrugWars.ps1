@@ -3143,7 +3143,24 @@ function StartRandomEvent {
     )
 
     if (!$EventName) {
-        $randomEvent = $script:RandomEvents | Get-Random
+        # Set the base chance for a cop fight to 10%
+        $baseChance = 10
+
+        # Set the increase in chance per $5000 the player has to 2%
+        $increasePer5000 = 2
+
+        # Calculate the increased chance for a cop fight based on the player's cash
+        # For every $5000 the player has, the chance for a cop fight increases by $increasePer500
+        $increasedChance = $baseChance + (($script:Player.Cash / 5000) * $increasePer5000)
+
+        # Generate a random number between 1 and 100
+        $randomNumber = Get-Random -Minimum 1 -Maximum 101
+        if ($randomNumber -le $increasedChance) {
+            CopFight
+        }
+        else {
+            $randomEvent = $script:RandomEvents | Get-Random
+        }
     }
     else {
         $randomEvent = $script:RandomEvents | Where-Object { $_.Name -eq $EventName }
