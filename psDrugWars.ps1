@@ -99,8 +99,7 @@ class Player {
 
     # FreePockets method returns the number of pockets minus the total Quntity of all Drugs
     [int]get_FreePocketCount() {
-        $totalQuantity = 0
-        $this.Drugs | ForEach-Object { $totalQuantity += $_.Quantity }
+        $totalQuantity = $this.get_DrugCount()
         return $this.Pockets - $totalQuantity
     }
 
@@ -112,6 +111,13 @@ class Player {
     # Method to set pocket count
     [void]set_PocketCount([int]$Pockets) {
         $this.Pockets = $Pockets
+    }
+
+    # Method to get total drug count from inventory
+    [int]get_DrugCount() {
+        $totalQuantity = 0
+        $this.Drugs | ForEach-Object { $totalQuantity += $_.Quantity }
+        return $totalQuantity
     }
 
     # Method to get guns
@@ -3817,6 +3823,152 @@ function SetDrugPriceMultiplier {
     foreach ($name in $DrugNames) {
         $drug = $script:GameDrugs | Where-Object { $_.Name -eq $name }
         $drug.PriceMultiplier = $Multiplier
+    }
+}
+
+# Function to simulate a cop encounter
+function CopFight {
+    #region Function Definitions
+
+    # Function to simulate getting arrested
+    function GetArrested {
+        Write-Host "You get arrested!"
+        $playerInventoryCount = 0  # Lose all inventory
+    }
+
+    # Function to simulate getting shot dead by cops
+    function GetShotDead {
+        $shotDeadStrings = @(
+            'The cops shoot you dead!',
+            'The pigs spray you with lead!',
+            'The cops turn you into a human pinata!',
+            'The pigs serve you a hot plate of justice!',
+            'The flatfoots send you on a one-way ticket to the afterlife!',
+            'The pigs give you a front-row seat to the great beyond!',
+            'The flatfoots send you on an express elevator to the afterlife!',
+            'The cops give you a golden ticket to paradise!',
+            'The flatfoots whisk you away on a magical mystery tour of the great beyond!',
+            'The pigs upgrade your ticket to first class on the cosmic express!',
+            'The flatfoots give you a VIP pass to the celestial realm!'
+        )
+
+        Clear-Host
+        ShowMenuHeader
+        Write-Host
+        Write-Host
+
+        Write-BlockLetters 'Blammo!' -BackgroundColor DarkRed -ForegroundColor DarkGray -Align Center -VerticalPadding 1
+        Start-Sleep -Seconds 3
+        Write-Host
+        Write-Centered (Get-Random -InputObject $shotDeadStrings) -ForegroundColor Red
+        Start-Sleep -Seconds 2
+        Write-Host
+        PressEnterPrompt
+        EndGame
+    }
+
+    # Function to calculate the number of cops based on player money and inventory
+    function CalculateCops {
+        param (
+            [Parameter(Mandatory = $true)]
+            [int]$PlayerMoney,
+            [Parameter(Mandatory = $true)]
+            [int]$PlayerInventoryCount
+        )
+        # For every $5000 in player money, add 1 cop
+        $numCopsMoney = [math]::Ceiling($PlayerMoney / 5000)
+        # For every 50 items in player inventory, add 1 cop
+        $numCopsInventory = [math]::Ceiling($PlayerInventoryCount / 50)
+
+        # Add the two calculated values to get the total number of cops (Min. 1)
+        $totalCops = $numCopsMoney + $numCopsInventory
+        return [math]::Max($totalCops, 1)
+    }
+
+    #endregion Function Definitions
+
+    # Calculate the number of cops
+    $numCops = CalculateCops -PlayerMoney $script:Player.Cash -PlayerInventoryCount $script:Player.get_DrugCount()
+
+    # Display encounter message
+    Write-Centered ('"You encounter {0} cop(s)!"' -f $numCops) -ForegroundColor Red
+
+    # Display player weapon level
+    Write-Centered  "Your weapon level: $playerWeaponStrength"
+
+    # Display options
+    # Define the options in an array
+    $options = @("1. Attempt to bribe", "2. Try to flee", "3. Fight")
+
+    # Find the length of the longest string
+    $maxLength = ($options | Measure-Object -Property Length -Maximum).Maximum
+
+    # Loop through each option, pad it to the maximum length, and print it
+    foreach ($option in $options) {
+        Write-Centered ($option.PadRight($maxLength))
+    }
+
+    # Get player choice
+    $choice = Read-Host "Select an option (1, 2, or 3)"
+
+    # Calculate the chance of getting shot (10% + 2% per cop)
+    $shotChance = 10 + ($numCops * 2)
+
+    # Process player choice
+    switch ($choice) {
+        1 {
+            # Attempt to bribe (costs 10% of player's money or $2500, per cop, whichever is higher)
+            $bribeAmount = [math]::Max($playerMoney * 0.1, 2500) * $numCops
+
+            if ($playerMoney -ge $bribeAmount) {
+                Write-Centered ('Bribe successful! You avoid legal consequences. You paid {0} in bribes.' -f $bribeAmount) -ForegroundColor Green
+                $playerMoney -= $bribeAmount
+            }
+            else {
+                Write-Centered "Bribe failed! You don't have enough money to bribe all the cops." -ForegroundColor DarkRed
+                GetArrested
+            }
+        }
+        2 {
+            # Try to flee
+            $fleeSuccess = [bool](Get-Random -Maximum 2)
+
+            if ($fleeSuccess) {
+                Write-Host "You successfully flee from the police!"
+            }
+            else {
+                Write-Host "Flee attempt failed! The cop(s) catch you."
+                if (Get-Random -Maximum 100 -lt $shotChance) {
+                    GetShotDead
+                }
+                else {
+                    GetArrested
+                }
+            }
+        }
+        3 {
+            # Try to fight
+            # +%5 chance of success for each weapon strength
+            $fightSuccess = [bool](Get-Random -Maximum 100 -lt ($playerWeaponStrength * 5))
+
+            if ($fightSuccess) {
+                Write-Host "You win the fight and avoid legal consequences."
+            }
+            else {
+                Write-Host "You lose the fight! The cop(s) arrest you."
+                # Calculate the chance of getting shot
+                if (Get-Random -Maximum 100 -lt $shotChance) {
+                    GetShotDead
+                }
+                else {
+                    GetArrested
+                }
+            }
+        }
+        default {
+            Write-Centered 'Invalid choice. Please select 1, 2, or 3.'
+            Start-Sleep -Seconds 3
+        }
     }
 }
 ##############################
