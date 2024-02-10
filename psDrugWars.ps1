@@ -3150,8 +3150,8 @@ function StartRandomEvent {
         $increasePer5000 = 2
 
         # Calculate the increased chance for a cop fight based on the player's cash
-        # For every $5000 the player has, the chance for a cop fight increases by $increasePer500
-        $increasedChance = $baseChance + (($script:Player.Cash / 5000) * $increasePer5000)
+        # For every $5000 the player has, the chance for a cop fight increases by $increasePer5000 (max. 60%)
+        $increasedChance = [Math]::Min(60, $baseChance + (($script:Player.Cash / 5000) * $increasePer5000))
 
         # Generate a random number between 1 and 100
         $randomNumber = Get-Random -Minimum 1 -Maximum 101
