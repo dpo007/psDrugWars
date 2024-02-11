@@ -3953,7 +3953,7 @@ function CopFight {
                     'You dodge the cops and disappear into the shadows!',
                     'You give the cops the slip and vanish into thin air!',
                     'You outmaneuver the cops and make a daring escape!',
-                    'Deek left, deek right... you out!',
+                    'Deke left, deke right... you out!',
                     'You hoof it full bore and leave the cops in the dust!',
                     'Damn! Look at you! You''re like Usain Bolt or some shit.'
                     'Dude, you totally transcended the law! Freedom vibes!',
