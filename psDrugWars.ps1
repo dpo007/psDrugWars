@@ -3931,7 +3931,7 @@ function CopFight {
                 $playerMoney -= $bribeAmount
             }
             else {
-                Write-Centered "Bribe failed! You don't have enough money to bribe all the cops." -ForegroundColor DarkRed
+                Write-Centered 'Bribe failed! You don''t have enough money to bribe all the cops.' -ForegroundColor DarkRed
                 GetArrested
             }
         }
@@ -3940,10 +3940,31 @@ function CopFight {
             $fleeSuccess = [bool](Get-Random -Maximum 2)
 
             if ($fleeSuccess) {
-                Write-Host "You successfully flee from the police!"
+                Write-Host
+                $fleeQuotes = @(
+                    'You successfully flee from the police!',
+                    'You manage to escape the cops!',
+                    'You evade the cops and make a clean getaway!',
+                    'You dodge the cops and disappear into the shadows!',
+                    'You give the cops the slip and vanish into thin air!',
+                    'You outmaneuver the cops and make a daring escape!',
+                    'Deek left, deek right... you out!',
+                    'You hoof it full bore and leave the cops in the dust!',
+                    'Damn! Look at you! You''re like Usain Bolt or some shit.'
+                )
+                Write-Centered (Get-Random -InputObject $fleeQuotes) -ForegroundColor Green
+
+                Start-Sleep -Seconds 2
+                Write-Host
+                PressEnterPrompt
             }
             else {
-                Write-Host "Flee attempt failed! The cop(s) catch you."
+                Write-Host
+                Write-Centered 'Flee attempt failed! The cop(s) nab you.' -ForegroundColor DarkRed
+                Start-Sleep -Seconds 3
+                Write-Host
+
+                # Calculate the chance of getting shot
                 if ((Get-Random -Maximum 100) -lt $shotChance) {
                     GetShotDead
                 }
