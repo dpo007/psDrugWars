@@ -3169,10 +3169,13 @@ function StartRandomEvent {
         }
     }
     else {
+        # If the event name is 'Cops' or 'CopFight', then call the CopFight function and return.
         if ($EventName -eq 'Cops' -or $EventName -eq 'CopFight') {
             CopFight
             return
         }
+
+        # Otherwise, set the random event to the event with the specified name.
         $randomEvent = $script:RandomEvents | Where-Object { $_.Name -eq $EventName }
     }
 
