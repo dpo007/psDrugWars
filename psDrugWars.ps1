@@ -3966,9 +3966,7 @@ function CopFight {
                     'Running like the wind, man! You''re a free spirit, unstoppable!',
                     'Unbelievable speed, man! You''re like a mythical creature or something.'
                 )
-
                 Write-Centered (Get-Random -InputObject $fleeQuotes) -ForegroundColor Green
-
                 Start-Sleep -Seconds 2
                 Write-Host
                 PressEnterPrompt
@@ -3990,7 +3988,6 @@ function CopFight {
                     'Cosmic fail, dude! You''re snagged in their astral lasso.',
                     'Bummer deal, man! The pigs have crashed your psychedelic party.'
                 )
-
                 Write-Centered (Get-Random -InputObject $fleeFailedQuotes) -ForegroundColor DarkRed
                 Start-Sleep -Seconds 3
                 Write-Host
