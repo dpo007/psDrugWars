@@ -3832,8 +3832,7 @@ function CopFight {
 
     # Function to simulate getting arrested
     function GetArrested {
-        Write-Host "You get arrested!"
-        $playerInventoryCount = 0  # Lose all inventory
+        StartRandomEvent -EventName "Busted"
     }
 
     # Function to simulate getting shot dead by cops
