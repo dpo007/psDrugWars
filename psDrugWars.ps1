@@ -3951,7 +3951,17 @@ function CopFight {
                     'Deek left, deek right... you out!',
                     'You hoof it full bore and leave the cops in the dust!',
                     'Damn! Look at you! You''re like Usain Bolt or some shit.'
+                    'Dude, you totally transcended the law! Freedom vibes!',
+                    'Far out, man! You''ve slipped the cuffs and danced into the night!',
+                    'Whoa, like magic, man! You''ve vanished from the pigs'' radar!',
+                    'Groovy maneuvers, dude! You''ve melted into the cosmic ether!',
+                    'You''ve become one with the shadows, man! The cops are clueless!',
+                    'Incredible, dude! You''ve unlocked the groove and escaped the fuzz!',
+                    'You zigged and zagged, man! Now you''re surfing the freedom wave!',
+                    'Running like the wind, man! You''re a free spirit, unstoppable!',
+                    'Unbelievable speed, man! You''re like a mythical creature or something.'
                 )
+
                 Write-Centered (Get-Random -InputObject $fleeQuotes) -ForegroundColor Green
 
                 Start-Sleep -Seconds 2
@@ -3960,7 +3970,23 @@ function CopFight {
             }
             else {
                 Write-Host
-                Write-Centered 'Flee attempt failed! The cop(s) nab you.' -ForegroundColor DarkRed
+                $fleeFailedQuotes = @(
+                    'Flee attempt failed! The cop(s) nab you.',
+                    'You need to loose some weight homey, you just got caught.',
+                    'Hey noodle legs, you need to work out. They got ya!',
+                    'Whoa, man! Looks like the fuzz crashed your party!',
+                    'Dude, the cops totally harshed your mellow. Bummer.',
+                    'Far out, man! You''re like, busted by the po-po.',
+                    'Heavy vibes, bro. The heat''s got you in their trip.',
+                    'Hey, spaced-out soul, they''ve got you in their cosmic net.',
+                    'Groovy idea, man, but they''ve got you in their buzzkill zone.',
+                    'Wipeout, dude! The authorities have totally buzzed your high.',
+                    'Dang, you''re caught in their freaky fun-sucking vortex.',
+                    'Cosmic fail, dude! You''re snagged in their astral lasso.',
+                    'Bummer deal, man! The pigs have crashed your psychedelic party.'
+                )
+
+                Write-Centered (Get-Random -InputObject $fleeFailedQuotes) -ForegroundColor DarkRed
                 Start-Sleep -Seconds 3
                 Write-Host
 
