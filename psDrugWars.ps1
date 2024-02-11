@@ -3944,7 +3944,7 @@ function CopFight {
             }
             else {
                 Write-Host "Flee attempt failed! The cop(s) catch you."
-                if (Get-Random -Maximum 100 -lt $shotChance) {
+                if ((Get-Random -Maximum 100) -lt $shotChance) {
                     GetShotDead
                 }
                 else {
