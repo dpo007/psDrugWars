@@ -3169,6 +3169,10 @@ function StartRandomEvent {
         }
     }
     else {
+        if ($EventName -eq 'Cops' -or $EventName -eq 'CopFight') {
+            CopFight
+            return
+        }
         $randomEvent = $script:RandomEvents | Where-Object { $_.Name -eq $EventName }
     }
 
