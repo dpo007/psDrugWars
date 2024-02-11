@@ -3897,14 +3897,18 @@ function CopFight {
     $numCops = CalculateCops -PlayerMoney $script:Player.Cash -PlayerInventoryCount $script:Player.get_DrugCount()
 
     # Display encounter message
-    Write-Centered ('"You encounter {0} cop(s)!"' -f $numCops) -ForegroundColor Red
+    Write-Centered ('You encounter {0} cop(s)!' -f $numCops) -ForegroundColor Red
 
     # Display player weapon level
     Write-Centered  "Your weapon level: $playerWeaponStrength"
 
     # Display options
     # Define the options in an array
-    $options = @("1. Attempt to bribe", "2. Try to flee", "3. Fight")
+    $options = @(
+        '1. Attempt to bribe',
+        '2. Try to flee',
+        '3. Fight'
+    )
 
     # Find the length of the longest string
     $maxLength = ($options | Measure-Object -Property Length -Maximum).Maximum
@@ -3915,6 +3919,7 @@ function CopFight {
     }
 
     # Get player choice
+    Write-Host
     $choice = Read-Host "Select an option (1, 2, or 3)"
 
     # Calculate the chance of getting shot (10% + 2% per cop)
