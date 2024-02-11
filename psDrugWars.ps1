@@ -3934,9 +3934,15 @@ function CopFight {
             if ($playerMoney -ge $bribeAmount) {
                 Write-Centered ('Bribe successful! You avoid legal consequences. You paid {0} in bribes.' -f $bribeAmount) -ForegroundColor Green
                 $playerMoney -= $bribeAmount
+                Start-Sleep -Seconds 3
+                Write-Host
+                PressEnterPrompt
             }
             else {
                 Write-Centered 'Bribe failed! You don''t have enough money to bribe all the cops.' -ForegroundColor DarkRed
+                Start-Sleep -Seconds 3
+                Write-Host
+                PressEnterPrompt
                 GetArrested
             }
         }
