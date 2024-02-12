@@ -659,15 +659,16 @@ $script:RandomEvents = @(
                 Write-Host
                 Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
 
-                if ($script:Player.Cash -gt 50) {
-                    Start-Sleep -Seconds 2
-                    # Cops let you go, but take 5% of your cash
-                    Write-Centered '...after a bit of a shake-down.' -ForegroundColor Yellow
-                    Start-Sleep -Seconds 3
-                    $loss = [int]([math]::Round($script:Player.Cash * 0.05))
-                    $script:Player.Cash = $script:Player.Cash - $loss
-                    Write-Host
-                    Write-Centered ('They took ${0}!' -f $loss) -ForegroundColor DarkRed
+                $randomNumber = Get-Random -Minimum 1 -Maximum 101
+                if (($randomNumber -le 80) -and ($script:Player.Cash -gt 50)) {
+                        Start-Sleep -Seconds 2
+                        # Cops let you go, but take 5% of your cash
+                        Write-Centered '...after a bit of a shake-down.' -ForegroundColor Yellow
+                        Start-Sleep -Seconds 3
+                        $loss = [int]([math]::Round($script:Player.Cash * 0.05))
+                        $script:Player.Cash = $script:Player.Cash - $loss
+                        Write-Host
+                        Write-Centered ('They took ${0}!' -f $loss) -ForegroundColor DarkRed
                 }
 
                 Start-Sleep -Seconds 3
@@ -4079,13 +4080,17 @@ function CopFight {
             $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
             Write-Host
             if ($fightSuccess) {
-                Write-Host 'You win the fight and avoid legal consequences.' -ForegroundColor Green
+                Write-Centered 'You win the fight and avoid legal consequences.' -ForegroundColor Green
                 Start-Sleep -Seconds 2
                 Write-Host
                 PressEnterPrompt
             }
             else {
-                Write-Host "You lose the fight! The cop(s) arrest you."
+                Write-Centered 'You lose the fight!' -ForegroundColor Red
+                Start-Sleep -Seconds 2
+                Write-Centered 'Uh oh...' -ForegroundColor DarkGray
+                Start-Sleep -Seconds 2
+                Write-Host
                 # Calculate the chance of getting shot
                 if ((Get-Random -Maximum 100) -lt $shotChance) {
                     GetShotDead
