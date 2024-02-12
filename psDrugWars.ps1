@@ -2147,7 +2147,7 @@ function Write-BlockLetters {
             "#   #",
             "# ###",
             "# # #",
-            "# ### "
+            "# ###"
         )
         '#'  = @(
             " # # ",
@@ -2199,25 +2199,25 @@ function Write-BlockLetters {
             "# "
         )
         ':'  = @(
-            "   ",
-            " # ",
-            "   ",
-            " # ",
-            "   "
+            " ",
+            "#",
+            " ",
+            "#",
+            " "
         )
         ';'  = @(
-            "   ",
-            " # ",
-            "   ",
-            " # ",
-            "#  "
+            "  ",
+            " #",
+            "  ",
+            " #",
+            "# "
         )
         ','  = @(
-            "   ",
-            "   ",
-            "   ",
-            " # ",
-            "#  "
+            "  ",
+            "  ",
+            "  ",
+            " #",
+            "# "
         )
         '''' = @(
             " #",
@@ -2227,11 +2227,11 @@ function Write-BlockLetters {
             "  "
         )
         '"'  = @(
-            "# #",
-            "# #",
-            "   ",
-            "   ",
-            "   "
+            " # # ",
+            " # # ",
+            "     ",
+            "     ",
+            "     "
         )
     }
 
@@ -3893,17 +3893,23 @@ function CopFight {
 
     #endregion Function Definitions
 
+    Clear-Host
+    ShowMenuHeader
+    Write-Host
+    Write-Host
+    Write-BlockLetters '$#@%! Cops!' -BackgroundColor Red -ForegroundColor Blue -Align Center -VerticalPadding 1
+
     # Calculate the number of cops
     $numCops = CalculateCops -PlayerMoney $script:Player.Cash -PlayerInventoryCount $script:Player.get_DrugCount()
 
     # Display encounter message
+    Write-Host
     Write-Centered ('You encounter {0} cop(s)!' -f $numCops) -ForegroundColor Red
-
+    Start-Sleep -Seconds 2
     # Display player weapon level
     Write-Centered  "Your weapon level: $playerWeaponStrength"
 
     # Display options
-    # Define the options in an array
     $options = @(
         '1. Attempt to bribe',
         '2. Try to flee',
