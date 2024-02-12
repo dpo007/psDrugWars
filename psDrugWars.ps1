@@ -3898,12 +3898,13 @@ function CopFight {
     Write-Host
     Write-Host
     $grawlixes = @(
-        '$#@%!',
-        '#@!&',
-        '%$#@!',
-        '*&%$!',
-        '!@#$%',
-        '$@!%'
+        '$#@%',
+        '#@*&',
+        '%$#@',
+        '*&%$',
+        '@#$%',
+        '$@*%',
+        'F***'
     )
     $grawlix = Get-Random -InputObject $grawlixes
 
@@ -3914,9 +3915,9 @@ function CopFight {
         'fuzz',
         'po-po'
     )
-    $copName  = Get-Random -InputObject $copNames
+    $copName = Get-Random -InputObject $copNames
 
-    Write-BlockLetters ('{0}, it''s the {1}!' -f $grawlix, $copName) -BackgroundColor DarkRed -ForegroundColor Blue -Align Center -VerticalPadding 1
+    Write-BlockLetters ('{0}! It''s the {1}!' -f $grawlix, $copName) -BackgroundColor DarkRed -ForegroundColor Blue -Align Center -VerticalPadding 1
 
     # Calculate the number of cops
     $numCops = CalculateCops -PlayerMoney $script:Player.Cash -PlayerInventoryCount $script:Player.get_DrugCount()
@@ -3925,7 +3926,8 @@ function CopFight {
     Write-Host
     if ($numCops -eq 1) {
         Write-Centered ('You encounter 1 cop!') -ForegroundColor Red
-    } else {
+    }
+    else {
         Write-Centered ('You encounter {0} cops!' -f $numCops) -ForegroundColor Red
         # if there's more than 5 cops, add a little extra drama
         if ($numCops -gt 5) {
@@ -3939,7 +3941,7 @@ function CopFight {
     }
     Start-Sleep -Seconds 2
     # Display player weapon level
-    Write-Centered  "Your weapon level: $playerWeaponStrength"
+    Write-Centered  ('Weapon stopping power: {0}' -f $script:Player.get_StoppingPower()) -ForegroundColor DarkGray
     Start-Sleep -Milliseconds 500
 
     # Display options
