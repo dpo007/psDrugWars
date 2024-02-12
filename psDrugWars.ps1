@@ -3164,6 +3164,7 @@ function StartRandomEvent {
         $randomNumber = Get-Random -Minimum 1 -Maximum 101
         if ($randomNumber -le $increasedChance) {
             CopFight
+            return
         }
         else {
             $randomEvent = $script:RandomEvents | Get-Random
