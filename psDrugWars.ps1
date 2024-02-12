@@ -3920,7 +3920,13 @@ function CopFight {
 
     # Get player choice
     Write-Host
-    $choice = Read-Host "Select an option (1, 2, or 3)"
+    Write-Centered 'Choose an option: ' -NoNewline
+    $validOptions = '1', '2', '3'
+    $choice = $null
+    while ($choice -notin $validOptions) {
+        $key = [System.Console]::ReadKey($true)
+        $choice = $key.KeyChar.ToString()
+    }
 
     # Calculate the chance of getting shot (10% + 2% per cop)
     $shotChance = 10 + ($numCops * 2)
@@ -3931,16 +3937,30 @@ function CopFight {
             # Attempt to bribe (costs 10% of player's money or $2500, per cop, whichever is higher)
             $bribeAmount = [math]::Max($playerMoney * 0.1, 2500) * $numCops
 
+            # Cops think about it for a moment
+            if ($numCops -eq 1) {
+                Write-Centered 'The cop considers your offer...' -ForegroundColor Yellow
+            }
+            else {
+                Write-Centered 'The cops consider your offer...' -ForegroundColor Yellow
+            }
+            Start-Sleep -Seconds 5
+
             if ($playerMoney -ge $bribeAmount) {
                 Write-Centered ('Bribe successful! You avoid legal consequences. You paid {0} in bribes.' -f $bribeAmount) -ForegroundColor Green
                 $playerMoney -= $bribeAmount
-                Start-Sleep -Seconds 3
+                Start-Sleep -Seconds 2
                 Write-Host
                 PressEnterPrompt
             }
             else {
-                Write-Centered 'Bribe failed! You don''t have enough money to bribe all the cops.' -ForegroundColor DarkRed
-                Start-Sleep -Seconds 3
+                if ($numCops -eq 1) {
+                    Write-Centered 'Bribe failed! You don''t have enough money to bribe the cop.' -ForegroundColor DarkRed
+                }
+                else {
+                    Write-Centered "Bribe failed! You don't have enough money to bribe all the cops." -ForegroundColor DarkRed
+                }
+                Start-Sleep -Seconds 2
                 Write-Host
                 PressEnterPrompt
                 GetArrested
