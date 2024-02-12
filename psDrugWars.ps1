@@ -3680,7 +3680,7 @@ function ShowTitleScreen {
 
     # Move the cursor to the bottom left corner of the UI
     $host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates 0, ($consoleHeight - 2)
-    # Show GameVersion as "v1.0" padded to one decimal minmum
+    # Show GameVersion as "v1.00" padded to two decimal places
     Write-Host ('(v{0:0.00})' -f $script:GameVersion) -NoNewline -ForegroundColor DarkGray
     # Move the cursor back to the original position
     $host.UI.RawUI.CursorPosition = $originalCursorPosition
