@@ -3959,7 +3959,7 @@ function CopFight {
             Start-Sleep -Seconds 5
             Write-Host
             if ($script:Player.Cash -ge $bribeAmount) {
-                Write-Centered ('Bribe successful! You avoid legal consequences. You paid {0} in bribes.' -f $bribeAmount) -ForegroundColor Green
+                Write-Centered ('Bribe successful! You avoid legal consequences. You paid ${0} in bribes.' -f $bribeAmount) -ForegroundColor Green
                 $script:Player.Cash -= $bribeAmount
                 Start-Sleep -Seconds 2
                 Write-Host
