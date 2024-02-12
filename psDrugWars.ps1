@@ -3936,6 +3936,7 @@ function CopFight {
         $key = [System.Console]::ReadKey($true)
         $choice = $key.KeyChar.ToString()
     }
+    Write-Host
 
     # Calculate the chance of getting shot (10% + 2% per cop)
     $shotChance = 10 + ($numCops * 2)
@@ -3944,8 +3945,9 @@ function CopFight {
     switch ($choice) {
         1 {
             # Attempt to bribe (costs 10% of player's money or $2500, per cop, whichever is higher)
-            $bribeAmount = [math]::Max($playerMoney * 0.1, 2500) * $numCops
+            $bribeAmount = [math]::Max($script:Player.Cash * 0.1, 2500) * $numCops
 
+            Write-Host
             # Cops think about it for a moment
             if ($numCops -eq 1) {
                 Write-Centered 'The cop considers your offer...' -ForegroundColor Yellow
@@ -3956,9 +3958,9 @@ function CopFight {
 
             Start-Sleep -Seconds 5
             Write-Host
-            if ($playerMoney -ge $bribeAmount) {
+            if ($script:Player.Cash -ge $bribeAmount) {
                 Write-Centered ('Bribe successful! You avoid legal consequences. You paid {0} in bribes.' -f $bribeAmount) -ForegroundColor Green
-                $playerMoney -= $bribeAmount
+                $script:Player.Cash -= $bribeAmount
                 Start-Sleep -Seconds 2
                 Write-Host
                 PressEnterPrompt
