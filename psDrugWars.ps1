@@ -3943,7 +3943,7 @@ function CopFight {
     }
     Start-Sleep -Seconds 2
     # Display player weapon level
-    Write-Centered  ('Weapon stopping power: {0}' -f $script:Player.get_StoppingPower()) -ForegroundColor DarkGray
+    Write-Centered  ('Your weapon stopping power: {0}' -f $script:Player.get_StoppingPower())
     Start-Sleep -Milliseconds 500
 
     # Display options
