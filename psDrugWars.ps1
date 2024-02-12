@@ -4076,10 +4076,10 @@ function CopFight {
         3 {
             # Try to fight
             # +%5 chance of success for each weapon strength
-            $fightSuccess = [bool](Get-Random -Maximum 100 -lt ($playerWeaponStrength * 5))
-
+            $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
+            Write-Host
             if ($fightSuccess) {
-                Write-Host "You win the fight and avoid legal consequences."
+                Write-Host "You win the fight and avoid legal consequences." -ForegroundColor Green
             }
             else {
                 Write-Host "You lose the fight! The cop(s) arrest you."
