@@ -4101,10 +4101,6 @@ function CopFight {
                 }
             }
         }
-        default {
-            Write-Centered 'Invalid choice. Please select 1, 2, or 3.'
-            Start-Sleep -Seconds 3
-        }
     }
 }
 ##############################
