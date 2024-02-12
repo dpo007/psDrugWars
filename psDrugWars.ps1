@@ -3,7 +3,7 @@ param (
     [switch]$SkipConsoleSizeCheck
 )
 
-[float]$script:GameVersion = 1.0
+[float]$script:GameVersion = 0.42
 
 ########################
 #region Class Definitions
