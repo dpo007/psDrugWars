@@ -3944,8 +3944,8 @@ function CopFight {
     # Process player choice
     switch ($choice) {
         1 {
-            # Attempt to bribe (costs 10% of player's money or $2500, per cop, whichever is higher)
-            $bribeAmount = [math]::Max($script:Player.Cash * 0.1, 2500) * $numCops
+            # Attempt to bribe (costs 20% of player's money or $250, per cop, whichever is higher)
+            $bribeAmount = [math]::Max($script:Player.Cash * 0.2, 250) * $numCops
 
             Write-Host
             # Cops think about it for a moment
