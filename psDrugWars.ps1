@@ -4004,7 +4004,7 @@ function CopFight {
                     Write-Centered 'Bribe failed! You don''t have enough money to bribe the cop.' -ForegroundColor DarkRed
                 }
                 else {
-                    Write-Centered "Bribe failed! You don't have enough money to bribe all the cops." -ForegroundColor DarkRed
+                    Write-Centered 'Bribe failed! You don''t have enough money to bribe all the cops.' -ForegroundColor DarkRed
                 }
                 Start-Sleep -Seconds 2
                 Write-Host
@@ -4079,12 +4079,15 @@ function CopFight {
             $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
             Write-Host
             if ($fightSuccess) {
-                Write-Host "You win the fight and avoid legal consequences." -ForegroundColor Green
+                Write-Host 'You win the fight and avoid legal consequences.' -ForegroundColor Green
+                Start-Sleep -Seconds 2
+                Write-Host
+                PressEnterPrompt
             }
             else {
                 Write-Host "You lose the fight! The cop(s) arrest you."
                 # Calculate the chance of getting shot
-                if (Get-Random -Maximum 100 -lt $shotChance) {
+                if ((Get-Random -Maximum 100) -lt $shotChance) {
                     GetShotDead
                 }
                 else {
