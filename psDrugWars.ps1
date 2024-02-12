@@ -3897,7 +3897,7 @@ function CopFight {
     ShowMenuHeader
     Write-Host
     Write-Host
-    Write-BlockLetters '$#@%! Cops!' -BackgroundColor Red -ForegroundColor Blue -Align Center -VerticalPadding 1
+    Write-BlockLetters '$#@%! Cops!' -BackgroundColor DarkRed -ForegroundColor Blue -Align Center -VerticalPadding 1
 
     # Calculate the number of cops
     $numCops = CalculateCops -PlayerMoney $script:Player.Cash -PlayerInventoryCount $script:Player.get_DrugCount()
@@ -3908,8 +3908,11 @@ function CopFight {
     Start-Sleep -Seconds 2
     # Display player weapon level
     Write-Centered  "Your weapon level: $playerWeaponStrength"
+    Start-Sleep -Milliseconds 500
 
     # Display options
+    Write-Host
+    Write-Host
     $options = @(
         '1. Attempt to bribe',
         '2. Try to flee',
@@ -3926,7 +3929,7 @@ function CopFight {
 
     # Get player choice
     Write-Host
-    Write-Centered 'Choose an option: ' -NoNewline
+    Write-Centered 'Choose an option:' -NoNewline
     $validOptions = '1', '2', '3'
     $choice = $null
     while ($choice -notin $validOptions) {
