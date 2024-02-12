@@ -3953,8 +3953,9 @@ function CopFight {
             else {
                 Write-Centered 'The cops consider your offer...' -ForegroundColor Yellow
             }
-            Start-Sleep -Seconds 5
 
+            Start-Sleep -Seconds 5
+            Write-Host
             if ($playerMoney -ge $bribeAmount) {
                 Write-Centered ('Bribe successful! You avoid legal consequences. You paid {0} in bribes.' -f $bribeAmount) -ForegroundColor Green
                 $playerMoney -= $bribeAmount
