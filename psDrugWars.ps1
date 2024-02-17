@@ -2438,9 +2438,12 @@ function InitGameCities {
         $cities += $city
     }
 
-    # Pick random cities to enable the gunshop
+    # Pick random cities to add guns to
     $cities | Get-Random -Count $GunShops | ForEach-Object {
-        $_.GunShop = $true
+        # Add 6 random guns to this city
+        $script:GunInfo | Get-Random -Count 6 | ForEach-Object {
+            $city.AddGun($_)
+        }
     }
 
     return $cities
