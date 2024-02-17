@@ -2668,6 +2668,10 @@ function ShowMainMenu {
 
     # Wait for user to press a valid key
     $choices = @('B', 'S', 'F', 'J', 'Q', '?', 'D', '!')
+    # if there is gunshop include 'G' in choices
+    if ($script:Player.City.GunShop) {
+        $choices += 'G'
+    }
     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
     while (-not $choices.Contains($choice)) {
         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
