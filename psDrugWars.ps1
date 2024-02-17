@@ -71,6 +71,11 @@ class City {
     [void]AddGun([Gun]$Gun) {
         $this.GunsForSale += $Gun
     }
+
+    # Method ot return if the city has guns for sale
+    [bool]HasGunShop() {
+        return $this.GunsForSale.Count -gt 0
+    }
 }
 
 class Player {
@@ -2663,7 +2668,7 @@ function ShowMainMenu {
     Write-Host '[F]lush drugs'
     Write-Host
     # If this city has a Gun Shop show the Gun shop menu item
-    if ($script:Player.City.GunShop) {
+    if ($script:Player.City.HasGunShop) {
         Write-Host '[G]un shop'
         Write-Host
     }
@@ -2680,7 +2685,7 @@ function ShowMainMenu {
     # Wait for user to press a valid key
     $choices = @('B', 'S', 'F', 'J', 'Q', '?', 'D', '!')
     # if there is gunshop include 'G' in choices
-    if ($script:Player.City.GunShop) {
+    if ($script:Player.City.HasGunShop) {
         $choices += 'G'
     }
     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
