@@ -2672,7 +2672,6 @@ function ShowMainMenu {
         Write-Host '[G]un shop'
         Write-Host
     }
-
     Write-Host '[J]et to another city'
     Write-Host '[D]rug-o-pedia'
     Write-Host
@@ -2695,6 +2694,47 @@ function ShowMainMenu {
 
     # Return the Character of the key that was pressed (upper case)
     return $choice
+}
+
+# Function to display guns available in a city in a two column display
+function ShowCityGuns {
+    param (
+        [Parameter(Mandatory)]
+        [City]$City
+    )
+
+    $gunCount = $city.Guns.Count
+    $halfCount = [math]::Ceiling($gunCount / 2)
+    $boxWidth = 76
+    $leftColumnWidth = 35
+    $rightColumnWidth = 35
+    $gutterWidth = 1
+
+    # Top border
+    Write-Centered ('┌' + ('─' * ($boxWidth - 1)) + '┐')
+
+    for ($i = 0; $i -lt $halfCount; $i++) {
+
+        $leftGunName = $city.Guns[$i].Name
+        $rightGunName = $city.Guns[$i + $halfCount].Name
+
+        $leftGun = ('{0}. {1} - ${2}' -f ($i + 1), $leftGunName, $city.Guns[$i].get_Price())
+        $rightGun = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $rightGunName, $city.Guns[$i + $halfCount].get_Price())
+
+        $leftGun = $leftGun.PadRight($leftColumnWidth)
+        $rightGun = $rightGun.PadRight($rightColumnWidth)
+
+        # Left gutter
+        Write-Centered ('│' + (' ' * $gutterWidth) + $leftGun + (' ' * $gutterWidth) + '│' + (' ' * $gutterWidth) + $rightGun + (' ' * $gutterWidth) + '│')
+
+        # Middle border
+        if ($i -eq $halfCount - 1) {
+            Write-Centered ('└' + ('─' * ($leftColumnWidth + $gutterWidth * 2)) + ('┴' + ('─' * ($rightColumnWidth + $gutterWidth * 2))) + '┘')
+        }
+        else {
+            Write-Centered ('│' + (' ' * $gutterWidth) + ('─' * $leftColumnWidth) + (' ' * $gutterWidth) + '│' + (' ' * $gutterWidth) + ('─' * $rightColumnWidth) + (' ' * $gutterWidth) + '│')
+        }
+    }
 }
 
 # Function to display drugs available in a city in a two column display
