@@ -49,6 +49,7 @@ class City {
     [int]$MaxDrugCount
     [string[]]$HomeDrugNames
     [float]$HomeDrugSaleMultiplier
+    [bool]$HasGunShop
 
     # Default constructor
     City() {
