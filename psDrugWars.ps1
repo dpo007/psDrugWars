@@ -49,12 +49,15 @@ class City {
     [int]$MaxDrugCount
     [string[]]$HomeDrugNames
     [float]$HomeDrugSaleMultiplier
-    [bool]$HasGunShop
+    [Gun[]]$GunsForSale
 
     # Default constructor
     City() {
         # Drugs are assigned upon visiting the city (so they change each visit)
         $this.Drugs = @()
+
+        # Guns are assigned after city is created
+        $this.GunsForSale = @()
 
         # Assign 1 or 2 random 'Home Drugs' to each city
         $homeDrugCount = Get-Random -Minimum 1 -Maximum 3
@@ -62,6 +65,11 @@ class City {
 
         # Home Drugs are drugs that are always sold at a discount (if in stock). Default is 20% of the base price.
         $this.HomeDrugSaleMultiplier = .20
+    }
+
+    # Method to add a gun to the city's GunsForSale collection
+    [void]AddGun([Gun]$Gun) {
+        $this.GunsForSale += $Gun
     }
 }
 
