@@ -2414,7 +2414,7 @@ function InitGameCities {
     param (
         [int]$CityCount = 8,
         [int]$MaxDrugCount = 6,
-        [int]$GunShops = 2
+        [int]$GunShops = 2 # Number of cities to add guns to.
     )
 
     $cities = @()
