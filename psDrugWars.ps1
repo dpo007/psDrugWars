@@ -2405,7 +2405,8 @@ function InitGame {
 function InitGameCities {
     param (
         [int]$CityCount = 8,
-        [int]$MaxDrugCount = 6
+        [int]$MaxDrugCount = 6,
+        [int]$GunShops = 2
     )
 
     $cities = @()
@@ -2427,6 +2428,11 @@ function InitGameCities {
         }
 
         $cities += $city
+    }
+
+    # Pick random cities to enable the gunshop
+    $cities | Get-Random -Count $GunShops | ForEach-Object {
+        $_.GunShop = $true
     }
 
     return $cities
