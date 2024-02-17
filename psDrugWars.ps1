@@ -2684,7 +2684,7 @@ function ShowMainMenu {
 
     # Wait for user to press a valid key
     $choices = @('B', 'S', 'F', 'J', 'Q', '?', 'D', '!')
-    # if there is gunshop include 'G' in choices
+    # If there is gunshop include 'G' in choices
     if ($script:Player.City.HasGunShop) {
         $choices += 'G'
     }
