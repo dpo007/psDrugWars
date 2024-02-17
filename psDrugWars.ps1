@@ -2651,6 +2651,12 @@ function ShowMainMenu {
     Write-Host '[S]ell drugs'
     Write-Host '[F]lush drugs'
     Write-Host
+    # If this city has a Gun Shop show the Gun shop menu item
+    if ($script:Player.City.GunShop) {
+        Write-Host '[G]un shop'
+        Write-Host
+    }
+
     Write-Host '[J]et to another city'
     Write-Host '[D]rug-o-pedia'
     Write-Host
