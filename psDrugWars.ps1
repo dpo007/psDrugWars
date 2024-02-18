@@ -50,6 +50,7 @@ class City {
     [string[]]$HomeDrugNames
     [float]$HomeDrugSaleMultiplier
     [Gun[]]$GunsForSale
+    [string]$GunShopName
 
     # Default constructor
     City() {
@@ -58,6 +59,8 @@ class City {
 
         # Guns are assigned after city is created
         $this.GunsForSale = @()
+        # No name until a gun is added
+        $this.GunShopName = $null
 
         # Assign 1 or 2 random 'Home Drugs' to each city
         $homeDrugCount = Get-Random -Minimum 1 -Maximum 3
@@ -70,6 +73,29 @@ class City {
     # Method to add a gun to the city's GunsForSale collection
     [void]AddGun([Gun]$Gun) {
         $this.GunsForSale += $Gun
+
+        $gunShopNames = @(
+            'Aim High Ammunition Alley',
+            'Ammo-nation',
+            'Angry Hank''s Shot Shack',
+            'Barrel of Laughs Gun Depot',
+            'Bullet Bonanza Emporium',
+            'Glock ''n Roll Firearms',
+            'Guns ''n'' Giggles',
+            'Laugh ''n'' Load Gunsmiths',
+            'Lock, Stock, and Two Smokin'' Barrels',
+            'Pistol Puns & Rifled Laughs',
+            'Shoots & Ladders Armoury',
+            'The Bang Theory Firearms',
+            'The Bang-Bang Boutique',
+            'The Trigger Happy Gun Shop',
+            'Trigger Treats Gun Emporium'
+        )
+
+        if (-not $this.GunShopName) {
+            $this.GunShopName = Get-Random -InputObject $gunShopNames
+        }
+
     }
 
     # Method ot return if the city has guns for sale
