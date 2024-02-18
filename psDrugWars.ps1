@@ -2694,7 +2694,7 @@ function ShowMainMenu {
     Write-Host '[F]lush drugs'
     Write-Host
     # If this city has a Gun Shop show the Gun shop menu item
-    if ($script:Player.City.HasGunShop) {
+    if ($script:Player.City.HasGunShop()) {
         Write-Host '[G]un shop'
         Write-Host
     }
@@ -2710,7 +2710,7 @@ function ShowMainMenu {
     # Wait for user to press a valid key
     $choices = @('B', 'S', 'F', 'J', 'Q', '?', 'D', '!')
     # If there is gunshop include 'G' in choices
-    if ($script:Player.City.HasGunShop) {
+    if ($script:Player.City.HasGunShop()) {
         $choices += 'G'
     }
     $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
@@ -4255,6 +4255,16 @@ while ($script:Playing) {
             }
             "!" {
                 StartRandomEvent -EventName (Read-Host -Prompt 'Enter event name')
+            }
+            "G" {
+                if ($script:Player.City.HasGunShop) {
+                    ShowBuyGunsMenu
+                }
+                else {
+                    Write-Host
+                    Write-Centered 'Invalid choice'
+                    Start-Sleep -Milliseconds 500
+                }
             }
             default {
                 Write-Host
