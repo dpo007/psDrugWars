@@ -2729,7 +2729,7 @@ function ShowCityGuns {
         [City]$City
     )
 
-    $gunCount = $city.Guns.Count
+    $gunCount = $City.GunsForSale.Count
     $halfCount = [math]::Ceiling($gunCount / 2)
     $boxWidth = 76
     $leftColumnWidth = 35
@@ -2741,11 +2741,11 @@ function ShowCityGuns {
 
     for ($i = 0; $i -lt $halfCount; $i++) {
 
-        $leftGunName = '{0}' -f $city.Guns[$i].Name
-        $rightGunName = '{0}' -f $city.Guns[$i + $halfCount].Name
+        $leftGunName = '{0}' -f $City.Guns[$i].Name
+        $rightGunName = '{0}' -f $City.Guns[$i + $halfCount].Name
 
-        $leftGun = ('{0}. {1} ({2}) - ${3}' -f ($i + 1), $leftGunName, $city.Guns[$i].StoppingPower, $city.Guns[$i].get_Price())
-        $rightGun = ('{0}. {1} ({2}) - ${3}' -f ($i + $halfCount + 1), $rightGunName, $city.Guns[$i + $halfCount].StoppingPower, $city.Guns[$i + $halfCount].get_Price())
+        $leftGun = ('{0}. {1} ({2}) - ${3}' -f ($i + 1), $leftGunName, $City.Guns[$i].StoppingPower, $City.Guns[$i].get_Price())
+        $rightGun = ('{0}. {1} ({2}) - ${3}' -f ($i + $halfCount + 1), $rightGunName, $City.Guns[$i + $halfCount].StoppingPower, $City.Guns[$i + $halfCount].get_Price())
 
         $leftGun = $leftGun.PadRight($leftColumnWidth)
         $rightGun = $rightGun.PadRight($rightColumnWidth)
@@ -2761,6 +2761,38 @@ function ShowCityGuns {
             Write-Centered ('│' + (' ' * $gutterWidth) + ('─' * $leftColumnWidth) + (' ' * $gutterWidth) + '│' + (' ' * $gutterWidth) + ('─' * $rightColumnWidth) + (' ' * $gutterWidth) + '│')
         }
     }
+}
+
+# This function displays the gun buying menu.
+function ShowBuyGunsMenu {
+    Clear-Host
+    ShowMenuHeader
+    Write-Host
+    Write-Centered ('Welcome to {0}!' -f $script:Player.City.GunShopName)
+    Write-Centered 'We have the following guns for sale:'
+    Write-Host
+    ShowCityGuns $script:Player.City
+    Write-Host
+    $gunCount = $script:Player.City.Guns.Count
+    Write-Centered "Enter the number of the gun you want to buy (1-$gunCount, or 'Q' to return to the main menu) " -NoNewline
+    $gunNumber = $null
+    while (-not $gunNumber) {
+        $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+        switch ($key) {
+            { $_ -in '1'.."$gunCount" } { $gunNumber = [int]$key; break }
+            { $_ -in 'q', 'Q' } { return }
+        }
+    }
+
+    Write-Host
+    # Create clone of gun object for transaction.
+    $cityGun = $script:Player.City.Guns[$gunNumber - 1]
+    $gunToBuy = [Gun]::new($cityGun)
+
+    # Buy the gun.
+    $script:Player.BuyGun($gunToBuy)
+
+    PressEnterPrompt
 }
 
 # Function to display drugs available in a city in a two column display
@@ -2786,7 +2818,7 @@ function ShowCityDrugs {
         return $DrugName
     }
 
-    $drugCount = $city.Drugs.Count
+    $drugCount = $City.Drugs.Count
     $halfCount = [math]::Ceiling($drugCount / 2)
     $boxWidth = 76
     $leftColumnWidth = 35
@@ -2800,17 +2832,17 @@ function ShowCityDrugs {
         $isSaleDay = IsHomeDrugSaleDay
 
         $leftDrugName = GetFormattedDrugName `
-            -DrugName $city.Drugs[$i].Name `
-            -HomeDrugNames $city.HomeDrugNames `
+            -DrugName $City.Drugs[$i].Name `
+            -HomeDrugNames $City.HomeDrugNames `
             -IsHomeDrugSaleDay $isSaleDay
 
         $rightDrugName = GetFormattedDrugName `
-            -DrugName $city.Drugs[$i + $halfCount].Name `
-            -HomeDrugNames $city.HomeDrugNames `
+            -DrugName $City.Drugs[$i + $halfCount].Name `
+            -HomeDrugNames $City.HomeDrugNames `
             -IsHomeDrugSaleDay $isSaleDay
 
-        $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $leftDrugName, $city.Drugs[$i].get_Price())
-        $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $rightDrugName, $city.Drugs[$i + $halfCount].get_Price())
+        $leftDrug = ('{0}. {1} - ${2}' -f ($i + 1), $leftDrugName, $City.Drugs[$i].get_Price())
+        $rightDrug = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $rightDrugName, $City.Drugs[$i + $halfCount].get_Price())
 
         $leftDrug = $leftDrug.PadRight($leftColumnWidth)
         $rightDrug = $rightDrug.PadRight($rightColumnWidth)
