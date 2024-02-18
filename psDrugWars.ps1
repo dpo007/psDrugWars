@@ -2472,7 +2472,9 @@ function InitGameCities {
     $gunShopCities = $cities | Get-Random -Count $GunShops
     foreach ($city in $gunShopCities) {
         # Add 6 random guns to this city
-        $city.AddGun(($script:GunInfo | Get-Random -Count 6))
+        $script:GunInfo | Get-Random -Count 6 | ForEach-Object {
+            $city.AddGun($_)
+        }
     }
 
     return $cities
