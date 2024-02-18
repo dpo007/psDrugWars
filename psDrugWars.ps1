@@ -2741,11 +2741,11 @@ function ShowCityGuns {
 
     for ($i = 0; $i -lt $halfCount; $i++) {
 
-        $leftGunName = '{0}' -f $City.Guns[$i].Name
-        $rightGunName = '{0}' -f $City.Guns[$i + $halfCount].Name
+        $leftGunName = '{0}' -f $City.GunsForSale[$i].Name
+        $rightGunName = '{0}' -f $City.GunsForSale[$i + $halfCount].Name
 
-        $leftGun = ('{0}. {1} ({2}) - ${3}' -f ($i + 1), $leftGunName, $City.Guns[$i].StoppingPower, $City.Guns[$i].get_Price())
-        $rightGun = ('{0}. {1} ({2}) - ${3}' -f ($i + $halfCount + 1), $rightGunName, $City.Guns[$i + $halfCount].StoppingPower, $City.Guns[$i + $halfCount].get_Price())
+        $leftGun = ('{0}. {1} ({2}) - ${3}' -f ($i + 1), $leftGunName, $City.GunsForSale[$i].StoppingPower, $City.GunsForSale[$i].get_Price())
+        $rightGun = ('{0}. {1} ({2}) - ${3}' -f ($i + $halfCount + 1), $rightGunName, $City.GunsForSale[$i + $halfCount].StoppingPower, $City.GunsForSale[$i + $halfCount].get_Price())
 
         $leftGun = $leftGun.PadRight($leftColumnWidth)
         $rightGun = $rightGun.PadRight($rightColumnWidth)
@@ -2773,7 +2773,7 @@ function ShowBuyGunsMenu {
     Write-Host
     ShowCityGuns $script:Player.City
     Write-Host
-    $gunCount = $script:Player.City.Guns.Count
+    $gunCount = $script:Player.City.GunsForSale.Count
     Write-Centered "Enter the number of the gun you want to buy (1-$gunCount, or 'Q' to return to the main menu) " -NoNewline
     $gunNumber = $null
     while (-not $gunNumber) {
@@ -2786,7 +2786,7 @@ function ShowBuyGunsMenu {
 
     Write-Host
     # Create clone of gun object for transaction.
-    $cityGun = $script:Player.City.Guns[$gunNumber - 1]
+    $cityGun = $script:Player.City.GunsForSale[$gunNumber - 1]
     $gunToBuy = [Gun]::new($cityGun)
 
     # Buy the gun.
