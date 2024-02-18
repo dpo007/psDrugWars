@@ -95,7 +95,6 @@ class City {
         if (-not $this.GunShopName) {
             $this.GunShopName = Get-Random -InputObject $gunShopNames
         }
-
     }
 
     # Method ot return if the city has guns for sale
