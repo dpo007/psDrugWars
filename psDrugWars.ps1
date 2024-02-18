@@ -2469,11 +2469,10 @@ function InitGameCities {
     }
 
     # Pick random cities to add guns to
-    $cities | Get-Random -Count $GunShops | ForEach-Object {
+    $gunShopCities = $cities | Get-Random -Count $GunShops
+    foreach ($city in $gunShopCities) {
         # Add 6 random guns to this city
-        $script:GunInfo | Get-Random -Count 6 | ForEach-Object {
-            $city.AddGun($_)
-        }
+        $city.AddGun(($script:GunInfo | Get-Random -Count 6))
     }
 
     return $cities
@@ -2740,11 +2739,11 @@ function ShowCityGuns {
 
     for ($i = 0; $i -lt $halfCount; $i++) {
 
-        $leftGunName = $city.Guns[$i].Name
-        $rightGunName = $city.Guns[$i + $halfCount].Name
+        $leftGunName = '{0}' -f $city.Guns[$i].Name
+        $rightGunName = '{0}' -f $city.Guns[$i + $halfCount].Name
 
-        $leftGun = ('{0}. {1} - ${2}' -f ($i + 1), $leftGunName, $city.Guns[$i].get_Price())
-        $rightGun = ('{0}. {1} - ${2}' -f ($i + $halfCount + 1), $rightGunName, $city.Guns[$i + $halfCount].get_Price())
+        $leftGun = ('{0}. {1} ({2}) - ${3}' -f ($i + 1), $leftGunName, $city.Guns[$i].StoppingPower, $city.Guns[$i].get_Price())
+        $rightGun = ('{0}. {1} ({2}) - ${3}' -f ($i + $halfCount + 1), $rightGunName, $city.Guns[$i + $halfCount].StoppingPower, $city.Guns[$i + $halfCount].get_Price())
 
         $leftGun = $leftGun.PadRight($leftColumnWidth)
         $rightGun = $rightGun.PadRight($rightColumnWidth)
