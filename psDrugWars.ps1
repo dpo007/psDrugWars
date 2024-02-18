@@ -2512,9 +2512,9 @@ function DisplayCities {
     $sortedCities = $Cities.Name | Sort-Object
     $halfCount = [math]::Ceiling($sortedCities.Count / 2)
 
-    $boxWidth = 76
-    $leftColumnWidth = 35
-    $rightColumnWidth = 35
+    $boxWidth = 96
+    $leftColumnWidth = 45
+    $rightColumnWidth = 45
     $gutterWidth = 1
 
     # Top border
@@ -2731,9 +2731,9 @@ function ShowCityGuns {
 
     $gunCount = $City.GunsForSale.Count
     $halfCount = [math]::Ceiling($gunCount / 2)
-    $boxWidth = 76
-    $leftColumnWidth = 35
-    $rightColumnWidth = 35
+    $boxWidth = 96
+    $leftColumnWidth = 45
+    $rightColumnWidth = 45
     $gutterWidth = 1
 
     # Top border
@@ -2820,9 +2820,9 @@ function ShowCityDrugs {
 
     $drugCount = $City.Drugs.Count
     $halfCount = [math]::Ceiling($drugCount / 2)
-    $boxWidth = 76
-    $leftColumnWidth = 35
-    $rightColumnWidth = 35
+    $boxWidth = 96
+    $leftColumnWidth = 45
+    $rightColumnWidth = 45
     $gutterWidth = 1
 
     # Top border
