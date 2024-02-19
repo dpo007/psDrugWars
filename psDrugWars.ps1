@@ -175,6 +175,7 @@ class Player {
 
     # Method to add a gun
     [bool]AddGun([Gun]$Gun, [bool]$Silent = $false) {
+        # Maximum two guns
         if ($this.Guns.Count -ge 2) {
             $tooManyGunsExpressions = @(
                 'Whoa, slow down, Rambo! Two strapped guns are your limit, fam. We don''t want you to take off like a helicopter now.',
