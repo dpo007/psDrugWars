@@ -71,7 +71,7 @@ class City {
     }
 
     # Method to add a gun to the city's GunsForSale collection
-    [void]AddGun([Gun]$Gun) {
+    [void]AddGunToShop([Gun]$Gun) {
         $this.GunsForSale += $Gun
 
         $gunShopNames = @(
@@ -169,12 +169,12 @@ class Player {
         $this.Guns = @()
     }
 
-    [void]AddGun([Gun]$Gun) {
-        $this.AddGun($Gun, $false)
+    [bool]AddGun([Gun]$Gun) {
+        return $this.AddGun($Gun, $false)
     }
 
     # Method to add a gun
-    [void]AddGun([Gun]$Gun, [bool]$Silent = $false) {
+    [bool]AddGun([Gun]$Gun, [bool]$Silent = $false) {
         if ($this.Guns.Count -ge 2) {
             $tooManyGunsExpressions = @(
                 'Whoa, slow down, Rambo! Two strapped guns are your limit, fam. We don''t want you to take off like a helicopter now.',
@@ -187,7 +187,7 @@ class Player {
             Write-Centered (Get-Random -InputObject $tooManyGunsExpressions) -ForegroundColor Red
             Start-Sleep 2
             PressEnterPrompt
-            return
+            return $false
         }
 
         if (-not $Silent) {
@@ -208,6 +208,7 @@ class Player {
         }
 
         $this.Guns += $Gun
+        return $true
     }
 
     # Method to Buy a gun
@@ -227,11 +228,10 @@ class Player {
             Start-Sleep 3
             return
         }
-        else {
 
-            # If the player has enough cash, buy the gun
+        # If the player has enough cash, and can add the gun to their inventory, buy the gun.
+        if ($this.AddGun($Gun)) {
             $this.Cash -= $Gun.Price
-            $this.AddGun($Gun)
             Write-Host
             Write-Centered ('You bought a {0} for ${1}.' -f $Gun.Name, $Gun.Price) -ForegroundColor Green
             Start-Sleep -Milliseconds 1500
@@ -2480,7 +2480,7 @@ function InitGameCities {
     foreach ($city in $gunShopCities) {
         # Add 6 random guns to this city
         $script:GunInfo | Get-Random -Count 6 | ForEach-Object {
-            $city.AddGun($_)
+            $city.AddGunToShop($_)
         }
     }
 
