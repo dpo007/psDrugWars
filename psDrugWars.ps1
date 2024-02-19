@@ -3790,8 +3790,8 @@ function ShowTitleScreen {
     # Calculate the top padding
     $topPadding = [math]::Floor(($consoleHeight - $blockHeight) / 2)
 
-    # Remove a line from the padding to make room for tagline
-    $topPadding -= 1
+    # Remove some lines from the padding to make room for tagline
+    $topPadding -= 3
 
     # Ensure top padding is not negative
     $topPadding = [math]::max(0, $topPadding)
@@ -3816,6 +3816,7 @@ function ShowTitleScreen {
     # Move the cursor back to the original position
     $host.UI.RawUI.CursorPosition = $originalCursorPosition
 
+    Write-Host
     Write-Host
     ShowTaglinePrompt
 }
