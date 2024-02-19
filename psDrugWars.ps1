@@ -224,18 +224,25 @@ class Player {
             )
 
             Write-Centered (Get-Random -InputObject $gunPurchasePhrases) -ForegroundColor Yellow
+            Start-Sleep 3
             return
         }
+        else {
 
-        # If the player has enough cash, buy the gun
-        $this.Cash -= $Gun.Price
-        $this.AddGun($Gun)
-        Write-Centered ('You bought a {0} for ${1}.' -f $Gun.Name, $Gun.Price)
-        Start-Sleep -Milliseconds 1500
-        Write-Centered $Gun.Description
-        Start-Sleep -Milliseconds 1500
-        Write-Centered $Gun.History
+            # If the player has enough cash, buy the gun
+            $this.Cash -= $Gun.Price
+            $this.AddGun($Gun)
+            Write-Host
+            Write-Centered ('You bought a {0} for ${1}.' -f $Gun.Name, $Gun.Price) -ForegroundColor Green
+            Start-Sleep -Milliseconds 1500
+            Write-Host
+            Write-Centered $Gun.Description
+            Start-Sleep -Milliseconds 1500
+            Write-Host
+            Write-Centered $Gun.History
+        }
         Start-Sleep 3
+        Write-Host
     }
 
     # Method to get total stopping power of all guns
@@ -2802,6 +2809,7 @@ function ShowBuyGunsMenu {
     $cityGun = $script:Player.City.GunsForSale[$gunNumber - 1]
     $gunToBuy = [Gun]::new($cityGun)
 
+    Write-Host
     # Buy the gun.
     $script:Player.BuyGun($gunToBuy)
 
