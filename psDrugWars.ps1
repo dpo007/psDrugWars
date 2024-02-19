@@ -2765,16 +2765,29 @@ function ShowCityGuns {
 
 # This function displays the gun buying menu.
 function ShowBuyGunsMenu {
+
+    $gunSlang = @(
+        'piece',
+        'burner',
+        'gat',
+        'iron',
+        'blaster',
+        'gun',
+        'heater',
+        'strap'
+    )
+
     Clear-Host
     ShowMenuHeader
     Write-Host
     Write-Centered ('Welcome to {0}!' -f $script:Player.City.GunShopName)
-    Write-Centered 'We have the following guns for sale:'
+    Write-Host
+    Write-Centered 'We have the following heat for sale:' -ForegroundColor DarkGray
     Write-Host
     ShowCityGuns $script:Player.City
     Write-Host
     $gunCount = $script:Player.City.GunsForSale.Count
-    Write-Centered "Enter the number of the gun you want to buy (1-$gunCount, or 'Q' to return to the main menu) " -NoNewline
+    Write-Centered ('Enter the number of the {0} you want to buy (1-{1}, or ''Q'' to return to the main menu' -f (Get-Random -InputObject $gunSlang) , $gunCount) -NoNewline
     $gunNumber = $null
     while (-not $gunNumber) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
