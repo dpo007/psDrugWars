@@ -1636,6 +1636,7 @@ $script:GunInfo = @(
         Price         = 200
         Description   = "A projectile weapon with minimal stopping power, often used for hunting small game or as a recreational activity."
         History       = "Slingshots have been used for thousands of years, with evidence of their use dating back to ancient civilizations such as the Egyptians, Greeks, and Romans."
+        Onomatopoeia  = "Thwack!"
     },
     @{
         Name          = "Single-shot shotgun"
@@ -1644,6 +1645,7 @@ $script:GunInfo = @(
         Price         = 600
         Description   = "A traditional shotgun with only one barrel, which has limited stopping power compared to a pump or semi-automatic shotgun."
         History       = "The shotgun has its origins in the early 18th century, with the invention of the smoothbore, flintlock firearm. Over time, it has evolved into the modern shotguns we know today."
+        Onomatopoeia  = "Boom!"
     },
     @{
         Name          = ".22 caliber rimfire pistol"
@@ -1652,6 +1654,7 @@ $script:GunInfo = @(
         Price         = 1000
         Description   = "A small-caliber pistol with limited stopping power, often used for target practice and plinking."
         History       = "The .22 caliber rimfire cartridge was introduced in 1857 by the British firm, Royal Small Arms Factory. It has since become the most popular caliber for firearms worldwide."
+        Onomatopoeia  = "Pew!"
     },
     @{
         Name          = "Derringer"
@@ -1660,6 +1663,7 @@ $script:GunInfo = @(
         Price         = 1400
         Description   = "A small, pocket-sized pistol with minimal stopping power, typically chambered in .410 gauge or .22 caliber rimfire."
         History       = "The Derringer was invented by Henry Derringer in the early 19th century and gained popularity as a concealable weapon for personal protection."
+        Onomatopoeia  = "Bang!"
     },
     @{
         Name          = "Glock 17"
@@ -1668,6 +1672,7 @@ $script:GunInfo = @(
         Price         = 1800
         Description   = "A semi-automatic pistol with moderate stopping power."
         History       = "The Glock 17 was introduced in 1982 by Austrian gunmaker Gaston Glock. It has since become one of the most popular handguns worldwide, known for its reliability and ease of use."
+        Onomatopoeia  = "Bam!"
     },
     @{
         Name          = "Desert Eagle"
@@ -1676,6 +1681,7 @@ $script:GunInfo = @(
         Price         = 2200
         Description   = "A large-frame semi-automatic pistol with significant stopping power."
         History       = "The Desert Eagle was designed by Magnum Research in the late 1970s and early 1980s. It is known for its powerful .50 AE caliber and unique appearance."
+        Onomatopoeia  = "Boom!"
     },
     @{
         Name          = "M1911"
@@ -1684,6 +1690,7 @@ $script:GunInfo = @(
         Price         = 2600
         Description   = "A semi-automatic pistol with moderate to high stopping power."
         History       = "The M1911, also known as the Model 1911 or Colt 1911, is a single-action, semi-automatic pistol chambered in .45 ACP. It was designed by John Browning and adopted by the United States Armed Forces in 1911."
+        Onomatopoeia  = "Bang!"
     },
     @{
         Name          = "Uzi"
@@ -1692,6 +1699,7 @@ $script:GunInfo = @(
         Price         = 3000
         Description   = "A submachine gun with moderate stopping power."
         History       = "The Uzi was designed by Major Uziel Gal of the Israel Defense Forces in the 1940s and 1950s. It became widely known for its use by Israeli military and police forces, as well as various other militaries and law enforcement agencies around the world."
+        Onomatopoeia  = "Rat-a-tat-tat!"
     },
     @{
         Name          = "MAC-10"
@@ -1700,6 +1708,7 @@ $script:GunInfo = @(
         Price         = 3400
         Description   = "A submachine gun with moderate stopping power."
         History       = "The MAC-10, or Machine Pistol, was designed by George Kolay in the 1960s as a compact and concealable firearm. It gained notoriety in the 1970s and 1980s for its use in criminal activities, earning it the nickname `"Crime-tech`"."
+        Onomatopoeia  = "Rat-a-tat-tat!"
     },
     @{
         Name          = "Colt Python"
@@ -1708,6 +1717,7 @@ $script:GunInfo = @(
         Price         = 3800
         Description   = "A revolver with high stopping power."
         History       = "The Colt Python is a large-frame, double-action revolver produced by the Colt's Manufacturing Company. It was introduced in 1955 and is known for its power, accuracy, and reliability."
+        Onomatopoeia  = "Bang!"
     },
     @{
         Name          = "Tommy Gun"
@@ -1716,6 +1726,7 @@ $script:GunInfo = @(
         Price         = 4200
         Description   = "A classic submachine gun with moderate to high stopping power, known for its high rate of fire and ease of use."
         History       = "The Thompson submachine gun, or Tommy Gun, was designed by John T. Thompson in 1918. It was widely used by law enforcement and military forces in the 1920s and 1930s, and has since become an iconic symbol of the Prohibition era and the gangster culture of that time."
+        Onomatopoeia  = "Rat-a-tat-tat!"
     },
     @{
         Name          = "Barrett M82"
@@ -1724,6 +1735,7 @@ $script:GunInfo = @(
         Price         = 4600
         Description   = "A powerful .50 caliber sniper rifle, used by drug lords for its long-range accuracy and destructive power."
         History       = "The Barrett M82, also known as the M82A1, is a .50 caliber anti-materiel rifle developed by the American company Barrett Firearms. It was introduced in the 1980s and has since become one of the most recognized sniper rifles in the world."
+        Onomatopoeia  = "Crack!"
     },
     @{
         Name          = "AK-47"
@@ -1732,6 +1744,7 @@ $script:GunInfo = @(
         Price         = 5000
         Description   = "An assault rifle with high stopping power."
         History       = "The AK-47, also known as the Kalashnikov or Avtomat Kalashnikova, is a gas-operated, 7.62×39mm assault rifle developed in the Soviet Union by Mikhail Kalashnikov. It was introduced in 1947 and has since become one of the most widely used and recognizable firearms in the world."
+        Onomatopoeia  = "Blam! Blam! Blam! Blam! Blam! Blam..... BLAM!"
     },
     @{
         Name          = "AR-15"
@@ -1740,6 +1753,7 @@ $script:GunInfo = @(
         Price         = 5000
         Description   = "A semi-automatic rifle with moderate to high stopping power."
         History       = "The AR-15, developed by American firearms designer Eugene Stoner, was first produced in the early 1960s. It was originally designed as a lightweight, adaptable rifle for various purposes, including sport shooting, hunting, and military use. Over time, it has become one of the most popular semi-automatic rifles in the United States."
+        Onomatopoeia  = "Bang! Bang! Bang! Bang! Bang! Bang! Bang! Bang! Bang!"
     },
     @{
         Name          = "FN FAL"
@@ -1748,6 +1762,7 @@ $script:GunInfo = @(
         Price         = 5000
         Description   = "A battle rifle with high stopping power."
         History       = "The FN FAL, or Fabrique Nationale Fusil Automatique Leger, is a battle rifle developed by the Belgian firearms manufacturer Fabrique Nationale de Herstal. It was introduced in the late 1940s and was widely used by various militaries around the world during the Cold War era."
+        Onomatopoeia  = "Ka-chunk! Bang!"
     }
 )
 #############################################
