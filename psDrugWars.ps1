@@ -732,9 +732,17 @@ $script:RandomEvents = @(
             [float]$randomNumber = Get-Random -Minimum 0.0 -Maximum 1.0
             # If the random number is less than or equal to the bust chance, the cops bust the player
             if ($randomNumber -le $bustChance) {
-                Write-Centered 'You spent the night in jail and lost all your drugs.' -ForegroundColor Red
+                if ($script:Player.get_Guns().Count -gt 0) {
+                    Write-Centered 'You spent the night in jail and lost all your drugs and guns.' -ForegroundColor Red
+                }
+                else {
+                    Write-Centered 'You spent the night in jail and lost all your drugs.' -ForegroundColor Red
+                }
+
                 # Remove all drugs from the player's possession
                 $script:Player.Drugs = @()
+                # Remove all the player's guns.
+                $script:Player.DumpGuns()
                 # Increment the game day
                 AdvanceGameDay -SkipPriceUpdate
             }
