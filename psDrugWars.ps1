@@ -2794,8 +2794,8 @@ function ShowCityGuns {
     }
 }
 
-# This function displays the gun buying menu.
-function ShowBuyGunsMenu {
+# This function displays the gun shop menu.
+function ShowGunshopMenu {
 
     $gunSlang = @(
         'piece',
@@ -4336,7 +4336,7 @@ while ($script:Playing) {
             }
             "G" {
                 if ($script:Player.City.HasGunShop) {
-                    ShowBuyGunsMenu
+                    ShowGunshopMenu
                 }
                 else {
                     Write-Host
