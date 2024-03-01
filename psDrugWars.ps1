@@ -178,16 +178,22 @@ class Player {
         # Maximum two guns
         if ($this.Guns.Count -ge 2) {
             $tooManyGunsExpressions = @(
-                'Whoa, slow down, Rambo! Two strapped guns are your limit, fam. We don''t want you to take off like a helicopter now.',
-                'Hold your horses, cowboy! You''re already packing a pair of heat, pal. Adding more would be like juggling flaming marshmallows - not a good idea, see?',
-                'Easy there, gunslinger! Two guns are the magic number, amico. Adding more would be like trying to salsa dance with three left feet, capisce?',
-                'Chill, action hero! You''ve already got a dynamic duo of guns, homey. Adding more would be like trying to breakdance on a tightrope, playa.',
-                'Steady on, sharpshooter! You''ve got a couple of guns already, fella. Adding another one would be like trying to balance a porcupine on your nose, you hear?',
-                'Whoa, trigger happy! Two guns are your lucky number, homey. Adding another one would be like trying to fit a giraffe into a phone booth.'
+                "Whoa, slow down, Rambo! Two strapped guns are your limit, fam.`r`nWe don't want you to take off like a helicopter now.",
+                "Hold your horses, cowboy! You're already packing a pair of heat, pal.`r`nAdding more would be like juggling flaming marshmallows - not a good idea, see?",
+                "Easy there, gunslinger! Two guns are the magic number, amico.`r`nAdding more would be like trying to salsa dance with three left feet, capisce?",
+                "Chill, action hero! You've already got a dynamic duo of guns, homey.`r`nAdding more would be like trying to breakdance on a tightrope, playa.",
+                "Steady on, sharpshooter! You've got a couple of guns already, fella.`r`nAdding another one would be like trying to balance a porcupine on your nose, you hear?",
+                "Whoa, trigger happy! Two guns are your lucky number, homey.`r`nAdding another one would be like trying to fit a giraffe into a phone booth."
             )
-            Write-Centered (Get-Random -InputObject $tooManyGunsExpressions) -ForegroundColor Red
+            $parts = (Get-Random -InputObject $tooManyGunsExpressions) -split "`r`n"
+            $firstPart += $parts[0]
+            $secondPart += $parts[1]
+            Write-Centered ($firstPart) -ForegroundColor Red
             Start-Sleep 2
-            PressEnterPrompt
+            Write-Host
+            Write-Centered ($secondPart) -ForegroundColor DarkGray
+            Start-Sleep 2
+            Write-Host
             return $false
         }
 
@@ -217,16 +223,22 @@ class Player {
         # If the player doesn't have enough cash, print a message and return
         if ($Gun.Price -gt $this.Cash) {
             $gunPurchasePhrases = @(
-                'Oops! Your wallet''s on a diet - can''t afford that fancy {0} right now. Time to channel your inner magpie, my friend!',
-                'Uh-oh! Your cash stash is more elusive than Bigfoot when it comes to buying a {0}, homey. Get those brainstorming wheels turning, pal!',
-                'Houston, we have a cash-flow problem! Buying a {0}, fam, requires some next-level haggling skills. Prepare for liftoff, friend!',
-                'Breaking news: Your wallet just declared bankruptcy in the face of that {0}, pal. Let''s brainstorm ways to turn pocket lint into gold, buddy!',
-                'Ay caramba! Your dinero isn''t playing nice with the idea of a {0}, amigo. Time for a financial fiesta, compadre!',
-                'Eh, capisce? Your wallet''s playing hard to get with that {0}. Let''s hustle, my nonna-lovin'' friend - maybe she''s got a secret stash!'
+                "Oops! Your wallet's on a diet - can't afford that fancy {0} right now.`r`nTime to channel your inner magpie, my friend!",
+                "Uh-oh! Your cash stash is more elusive than Bigfoot when it comes to buying a {0}, homey.`r`nGet those brainstorming wheels turning, pal!",
+                "Houston, we have a cash-flow problem! Buying a {0}, fam, requires some next-level haggling skills.`r`nPrepare for liftoff, friend!",
+                "Breaking news: Your wallet just declared bankruptcy in the face of that {0}, pal.`r`nLet's brainstorm ways to turn pocket lint into gold, buddy!",
+                "Ay caramba! Your dinero isn't playing nice with the idea of a {0}, amigo.`r`nTime for a financial fiesta, compadre!",
+                "Eh, capisce? Your wallet's playing hard to get with that {0}.`r`nLet's hustle, my nonna-lovin' friend - maybe she's got a secret stash!"
             )
-
-            Write-Centered (Get-Random -InputObject $gunPurchasePhrases) -ForegroundColor Yellow
-            Start-Sleep 3
+            $parts = (Get-Random -InputObject $gunPurchasePhrases) -split "`r`n"
+            $firstPart += $parts[0]
+            $secondPart += $parts[1]
+            Write-Centered ($firstPart -f $Gun.Name) -ForegroundColor Yellow
+            Start-Sleep 2
+            Write-Host
+            Write-Centered ($secondPart) -ForegroundColor DarkGray
+            Start-Sleep 2
+            Write-Host
             return
         }
 
@@ -2813,9 +2825,11 @@ function ShowGunshopMenu {
     }
 
     function ShopBuysGun {
+        $playerGunCount = $script:Player.get_Guns().Count
+
         Write-Host
         # If the player has no guns, return.
-        if ($script:Player.Guns.Count -eq 0) {
+        if ($playerGunCount -eq 0) {
             Write-Host
             Write-Centered 'Hey, high-boy! You have no guns to sell.' -ForegroundColor Red
             Start-Sleep -Seconds 3
@@ -2828,27 +2842,32 @@ function ShowGunshopMenu {
                 'Scram.'
             )
             Write-Centered (Get-Random -InputObject $getLostMessages)
+            Start-Sleep -Milliseconds 750
             Write-Host
             return
         }
 
         # Display the player's guns.
-        for ($i = 0; $i -lt $script:Player.Guns.Count; $i++) {
+        Write-Host
+        for ($i = 0; $i -lt $playerGunCount; $i++) {
             $gun = $script:Player.get_Guns()[$i]
             Write-Centered ('{0}. {1} ({2})' -f ($i + 1), $gun.Name, $gun.StoppingPower)
         }
 
         # Prompt the player to choose a gun to sell.
-        Write-Centered 'Enter the number of the gun you want to sell (1-{0}, or "Q" to return to the main menu' -f $script:Player.Guns.Count -NoNewline
-        $gunNumber = $null
-        while (-not $gunNumber) {
+        Write-Host
+        Write-Centered ('Enter the number of the gun you want to sell (1-{0}, or "Q" to return to the main menu' -f $playerGunCount) -NoNewline
+
+        do {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
-            if ($key -in '1'.."$($script:Player.Guns.Count)") {
-                $gunNumber = [int]$key
-            }
-            elseif ($key -in 'q', 'Q') {
-                return
-            }
+        } until ($key -in '1'.."$playerGunCount" -or $key -in @('q', 'Q'))
+
+
+        if ($key -in '1'.."$playerGunCount") {
+            $gunNumber = [int]$key
+        }
+        elseif ($key -in 'q', 'Q') {
+            return
         }
 
         # Sell the gun.
@@ -2880,11 +2899,13 @@ function ShowGunshopMenu {
 
     do {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
-    } until ($key -in '1'.."$gunCount", 's', 'S', 'q', 'Q')
+    } until ($key -in '1'.."$gunCount" -or $key -in @('s', 'S', 'q', 'Q'))
 
     switch ($key) {
         { $_ -in '1'.."$gunCount" } {
-            ShopSellsGun -GunNumber [int]$key;
+            # Convert $key string to an integer
+            $key = [int]$key
+            ShopSellsGun -GunNumber $key;
             break
         }
         { $_ -in 's', 'S' } {
