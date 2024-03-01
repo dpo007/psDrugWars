@@ -258,6 +258,28 @@ class Player {
         Write-Host
     }
 
+    [void]SellGun([String]$GunName) {
+        # Find the first gun in the player's inventory that matches the given name
+        $gun = $this.Guns | Where-Object { $_.Name -eq $GunName } | Select-Object -First 1
+
+        Write-Host
+
+        # If the gun was found
+        if ($gun) {
+            # Increase the player's cash by 75% of the gun's price
+            $this.Cash += $gun.Price * 0.75
+
+            # Remove the sold gun from the player's inventory.
+            $this.Guns = $this.Guns | Where-Object { $_.Name -ne $GunName } | Select-Object -First 1
+
+            Write-Centered ('You sold your {0} for ${1}.' -f $gun.Name, $gun.Price) -ForegroundColor Green
+        }
+        else {
+            Write-Centered ('You don''t have a {0} to sell.' -f $GunName) -ForegroundColor Red
+        }
+        Start-Sleep 3
+    }
+
     # Method to get total stopping power of all guns
     [int]get_StoppingPower() {
         $stoppingPower = 0
