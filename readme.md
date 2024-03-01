@@ -9,6 +9,7 @@ A thrilling PowerShell console game where you navigate through multiple location
 - :earth_americas: Multiple locations to visit
 - :pill: Different types of drugs to buy and sell
 - :game_die: *Many* different random events that can affect the game
+- :cop: Cop fights
 - :underage: NSFW/16+ content :wink:
 
 ## Requires :clipboard:
@@ -30,4 +31,4 @@ To run the game, follow these steps:
 
 ## Warning :warning:
 
-This game contains NSFW/16+ content, including immature, possibly offensive humor, and satirical references to illegal drugs and drug use. Parental discretion is advised. :innocent:
+This game contains NSFW/16+ content, including immature, possibly offensive humor, as well as satirical references to illegal drugs and drug use. Parental discretion is advised. :innocent:
