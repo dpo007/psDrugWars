@@ -3498,12 +3498,14 @@ function StartRandomEvent {
 
 # This function displays a prompt to the user to press Enter to continue.
 function PressEnterPrompt {
+    # Clear existing keyboard buffer
+    $Host.UI.RawUI.Flushinputbuffer()
     Write-Centered 'Press Enter to continue' -NoNewline
     $choice = $null
     while ($choice.VirtualKeyCode -ne 13) {
-        $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+        $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown') | Out-Null
     }
-
+    $Host.UI.RawUI.Flushinputbuffer()
 }
 
 # This function is called when the player chooses to quit the game.
@@ -4459,22 +4461,24 @@ function CopFight {
                         $numCops--
                         $copsKilled++
 
-                        Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops) -ForegroundColor White
+                        Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops) -ForegroundColor Blue
                         # Increase chance of them shooting you back in retaliation by 10%, max 90%
                         $shotChance = [math]::Min($shotChance + 10, 90)
 
+                        Start-Sleep -Seconds 1
                         Write-Host
                         PressEnterPrompt
 
                     }
                     else {
-                        Write-Centered 'You missed! $numCops cops remaining.'
+                        Write-Centered ('You missed! {0} cops remaining.' -f $numCops) -ForegroundColor Red
                         # 50% chance of losing the fight right now
                         if ((Get-Random -Maximum 100) -lt 50) {
                             $lostShootout = $true
                             break
                         }
 
+                        Start-Sleep -Seconds 2
                         Write-Host
                         PressEnterPrompt
                     }
