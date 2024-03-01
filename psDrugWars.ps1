@@ -3629,59 +3629,69 @@ function ShowHelp {
     Clear-Host
     ShowMenuHeader
     Write-Host
-    Write-Centered "------"
-    Write-Centered "Help"
-    Write-Centered "------"
+    Write-Centered '------'
+    Write-Centered 'Help'
+    Write-Centered '------'
     Write-Host
-    Write-Centered "Drug Wars is a text-based game where you buy and sell drugs in various cities around the world."
-    Write-Centered "The goal is to make as much cash money as possible in $script:GameDays days."
+    Write-Centered 'Drug Wars is a text-based game where you buy and sell drugs in various cities around the world.'
+    Write-Centered 'The goal is to make as much cash money as possible in {0} days.' -f $script:GameDays
     Write-Host
-    Write-Host "Main Menu"
-    Write-Host "---------"
-    Write-Host "[B]uy drugs"
-    Write-Host "[S]ell drugs"
-    Write-Host "[F]lush drugs"
-    Write-Host "[J]et to another city"
-    Write-Host "[D]rug-o-pedia"
-    Write-Host "[Q]uit"
+    Write-Host 'Main Menu'
+    Write-Host '---------'
+    Write-Host '[B]uy drugs'
+    Write-Host '[S]ell drugs'
+    Write-Host '[F]lush drugs'
+    Write-Host '[G]un shop'
+    Write-Host '[J]et to another city'
+    Write-Host '[D]rug-o-pedia'
+    Write-Host '[Q]uit'
     Write-Host
-    Write-Host "Buy Drugs"
-    Write-Host "---------"
-    Write-Host "This displays the current prices of all drugs in the city you are in."
-    Write-Host "Enter the name of the drug you want to buy, and the quantity you want to buy."
-    Write-Host "You can only buy as much as you can afford, and as much as you have room for in your pockets."
+    Write-Host 'Buy Drugs'
+    Write-Host '---------'
+    Write-Host 'This displays the current prices of all drugs in the city you are in.'
+    Write-Host 'Enter the name of the drug you want to buy, and the quantity you want to buy.'
+    Write-Host 'You can only buy as much as you can afford, and as much as you have room for in your pockets.'
     Write-Host
-    Write-Host "Sell Drugs"
-    Write-Host "----------"
-    Write-Host "This displays the current prices of all drugs in the city you are in."
-    Write-Host "Enter the name of the drug you want to sell, and the quantity you want to sell."
-    Write-Host "You can only sell as much as you have in your inventory."
+    Write-Host 'Sell Drugs'
+    Write-Host '----------'
+    Write-Host 'This displays the current prices of all drugs in the city you are in.'
+    Write-Host 'Enter the name of the drug you want to sell, and the quantity you want to sell.'
+    Write-Host 'You can only sell as much as you have in your inventory.'
     Write-Host
-    Write-Host "Flush Drugs"
-    Write-Host "-----------"
-    Write-Host "This displays the current drugs in your inventory."
-    Write-Host "Enter the name of the drug you want to flush, and the quantity you want to flush."
-    Write-Host "You can only flush as much as you have in your inventory."
-    Write-Host "Flushing drugs is a good way to get rid of evidence and unmarketable drugs, and sometimes leads to a good time."
+    Write-Host 'Flush Drugs'
+    Write-Host '-----------'
+    Write-Host 'This displays the current drugs in your inventory.'
+    Write-Host 'Enter the name of the drug you want to flush, and the quantity you want to flush.'
+    Write-Host 'You can only flush as much as you have in your inventory.'
+    Write-Host 'Flushing drugs is a good way to get rid of evidence and unmarketable drugs, and sometimes leads to a good time.'
     Write-Host
-    Write-Host "Jet to Another City"
-    Write-Host "-------------------"
-    Write-Host "This displays a list of cities you can travel to."
-    Write-Host "Enter the number of the city you want to travel to."
-    Write-Host "Traveling to another city takes a day, and costs some cash (don't get stuck!)."
+    Write-Host 'Gun Shop'
+    Write-Host '--------'
+    Write-Host 'This displays a list of guns you can buy.'
+    Write-Host 'Enter the number of the gun you want to buy.'
+    Write-Host 'Buying a gun costs cash, and can help you in a fight.'
+    Write-Host 'You can also sell your guns (at a discount, of course).'
+    Write-Host 'You can only carry up to two guns at a time.'
+    Write-Host 'There are only 2 gun stores in the game, in random cities.'
     Write-Host
-    Write-Host "Drug-o-pedia"
-    Write-Host "------------"
-    Write-Host "This displays detailed information about the drugs currently active in this game session."
+    Write-Host 'Jet to Another City'
+    Write-Host '-------------------'
+    Write-Host 'This displays a list of cities you can travel to.'
+    Write-Host 'Enter the number of the city you want to travel to.'
+    Write-Host 'Traveling to another city takes a day, and costs some cash (don''t get stuck!).'
     Write-Host
-    Write-Host "Quit"
-    Write-Host "----"
-    Write-Host "This exits the game."
+    Write-Host 'Drug-o-pedia'
+    Write-Host '------------'
+    Write-Host 'This displays detailed information about the drugs currently active in this game session.'
     Write-Host
-    Write-Host "Random Events"
-    Write-Host "-------------"
-    Write-Host "Random events can occur at any time."
-    Write-Host "Some are good, some are bad."
+    Write-Host 'Quit'
+    Write-Host '----'
+    Write-Host 'This exits the game.'
+    Write-Host
+    Write-Host 'Random Events'
+    Write-Host '-------------'
+    Write-Host 'Random events can occur at any time.'
+    Write-Host 'Some are good, some are bad.'
     Write-Host
     PressEnterPrompt
 }
@@ -4425,14 +4435,15 @@ function CopFight {
                 Write-Centered (Get-Random -InputObject $fistDrawMessages) -ForegroundColor Yellow
             }
 
-            Write-Host
             Start-Sleep -Seconds 2
+            Write-Host
+
             # Try to fight
             # +%5 chance of success for each weapon strength
             $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
 
             # If the player has a gun, simulate a fight with the cops, to determine if you won the fight or not.
-
+            #TODO: Implement the fight simulation
 
             if ($fightSuccess) {
                 Write-Centered 'You win the fight and avoid legal consequences.' -ForegroundColor Green
