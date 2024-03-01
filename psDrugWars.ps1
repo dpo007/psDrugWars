@@ -2814,13 +2814,14 @@ function ShowGunshopMenu {
             [Parameter(Mandatory)]
             [int]$GunNumber
         )
-        Write-Host
+
         # Create clone of gun object for transaction.
         $cityGun = $script:Player.City.GunsForSale[$GunNumber - 1]
         $gunToBuy = [Gun]::new($cityGun)
 
         # Confirm the user wants to buy it
-        Write-Centered ('Are you sure you want to buy a {0} for ${1}? (Y/N)' -f $gunToBuy.Name, $gunToBuy.get_Price()) -NoNewline
+        Write-Host
+        Write-Centered ('Are you sure you want to buy a {0} for ${1}? (Y/N)' -f $gunToBuy.Name, $gunToBuy.Price) -NoNewline
 
         do {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
@@ -2829,6 +2830,7 @@ function ShowGunshopMenu {
         Write-Host
 
         if ($key -eq 'N') {
+            $gunToBuy = $null
             return
         }
 
