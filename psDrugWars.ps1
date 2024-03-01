@@ -4458,9 +4458,14 @@ function CopFight {
                     if ($killedCop) {
                         $numCops--
                         $copsKilled++
-                        # Increase chance of them shooting you back in retaliation by 10%
-                        $shotChance += 10
-                        Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops)
+
+                        Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops) -ForegroundColor White
+                        # Increase chance of them shooting you back in retaliation by 10%, max 90%
+                        $shotChance = [math]::Min($shotChance + 10, 90)
+
+                        Write-Host
+                        PressEnterPrompt
+
                     }
                     else {
                         Write-Centered 'You missed! $numCops cops remaining.'
@@ -4469,6 +4474,9 @@ function CopFight {
                             $lostShootout = $true
                             break
                         }
+
+                        Write-Host
+                        PressEnterPrompt
                     }
                 }
 
