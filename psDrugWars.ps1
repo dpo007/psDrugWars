@@ -2819,7 +2819,7 @@ function ShowGunshopMenu {
         $cityGun = $script:Player.City.GunsForSale[$GunNumber - 1]
         $gunToBuy = [Gun]::new($cityGun)
 
-        # Confirm the user wants to buy it
+        # Confirm the user wants to buy it.
         Write-Host
         Write-Centered ('Are you sure you want to buy a {0} for ${1}? (Y/N)' -f $gunToBuy.Name, $gunToBuy.Price) -NoNewline
 
@@ -2898,39 +2898,39 @@ function ShowGunshopMenu {
         'strap'
     )
 
-    Clear-Host
-    ShowMenuHeader
-    Write-Host
-    Write-Centered ('Welcome to {0}!' -f $script:Player.City.GunShopName)
-    Write-Host
-    Write-Centered 'We have the following heat for sale:' -ForegroundColor DarkGray
-    Write-Host
-    ShowCityGuns $script:Player.City
-    Write-Host
-    $gunCount = $script:Player.City.GunsForSale.Count
-    Write-Centered ('Enter the number of the {0} you want to buy (1-{1}, "S" to sell, or "Q" to return to the main menu' -f (Get-Random -InputObject $gunSlang) , $gunCount) -NoNewline
-
     do {
-        $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
-    } until ($key -in '1'.."$gunCount" -or $key -in @('s', 'S', 'q', 'Q'))
+        Clear-Host
+        ShowMenuHeader
+        Write-Host
+        Write-Centered ('Welcome to {0}!' -f $script:Player.City.GunShopName)
+        Write-Host
+        Write-Centered 'We have the following heat for sale:' -ForegroundColor DarkGray
+        Write-Host
+        ShowCityGuns $script:Player.City
+        Write-Host
+        $gunCount = $script:Player.City.GunsForSale.Count
+        Write-Centered ('Enter the number of the {0} you want to buy (1-{1}, "S" to sell, or "Q" to return to the main menu' -f (Get-Random -InputObject $gunSlang) , $gunCount) -NoNewline
 
-    switch ($key) {
-        { $_ -in '1'.."$gunCount" } {
-            # Convert $key string to an integer
-            $key = [int]$key
-            ShopSellsGun -GunNumber $key;
-            break
-        }
-        { $_ -in 's', 'S' } {
-            ShopBuysGun;
-            break
-        }
-        { $_ -in 'q', 'Q' } {
-            return
-        }
-    }
+        do {
+            $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+        } until ($key -in '1'.."$gunCount" -or $key -in @('s', 'S', 'q', 'Q'))
 
-    PressEnterPrompt
+        switch ($key) {
+            { $_ -in '1'.."$gunCount" } {
+                # Convert $key string to an integer
+                $gunNumber = [int]$key
+                ShopSellsGun -GunNumber $gunNumber;
+                break
+            }
+            { $_ -in 's', 'S' } {
+                ShopBuysGun;
+                break
+            }
+            { $_ -in 'q', 'Q' } {
+                break
+            }
+        }
+    } until ($key -in 'q', 'Q')
 }
 
 # Function to display drugs available in a city in a two column display
