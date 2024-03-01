@@ -15,7 +15,7 @@ A thrilling PowerShell console game where you navigate through multiple location
 ## Requires :clipboard:
 
 - PowerShell version 5.1 or newer.
-- A console window of at least 120 x 25.
+- A console window of at least 120 x 30.
 
 ## Usage :computer:
 
