@@ -4465,7 +4465,8 @@ function CopFight {
                     'Looks like you just made the fuzz an example in that mob-style showdown!',
                     'You played the Don in that police confrontation like a true wise guy!',
                     'You took down those badges like a made man in that gritty street hustle!',
-                    'You just cemented your place in the underworld by outgunning the cops!'
+                    'You just cemented your place in the underworld by outgunning the cops!',
+                    'Them flatfoots are sleeping with the fishes!'
                 )
 
                 Write-Centered (Get-Random -InputObject $fightWonMessages) -ForgroundColor DarkGreen
