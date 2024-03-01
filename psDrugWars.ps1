@@ -2797,6 +2797,64 @@ function ShowCityGuns {
 # This function displays the gun shop menu.
 function ShowGunshopMenu {
 
+    function ShopSellsGun {
+        param (
+            [Parameter(Mandatory)]
+            [int]$GunNumber
+        )
+        Write-Host
+        # Create clone of gun object for transaction.
+        $cityGun = $script:Player.City.GunsForSale[$GunNumber - 1]
+        $gunToBuy = [Gun]::new($cityGun)
+
+        Write-Host
+        # Buy the gun.
+        $script:Player.BuyGun($gunToBuy)
+    }
+
+    function ShopBuysGun {
+        Write-Host
+        # If the player has no guns, return.
+        if ($script:Player.Guns.Count -eq 0) {
+            Write-Host
+            Write-Centered 'Hey, high-boy! You have no guns to sell.' -ForegroundColor Red
+            Start-Sleep -Seconds 3
+            Write-Host
+            $getLostMessages = @(
+                'Take a hike.',
+                'Hit the road.',
+                'Go away.',
+                'Get lost.',
+                'Scram.'
+            )
+            Write-Centered (Get-Random -InputObject $getLostMessages)
+            Write-Host
+            return
+        }
+
+        # Display the player's guns.
+        for ($i = 0; $i -lt $script:Player.Guns.Count; $i++) {
+            $gun = $script:Player.get_Guns()[$i]
+            Write-Centered ('{0}. {1} ({2})' -f ($i + 1), $gun.Name, $gun.StoppingPower)
+        }
+
+        # Prompt the player to choose a gun to sell.
+        Write-Centered 'Enter the number of the gun you want to sell (1-{0}, or "Q" to return to the main menu' -f $script:Player.Guns.Count -NoNewline
+        $gunNumber = $null
+        while (-not $gunNumber) {
+            $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+            if ($key -in '1'.."$($script:Player.Guns.Count)") {
+                $gunNumber = [int]$key
+            }
+            elseif ($key -in 'q', 'Q') {
+                return
+            }
+        }
+
+        # Sell the gun.
+        $script:Player.SellGun($gunNumber)
+    }
+
     $gunSlang = @(
         'piece',
         'burner',
@@ -2818,24 +2876,25 @@ function ShowGunshopMenu {
     ShowCityGuns $script:Player.City
     Write-Host
     $gunCount = $script:Player.City.GunsForSale.Count
-    Write-Centered ('Enter the number of the {0} you want to buy (1-{1}, or ''Q'' to return to the main menu' -f (Get-Random -InputObject $gunSlang) , $gunCount) -NoNewline
-    $gunNumber = $null
-    while (-not $gunNumber) {
+    Write-Centered ('Enter the number of the {0} you want to buy (1-{1}, "S" to sell, or "Q" to return to the main menu' -f (Get-Random -InputObject $gunSlang) , $gunCount) -NoNewline
+
+    do {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
-        switch ($key) {
-            { $_ -in '1'.."$gunCount" } { $gunNumber = [int]$key; break }
-            { $_ -in 'q', 'Q' } { return }
+    } until ($key -in '1'.."$gunCount", 's', 'S', 'q', 'Q')
+
+    switch ($key) {
+        { $_ -in '1'.."$gunCount" } {
+            ShopSellsGun -GunNumber [int]$key;
+            break
+        }
+        { $_ -in 's', 'S' } {
+            ShopBuysGun;
+            break
+        }
+        { $_ -in 'q', 'Q' } {
+            return
         }
     }
-
-    Write-Host
-    # Create clone of gun object for transaction.
-    $cityGun = $script:Player.City.GunsForSale[$gunNumber - 1]
-    $gunToBuy = [Gun]::new($cityGun)
-
-    Write-Host
-    # Buy the gun.
-    $script:Player.BuyGun($gunToBuy)
 
     PressEnterPrompt
 }
