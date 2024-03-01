@@ -4479,7 +4479,25 @@ function CopFight {
 
             Write-Host
             if ($fightSuccess) {
-                Write-Centered 'You win the fight and avoid legal consequences.' -ForegroundColor Green
+                $fightSuccessPhrases = @(
+                    'You straight-up owned that scrap, ain''t no legal mess stuck to you.'
+                    'You handled your business, no court bothered with you.'
+                    'You won the brawl, no cops breathed down your neck.'
+                    'You came out on top, no judge messed with you.'
+                    'You dominated the fight, no legal drama touched you.'
+                    'You took care of business, no courtroom saw your face.'
+                    'You smashed it, no law hassled you.'
+                    'You crushed it, no legal stuff stuck to you.'
+                    'You handled that rumble, no court dealt with you.'
+                    'You came out on top, no legal mess stuck to you.'
+                    'You handled that scrap, no judge messed with you.'
+                    'You handled your business, no legal mess touched you.'
+                    'You took care of business, no legal heat came your way.'
+                    'You won the showdown, no legal trouble came atcha.'
+                    'You came out on top, no legal mess stuck to you.'
+                )
+
+                Write-Centered (Get-Random -InputObject $fightSuccessPhrases) -ForegroundColor Green
                 Start-Sleep -Seconds 2
                 Write-Host
                 PressEnterPrompt
