@@ -3668,11 +3668,10 @@ function ShowHelp {
     Write-Host 'Gun Shop'
     Write-Host '--------'
     Write-Host 'This displays a list of guns you can buy.'
-    Write-Host 'Enter the number of the gun you want to buy.'
     Write-Host 'Buying a gun costs cash, and can help you in a fight.'
     Write-Host 'You can also sell your guns (at a discount, of course).'
     Write-Host 'You can only carry up to two guns at a time.'
-    Write-Host 'There are only 2 gun stores in the game, in random cities.'
+    Write-Host 'There are only two gun stores in the game, in random cities.'
     Write-Host
     Write-Host 'Jet to Another City'
     Write-Host '-------------------'
