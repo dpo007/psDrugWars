@@ -4439,11 +4439,14 @@ function CopFight {
 
             # Try to fight
             if ($gunCount -gt 0) {
+                # +5% chance of kill shot for each stopping power, max 90%.
+                $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 90)
+
+                # Initialize shootout success flag.
                 $lostShootout = $false
                 # Loop until all cops are killed
                 while ($numCops -gt 0) {
-                    # Simulate shooting at cops. +5% chance of kill shot for each stopping power, max 90%.
-                    $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 90)
+                    # Shooting at cops.
                     $killedCop = [bool]((Get-Random -Maximum 100) -lt $killChance)
 
                     # If the cop was killed, decrease the cop count
@@ -4463,7 +4466,10 @@ function CopFight {
                     }
                 }
 
-                if (!$lostShootout) {
+                if ($lostShootout) {
+                    $fightSuccess = $false
+                }
+                else {
                     $shootoutWonMessages = @(
                         'You straight up outplayed the 5-0 in that street showdown!',
                         'You just schooled the pigs in that gritty alley confrontation!',
@@ -4481,8 +4487,6 @@ function CopFight {
                     Write-Centered (Get-Random -InputObject $shootoutWonMessages) -ForgroundColor DarkGreen
                     Start-Sleep -Seconds 2
                     $fightSuccess = $true
-                } else {
-                    $fightSuccess = $false
                 }
             }
             else {
