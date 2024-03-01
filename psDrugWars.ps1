@@ -2862,7 +2862,6 @@ function ShowGunshopMenu {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
         } until ($key -in '1'.."$playerGunCount" -or $key -in @('q', 'Q'))
 
-
         if ($key -in '1'.."$playerGunCount") {
             $gunNumber = [int]$key
         }
