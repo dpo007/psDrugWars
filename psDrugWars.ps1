@@ -4377,12 +4377,8 @@ function CopFight {
             }
         }
         3 {
-            # Try to fight
-            # +%5 chance of success for each weapon strength
-            $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
+            # Pull out yer weapons...
             Write-Host
-
-            # If the player has a gun, write a message saying you pull it out. if you have two guns, add a little extra drama, if you have none, whip out your fists.
             $gunCount = $script:Player.get_Guns().Count
             $gunOutActions = @(
                 'pull',
@@ -4395,16 +4391,45 @@ function CopFight {
                 if ($gunCount -gt 1) {
                     $gunName = $script:Player.get_Guns()[0].Name
                     $gunName2 = $script:Player.get_Guns()[1].Name
-                    Write-Centered ('You {0} out your {1} and {2} and prepare to fight!' -f $gunOutAction, $gunName, $gunName2) -ForegroundColor Yellow
+                    Write-Centered ('You {0} out your {1} and {2} and prepare to fight!' -f $gunOutAction, $gunName, $gunName2) -ForegroundColor DarkCyan
                 }
                 else {
                     $gunName = $script:Player.get_Guns()[0].Name
-                    Write-Centered ('You {0} out your {1} and prepare to fight!' -f $gunOutAction, $gunName)-ForegroundColor Yellow
+                    Write-Centered ('You {0} out your {1} and prepare to fight!' -f $gunOutAction, $gunName)-ForegroundColor DarkCyan
                 }
             }
             else {
-                Write-Centered 'You prepare to fight with your fists!' -ForegroundColor Yellow
+                $fistDrawMessages = @(
+                    'You bust out yo'' fists.',
+                    'You gear up to throw down.',
+                    'You get ready to knuckle up.',
+                    'You square up for a brawl.',
+                    'You lace up for a fistfight.',
+                    'You glove up for a scrap.',
+                    'You get your hands ready for a tussle.',
+                    'You''re about to throw some punches.',
+                    'You''re gearing up to duke it out.',
+                    'You''re prepping to throw some knuckles.',
+                    'You''re getting set for a bare-knuckle showdown.',
+                    'You ''bout to throw down, fists up!',
+                    'You gettin'' ready to knuckle up, homie!',
+                    'You fixin'' to throw dem hands, gettin'' yo'' game face on!',
+                    'You ''bout to bust out them fists, gettin'' in the zone!',
+                    'You gearin'' up for a street brawl, fists cocked!',
+                    'You ''bout to lay the smackdown, fists clenched!',
+                    'You gettin'' set to throw dem bones, ready to rumble!',
+                    'You gettin'' your fists primed, ready to throw some heat!',
+                    'You preppin'' to duke it out, fists ready to fly!',
+                    'You gettin'' your knuckles ready for a throwdown, ain''t holdin'' back!'
+                )
+                Write-Centered (Get-Random -InputObject $fistDrawMessages) -ForegroundColor Yellow
             }
+
+            Write-Host
+            Start-Sleep -Seconds 2
+            # Try to fight
+            # +%5 chance of success for each weapon strength
+            $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
 
             if ($fightSuccess) {
                 Write-Centered 'You win the fight and avoid legal consequences.' -ForegroundColor Green
