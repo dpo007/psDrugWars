@@ -3555,6 +3555,7 @@ function EndGame {
         Write-Host (' ' * $leftPadding) -NoNewline
 
         $initials = ""
+        $Host.UI.RawUI.Flushinputbuffer()
         while ($true) {
             $key = [System.Console]::ReadKey($true)
             if ($key.Key -eq "Enter") {
