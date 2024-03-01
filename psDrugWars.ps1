@@ -249,10 +249,10 @@ class Player {
             Write-Centered ('You bought a {0} for ${1}.' -f $Gun.Name, $Gun.Price) -ForegroundColor Green
             Start-Sleep -Milliseconds 1500
             Write-Host
-            Write-Centered $Gun.Description
+            Write-Centered $Gun.Description -ForegroundColor White
             Start-Sleep -Milliseconds 1500
             Write-Host
-            Write-Centered $Gun.History
+            Write-Centered $Gun.History -ForegroundColor DarkGray
         }
         Start-Sleep 3
         Write-Host
