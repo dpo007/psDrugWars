@@ -4451,7 +4451,7 @@ function CopFight {
                         Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops)
                     }
                     else {
-                        Write-Centered 'You missed. $numCops cops remaining.'
+                        Write-Centered 'You missed! $numCops cops remaining.'
                     }
                 }
 
