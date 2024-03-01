@@ -4381,6 +4381,31 @@ function CopFight {
             # +%5 chance of success for each weapon strength
             $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
             Write-Host
+
+            # If the player has a gun, write a message saying you pull it out. if you have two guns, add a little extra drama, if you have none, whip out your fists.
+            $gunCount = $script:Player.get_Guns().Count
+            $gunOutActions = @(
+                'pull',
+                'whip',
+                'bust',
+                'pop'
+            )
+            $gunOutAction = Get-Random -InputObject $gunOutActions
+            if ($gunCount -gt 0) {
+                if ($gunCount -gt 1) {
+                    $gunName = $script:Player.get_Guns()[0].Name
+                    $gunName2 = $script:Player.get_Guns()[1].Name
+                    Write-Centered ('You {0} out your {1} and {2} and prepare to fight!' -f $gunOutAction, $gunName, $gunName2) -ForegroundColor Yellow
+                }
+                else {
+                    $gunName = $script:Player.get_Guns()[0].Name
+                    Write-Centered ('You {0} out your {1} and prepare to fight!' -f $gunOutAction, $gunName)-ForegroundColor Yellow
+                }
+            }
+            else {
+                Write-Centered 'You prepare to fight with your fists!' -ForegroundColor Yellow
+            }
+
             if ($fightSuccess) {
                 Write-Centered 'You win the fight and avoid legal consequences.' -ForegroundColor Green
                 Start-Sleep -Seconds 2
