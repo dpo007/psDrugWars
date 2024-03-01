@@ -4438,12 +4438,13 @@ function CopFight {
             Write-Host
 
             # Try to fight
-            # +%5 chance of success for each weapon strength
+            # +5% chance of success for each weapon strength
             $fightSuccess = [bool]((Get-Random -Maximum 100) -lt ($script:Player.get_StoppingPower() * 5))
 
             # If the player has a gun, simulate a fight with the cops, to determine if you won the fight or not.
             #TODO: Implement the fight simulation
 
+            Write-Host
             if ($fightSuccess) {
                 Write-Centered 'You win the fight and avoid legal consequences.' -ForegroundColor Green
                 Start-Sleep -Seconds 2
