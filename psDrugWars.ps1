@@ -258,6 +258,7 @@ class Player {
         Write-Host
     }
 
+    # Method to sell a gun
     [void]SellGun([Gun]$Gun) {
         # Find the first gun in the player's inventory that matches the given name
         $gunToSell = $this.Guns | Where-Object { $_.Name -eq $Gun.Name } | Select-Object -First 1
@@ -2913,6 +2914,8 @@ function ShowGunshopMenu {
 
         # Sell the gun.
         $script:Player.SellGun($gunToSell)
+        Write-Host
+        PressEnterPrompt
     }
 
     $gunSlang = @(
