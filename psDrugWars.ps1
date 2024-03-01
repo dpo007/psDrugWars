@@ -2821,13 +2821,12 @@ function ShowGunshopMenu {
 
         # Confirm the user wants to buy it.
         Write-Host
+        Write-Host
         Write-Centered ('Are you sure you want to buy a {0} for ${1}? (Y/N)' -f $gunToBuy.Name, $gunToBuy.Price) -NoNewline
 
         do {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
         } until ($key -in @('Y', 'N'))
-
-        Write-Host
 
         if ($key -eq 'N') {
             $gunToBuy = $null
@@ -2835,7 +2834,11 @@ function ShowGunshopMenu {
         }
 
         # Buy the gun.
+        Write-Host
+        Write-Host
         $script:Player.BuyGun($gunToBuy)
+        Write-Host
+        PressEnterPrompt
     }
 
     function ShopBuysGun {
@@ -2846,7 +2849,7 @@ function ShowGunshopMenu {
         if ($playerGunCount -eq 0) {
             Write-Host
             Write-Centered 'Hey, high-boy! You have no guns to sell.' -ForegroundColor Red
-            Start-Sleep -Seconds 3
+            Start-Sleep -Seconds 2
             Write-Host
             $getLostMessages = @(
                 'Take a hike.',
@@ -2856,8 +2859,9 @@ function ShowGunshopMenu {
                 'Scram.'
             )
             Write-Centered (Get-Random -InputObject $getLostMessages)
-            Start-Sleep -Milliseconds 750
+            Start-Sleep -Seconds 2
             Write-Host
+            PressEnterPrompt
             return
         }
 
