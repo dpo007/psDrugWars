@@ -3514,6 +3514,7 @@ function QuitGame {
     Write-Host
     Write-Centered 'Are you sure you want to quit? (Y/N)' -NoNewline
     # Wait for user to press a valid key
+    $Host.UI.RawUI.Flushinputbuffer()
     do {
         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
     } while ('Y', 'N' -notcontains $choice)
@@ -3613,6 +3614,7 @@ function EndGame {
     Write-Host
     Write-Centered 'Would you like to play again? (Y/N)' -NoNewline
     # Wait for user to press a valid key
+    $Host.UI.RawUI.Flushinputbuffer()
     do {
         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
     } while ('Y', 'N' -notcontains $choice)
