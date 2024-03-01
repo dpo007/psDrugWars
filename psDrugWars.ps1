@@ -2819,7 +2819,19 @@ function ShowGunshopMenu {
         $cityGun = $script:Player.City.GunsForSale[$GunNumber - 1]
         $gunToBuy = [Gun]::new($cityGun)
 
+        # Confirm the user wants to buy it
+        Write-Centered ('Are you sure you want to buy a {0} for ${1}? (Y/N)' -f $gunToBuy.Name, $gunToBuy.get_Price()) -NoNewline
+
+        do {
+            $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
+        } until ($key -in @('Y', 'N'))
+
         Write-Host
+
+        if ($key -eq 'N') {
+            return
+        }
+
         # Buy the gun.
         $script:Player.BuyGun($gunToBuy)
     }
@@ -2856,7 +2868,7 @@ function ShowGunshopMenu {
 
         # Prompt the player to choose a gun to sell.
         Write-Host
-        Write-Centered ('Enter the number of the gun you want to sell (1-{0}, or "Q" to return to the main menu' -f $playerGunCount) -NoNewline
+        Write-Centered ('Enter the number of the gun you want to sell (1-{0}, or "Q" to return to the gun shop menu' -f $playerGunCount) -NoNewline
 
         do {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
