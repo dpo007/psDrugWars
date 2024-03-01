@@ -4439,6 +4439,7 @@ function CopFight {
 
             # Try to fight
             if ($gunCount -gt 0) {
+                $lostShootout = $false
                 # Loop until all cops are killed
                 while ($numCops -gt 0) {
                     # Simulate shooting at cops. +5% chance of kill shot for each stopping power, max 90%.
@@ -4448,30 +4449,41 @@ function CopFight {
                     # If the cop was killed, decrease the cop count
                     if ($killedCop) {
                         $numCops--
+                        # Increase chance of them shooting you back in retaliation by 10%
+                        $shotChance += 10
                         Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops)
                     }
                     else {
                         Write-Centered 'You missed! $numCops cops remaining.'
+                        # 50% chance of losing the fight right now
+                        if ((Get-Random -Maximum 100) -lt 50) {
+                            $lostShootout = $true
+                            break
+                        }
                     }
                 }
 
-                $shootoutWonMessages = @(
-                    'You straight up outplayed the 5-0 in that street showdown!',
-                    'You just schooled the pigs in that gritty alley confrontation!',
-                    'Damn, you took down the law in that raw, backstreet brawl!',
-                    'You just outgunned the boys in blue in that hood hustle!',
-                    'You rocked that cop confrontation like a true boss in the concrete jungle!',
-                    'You made those cops an offer they couldn''t refuse in that shootout!',
-                    'Looks like you just made the fuzz an example in that mob-style showdown!',
-                    'You played the Don in that police confrontation like a true wise guy!',
-                    'You took down those badges like a made man in that gritty street hustle!',
-                    'You just cemented your place in the underworld by outgunning the cops!',
-                    'Them flatfoots are sleeping with the fishes!'
-                )
+                if (!$lostShootout) {
+                    $shootoutWonMessages = @(
+                        'You straight up outplayed the 5-0 in that street showdown!',
+                        'You just schooled the pigs in that gritty alley confrontation!',
+                        'Damn, you took down the law in that raw, backstreet brawl!',
+                        'You just outgunned the boys in blue in that hood hustle!',
+                        'You rocked that cop confrontation like a true boss in the concrete jungle!',
+                        'You made those cops an offer they couldn''t refuse in that shootout!',
+                        'Looks like you just made the fuzz an example in that mob-style showdown!',
+                        'You played the Don in that police confrontation like a true wise guy!',
+                        'You took down those badges like a made man in that gritty street hustle!',
+                        'You just cemented your place in the underworld by outgunning the cops!',
+                        'Them flatfoots are sleeping with the fishes!'
+                    )
 
-                Write-Centered (Get-Random -InputObject $shootoutWonMessages) -ForgroundColor DarkGreen
-                Start-Sleep -Seconds 2
-                $fightSuccess = $true
+                    Write-Centered (Get-Random -InputObject $shootoutWonMessages) -ForgroundColor DarkGreen
+                    Start-Sleep -Seconds 2
+                    $fightSuccess = $true
+                } else {
+                    $fightSuccess = $false
+                }
             }
             else {
                 Write-Centered 'You don''t have a gun to participate in a shootout with the cops.'
