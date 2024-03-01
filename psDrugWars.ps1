@@ -4437,6 +4437,10 @@ function CopFight {
             Start-Sleep -Seconds 2
             Write-Host
 
+            # Initialize shootout variables
+            $copsKilled = 0
+            $fightSuccess = $false
+
             # Try to fight
             if ($gunCount -gt 0) {
                 # +5% chance of kill shot for each stopping power, max 90%.
@@ -4444,6 +4448,7 @@ function CopFight {
 
                 # Initialize shootout success flag.
                 $lostShootout = $false
+
                 # Loop until all cops are killed
                 while ($numCops -gt 0) {
                     # Shooting at cops.
@@ -4452,6 +4457,7 @@ function CopFight {
                     # If the cop was killed, decrease the cop count
                     if ($killedCop) {
                         $numCops--
+                        $copsKilled++
                         # Increase chance of them shooting you back in retaliation by 10%
                         $shotChance += 10
                         Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops)
