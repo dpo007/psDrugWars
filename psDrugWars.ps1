@@ -4441,8 +4441,8 @@ function CopFight {
             if ($gunCount -gt 0) {
                 # Loop until all cops are killed
                 while ($numCops -gt 0) {
-                    # Simulate shooting at cops. +5% chance of kill shot for each stopping power, max 80%.
-                    $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 80)
+                    # Simulate shooting at cops. +5% chance of kill shot for each stopping power, max 90%.
+                    $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 90)
                     $killedCop = [bool]((Get-Random -Maximum 100) -lt $killChance)
 
                     # If the cop was killed, decrease the cop count
