@@ -3503,7 +3503,7 @@ function PressEnterPrompt {
     Write-Centered 'Press Enter to continue' -NoNewline
     $choice = $null
     while ($choice.VirtualKeyCode -ne 13) {
-        $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown') | Out-Null
+        $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     }
     $Host.UI.RawUI.Flushinputbuffer()
 }
