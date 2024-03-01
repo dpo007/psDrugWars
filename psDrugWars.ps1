@@ -4455,7 +4455,7 @@ function CopFight {
                     }
                 }
 
-                $fightWonMessages = @(
+                $shootoutWonMessages = @(
                     'You straight up outplayed the 5-0 in that street showdown!',
                     'You just schooled the pigs in that gritty alley confrontation!',
                     'Damn, you took down the law in that raw, backstreet brawl!',
@@ -4469,7 +4469,7 @@ function CopFight {
                     'Them flatfoots are sleeping with the fishes!'
                 )
 
-                Write-Centered (Get-Random -InputObject $fightWonMessages) -ForgroundColor DarkGreen
+                Write-Centered (Get-Random -InputObject $shootoutWonMessages) -ForgroundColor DarkGreen
                 Start-Sleep -Seconds 2
                 $fightSuccess = $true
             }
