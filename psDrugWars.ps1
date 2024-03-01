@@ -258,24 +258,24 @@ class Player {
         Write-Host
     }
 
-    [void]SellGun([String]$GunName) {
+    [void]SellGun([Gun]$Gun) {
         # Find the first gun in the player's inventory that matches the given name
-        $gun = $this.Guns | Where-Object { $_.Name -eq $GunName } | Select-Object -First 1
+        $gunToSell = $this.Guns | Where-Object { $_.Name -eq $Gun.Name } | Select-Object -First 1
 
         Write-Host
 
         # If the gun was found
-        if ($gun) {
+        if ($gunToSell) {
             # Increase the player's cash by 75% of the gun's price
-            $this.Cash += $gun.Price * 0.75
+            $this.Cash += $gunToSell.Price * 0.75
 
             # Remove the sold gun from the player's inventory.
-            $this.Guns = $this.Guns | Where-Object { $_.Name -ne $GunName } | Select-Object -First 1
+            $this.Guns = $this.Guns | Where-Object { $_.Name -ne $gunToSell.Name } | Select-Object -First 1
 
-            Write-Centered ('You sold your {0} for ${1}.' -f $gun.Name, $gun.Price) -ForegroundColor Green
+            Write-Centered ('You sold your {0} for ${1}.' -f $gunToSell.Name, $gunToSell.Price) -ForegroundColor Green
         }
         else {
-            Write-Centered ('You don''t have a {0} to sell.' -f $GunName) -ForegroundColor Red
+            Write-Centered ('You don''t have a {0} to sell.' -f $gunToSell.Name) -ForegroundColor Red
         }
         Start-Sleep 3
         Write-Host
@@ -2897,7 +2897,7 @@ function ShowGunshopMenu {
 
         # Prompt the player to choose a gun to sell.
         Write-Host
-        Write-Centered ('Enter the number of the gun you want to sell (1-{0}, or "Q" to return to the gun shop menu' -f $playerGunCount) -NoNewline
+        Write-Centered ('Enter the number of the gun you want to sell (1-{0}), or "Q" to return to the gun shop menu' -f $playerGunCount) -NoNewline
 
         do {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
@@ -2937,7 +2937,7 @@ function ShowGunshopMenu {
         ShowCityGuns $script:Player.City
         Write-Host
         $gunCount = $script:Player.City.GunsForSale.Count
-        Write-Centered ('Enter the number of the {0} you want to buy (1-{1}, "S" to sell, or "Q" to return to the main menu' -f (Get-Random -InputObject $gunSlang) , $gunCount) -NoNewline
+        Write-Centered ('Enter the number of the {0} you want to buy (1-{1}), "S" to sell, or "Q" to return to the main menu' -f (Get-Random -InputObject $gunSlang) , $gunCount) -NoNewline
 
         do {
             $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
