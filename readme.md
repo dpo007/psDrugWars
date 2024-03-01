@@ -6,7 +6,7 @@ A thrilling PowerShell console game where you navigate through multiple location
 
 ## Features :sparkles:
 
-- :earth_americas: Multiple locations to visit
+- :earth_americas: Multiple international locations to visit
 - :pill: Different types of drugs to buy and sell
 - :game_die: Random events that can affect the game
 - :cop: Cop fights
