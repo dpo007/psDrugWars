@@ -4438,14 +4438,43 @@ function CopFight {
             Write-Host
 
             # Try to fight
-            # Calculate the success chance for the fight. It's based on the player's stopping power (multiplied by 5), but capped at 80.
-            $successChance = [math]::Min($script:Player.get_StoppingPower() * 5, 80)
+            if ($gunCount -gt 0) {
+                # Loop until all cops are killed
+                while ($numCops -gt 0) {
+                    # Simulate shooting at cops. +5% chance of kill shot for each stopping power, max 80%.
+                    $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 80)
+                    $killedCop = [bool]((Get-Random -Maximum 100) -lt $killChance)
 
-            # Determine the success of the fight. A random number between 0 and 99 is generated. If it's less than the bonus success chance, the fight is successful.
-            $fightSuccess = [bool]((Get-Random -Maximum 100) -lt $successChance)
+                    # If the cop was killed, decrease the cop count
+                    if ($killedCop) {
+                        $numCops--
+                        Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops)
+                    }
+                    else {
+                        Write-Centered 'You missed. $numCops cops remaining.'
+                    }
+                }
 
-            # If the player has a gun, simulate a fight with the cops, to determine if you won the fight or not.
-            #TODO: Implement the fight simulation
+                $fightWonMessages = @(
+                    'You straight up outplayed the 5-0 in that street showdown!',
+                    'You just schooled the pigs in that gritty alley confrontation!',
+                    'Damn, you took down the law in that raw, backstreet brawl!',
+                    'You just outgunned the boys in blue in that hood hustle!',
+                    'You rocked that cop confrontation like a true boss in the concrete jungle!',
+                    'You made those cops an offer they couldn''t refuse in that shootout!',
+                    'Looks like you just made the fuzz an example in that mob-style showdown!',
+                    'You played the Don in that police confrontation like a true wise guy!',
+                    'You took down those badges like a made man in that gritty street hustle!',
+                    'You just cemented your place in the underworld by outgunning the cops!'
+                )
+
+                Write-Centered (Get-Random -InputObject $fightWonMessages) -ForgroundColor DarkGreen
+                Start-Sleep -Seconds 2
+                $fightSuccess = $true
+            }
+            else {
+                Write-Centered 'You don''t have a gun to participate in a shootout with the cops.'
+            }
 
             Write-Host
             if ($fightSuccess) {
@@ -4575,7 +4604,7 @@ while ($script:Playing) {
 
         # Out of days, game over.
         if ($script:Player.GameDay -gt $script:GameDays) {
-            Write-BlockLetters ('Day {0}!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
+            Write-BlockLetters ('Day { 0 }!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
             Start-Sleep -Seconds 2
             Write-Host
             Write-Centered 'Time''s up!' -ForegroundColor Green
