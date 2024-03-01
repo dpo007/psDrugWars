@@ -278,6 +278,7 @@ class Player {
             Write-Centered ('You don''t have a {0} to sell.' -f $GunName) -ForegroundColor Red
         }
         Start-Sleep 3
+        Write-Host
     }
 
     # Method to get total stopping power of all guns
@@ -2904,13 +2905,14 @@ function ShowGunshopMenu {
 
         if ($key -in '1'.."$playerGunCount") {
             $gunNumber = [int]$key
+            $gunToSell = $script:Player.get_Guns()[$gunNumber - 1]
         }
         elseif ($key -in 'q', 'Q') {
             return
         }
 
         # Sell the gun.
-        $script:Player.SellGun($gunNumber)
+        $script:Player.SellGun($gunToSell)
     }
 
     $gunSlang = @(
