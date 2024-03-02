@@ -1,6 +1,6 @@
 ﻿# psDrugWars :syringe: :moneybag:
 
-A thrilling PowerShell console game where you navigate through multiple locations, dealing with different types of drugs. But beware! Random events can affect your game.
+A thrilling[^1] PowerShell [BBS door-game-style](https://en.wikipedia.org/wiki/Door_(bulletin_board_system)) console RPG where you navigate through multiple locations, dealing with different types of drugs. But beware! Random events can affect your game.
 
 *Loosly* based on [John E. Dell's 1984 classic "Drug Wars"](https://en.wikipedia.org/wiki/Drug_Wars_(video_game)), and inspired by many of its clones from the decades since.
 
@@ -32,3 +32,5 @@ To run the game, follow these steps:
 ## Warning :warning:
 
 This game contains NSFW/16+ content, including immature, possibly offensive humor, as well as satirical references to illegal drugs and drug use. Parental discretion is advised. :innocent:
+
+[^1]: May not actually be "Thrilling".
