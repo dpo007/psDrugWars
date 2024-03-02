@@ -33,4 +33,4 @@ To run the game, follow these steps:
 
 This game contains NSFW/16+ content, including immature, possibly offensive humor, as well as satirical references to illegal drugs and drug use. Parental discretion is advised. :innocent:
 
-[^1]: May not actually be "Thrilling".
+[^1]: _Note:_ May not actually be "Thrilling".
