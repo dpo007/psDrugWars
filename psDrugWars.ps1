@@ -1811,7 +1811,6 @@ $script:GunInfo = @(
 # Function that will Exit if console size is not at least 80x25.
 function CheckConsoleSize {
     if ($Host.UI.RawUI.WindowSize.Width -lt 120 -or $Host.UI.RawUI.WindowSize.Height -lt 30) {
-        # If resize fiaed for some reason, exit.
         Write-Host 'Please resize your console window to at least 120 x 30 and run the script again.' -ForegroundColor Red
         Write-Host ('Current size: {0}x{1}' -f $Host.UI.RawUI.WindowSize.Width, $Host.UI.RawUI.WindowSize.Height) -ForegroundColor Red
         Exit 666
