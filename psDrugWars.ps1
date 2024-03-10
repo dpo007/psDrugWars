@@ -3529,18 +3529,22 @@ function DrawJail {
         ' """""""""""""""""""""""""""'
     )
 
+    # Generate a random "prisoner number".
     $pNumberText = (Get-Random -Minimum 100 -Maximum 999).ToString()
 
+    # Array of nicknames for prisoner
     $pNames = @(
         'bro',
         'bruh',
         'chump',
         'dummy',
+        'fish',
         'fool',
         'homie',
-        'man',
+        'j-cat',
         'playa',
-        'sucka'
+        'sucka',
+        'tuffy'
     )
 
     # Select a random name from the $pNames array and append an exclamation mark to it
