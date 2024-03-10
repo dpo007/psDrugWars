@@ -3571,7 +3571,7 @@ function DrawJailGraphic {
     }
 }
 
-# Function show jail page
+# Function to show 'goign to jail for life' screen
 function ShowLifeJail {
     $goingToJailPhrases = @(
         'Act dumb, get dumped.',
