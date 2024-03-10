@@ -3572,7 +3572,7 @@ function DrawJailGraphic {
 }
 
 # Function show jail page
-function ShowJail {
+function ShowLifeJail {
     $goingToJailPhrases = @(
         'Act dumb, get dumped.',
         'If you poke the bear, expect to get bit.',
