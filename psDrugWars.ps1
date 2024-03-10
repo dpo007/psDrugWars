@@ -3508,7 +3508,7 @@ function PressEnterPrompt {
 }
 
 # This function display the Jail graphic.
-function DrawJail {
+function DrawJailGraphic {
     $jailASCII = @(
         '  _________________________',
         '     ||   ||     ||   ||',
@@ -3597,7 +3597,7 @@ function ShowJail {
     Write-Host
     Write-Centered $(Get-Random -InputObject $caughtByPolicePhrases) -ForegroundColor Red
     Write-Host
-    DrawJail
+    DrawJailGraphic
     Write-Host
     Write-Centered $(Get-Random -InputObject $goingToJailPhrases) -ForegroundColor DarkGray
     Start-Sleep 3
