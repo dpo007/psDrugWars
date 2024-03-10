@@ -3507,6 +3507,64 @@ function PressEnterPrompt {
     $Host.UI.RawUI.Flushinputbuffer()
 }
 
+# This function display the Jail screen
+function DrawJail {
+    $jailASCII = @(
+        '  _________________________',
+        '     ||   ||     ||   ||',
+        '     ||   ||, , ,||   ||',
+        '     ||  (||/|/(\||/  ||',
+        '     ||  ||| _''_`|||  ||',
+        '     ||   || o o ||   ||',
+        '     ||  (||  - `||)  ||',
+        '     ||   ||  =  ||   ||',
+        '     ||   ||\___/||   ||',
+        '     ||___||) , (||___||',
+        '    /||---||-\_/-||---||\',
+        '   / ||--_||_____||_--|| \',
+        '  (_(||)-| P[no]-42 |-(||)_)',
+        '|"""""""""""""""""""""""""""|',
+        '|  Enjoy the next 25-life,  |',
+        '|          [name]           |',
+        ' """""""""""""""""""""""""""'
+    )
+
+    $pNumberText = (Get-Random -Minimum 100 -Maximum 999).ToString()
+
+    $pNames = @(
+        'bro',
+        'bruh',
+        'chump',
+        'dummy',
+        'fool',
+        'homie',
+        'man',
+        'playa',
+        'sucka'
+    )
+
+    $randomName = $pNames | Get-Random
+    $paddedName = "{0}!" -f $randomName
+
+    $paddingLength = [Math]::Max(0, (6 - $paddedName.Length) / 2)
+
+    $paddedName = $paddedName.PadLeft($paddingLength + $paddedName.Length).PadRight(6)
+
+    # Determine the longest line
+    $maxLength = ($jailASCII | Measure-Object -Property Length -Maximum).Maximum
+
+    foreach ($line in $jailASCII) {
+        $formattedLine = $line `
+            -replace '\[no\]', $pNumberText `
+            -replace '\[name\]', $paddedName
+
+        # Pad each line to the length of the longest line
+        $formattedLine = $formattedLine.PadRight($maxLength)
+
+        Write-Centered $formattedLine -ForegroundColor White
+    }
+}
+
 # This function is called when the player chooses to quit the game.
 function QuitGame {
     # Check if they're sure they want to quit.
