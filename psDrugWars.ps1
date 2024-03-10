@@ -3507,7 +3507,7 @@ function PressEnterPrompt {
     $Host.UI.RawUI.Flushinputbuffer()
 }
 
-# This function display the Jail screen
+# This function display the Jail graphic.
 function DrawJail {
     $jailASCII = @(
         '  _________________________',
