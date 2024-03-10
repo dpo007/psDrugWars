@@ -3543,14 +3543,16 @@ function DrawJail {
         'sucka'
     )
 
-    $randomName = $pNames | Get-Random
-    $paddedName = "{0}!" -f $randomName
+    # Select a random name from the $pNames array and append an exclamation mark to it
+    $paddedName = "{0}!" -f ($pNames | Get-Random)
 
+    # Calculate the padding length for the name
     $paddingLength = [Math]::Max(0, (6 - $paddedName.Length) / 2)
 
+    # Pad the name with spaces
     $paddedName = $paddedName.PadLeft($paddingLength + $paddedName.Length).PadRight(6)
 
-    # Determine the longest line
+    # Determine the longest line in the jail ASCII
     $maxLength = ($jailASCII | Measure-Object -Property Length -Maximum).Maximum
 
     foreach ($line in $jailASCII) {
