@@ -3571,6 +3571,40 @@ function DrawJail {
     }
 }
 
+# Function show jail page
+function ShowJail {
+    $goingToJailPhrases = @(
+        'Act dumb, get dumped.',
+        'If you poke the bear, expect to get bit.',
+        'If you wanna play, you gotta pay.',
+        'Play stupid games, win stupid prizes.',
+        'Spark negativity, catch a cosmic slap.',
+        'Start beef, catch grief.',
+        'You mess with the bull, you get the horns.',
+        'You play with fire, you get burned.'
+    )
+
+    $caughtByPolicePhrases = @(
+        'The cops roll up and snatch you!',
+        'The cops sieze their chance and grab you!',
+        'The pigs nabbed yer ass!',
+        'You got clipped by the flatfoots!',
+        'You got pinched by the G-men!'
+    )
+
+    Clear-Host
+    ShowMenuHeader
+    Write-Host
+    Write-Centered $(Get-Random -InputObject $caughtByPolicePhrases) -ForegroundColor Red
+    Write-Host
+    DrawJail
+    Write-Host
+    Write-Centered $(Get-Random -InputObject $goingToJailPhrases) -ForegroundColor DarkGray
+    Start-Sleep 3
+    Write-Host
+    PressEnterPrompt
+}
+
 # This function is called when the player chooses to quit the game.
 function QuitGame {
     # Check if they're sure they want to quit.
