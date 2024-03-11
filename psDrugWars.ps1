@@ -3608,16 +3608,16 @@ function JailForLife {
     # Remove players Drugs and Guns
     if ($script:Player.Drugs.Count -gt 0) {
         Write-Centered 'Drugs...'
-        $script:Player.Drugs = @()
         Start-Sleep 1
+        $script:Player.Drugs = @()
         Write-Centered 'Gone!' -ForegroundColor DarkGray
         Write-Host
     }
 
     if ($script:Player.get_Guns().Count -gt 0) {
         Write-Centered 'Guns...'
-        $script:Player.DumpGuns()
         Start-Sleep 1
+        $script:Player.DumpGuns()
         Write-Centered 'Gone!' -ForegroundColor DarkGray
         Write-Host
     }
