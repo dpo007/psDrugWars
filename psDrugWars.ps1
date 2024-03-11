@@ -1462,22 +1462,7 @@ $script:RandomEvents = @(
                         $randomDrug.Quantity = Get-Random -Minimum 5 -Maximum 16
                         $mobBeatChance = Get-Random -Minimum 1 -Maximum 101
                         if ($mobBeatChance -le 30) {
-                            $mobBosses = @(
-                                'Vinny "The Chemist" Marino',
-                                'Tony "White Lines" Bianchi',
-                                'Frankie "Crystal Clear" Corleone',
-                                'Jimmy "Hash Hustler" Capone',
-                                'Sal "Opium Queenpin" Santoro',
-                                'Mikey "Blow Boss" Moretti',
-                                'Louie "Molly Maestro" Lombardi',
-                                'Benny "LSD Baron" Barzini',
-                                'Nick "Narcotics Napper" Napoli',
-                                'Rocco "Coke Cowboy" Colombo',
-                                'Maria "The Mixer" Martino',
-                                'Angela "Angel Dust" Amato'
-                            )
-
-                            Write-Centered ('You find a stash of {0}, but before you can celebrate {1} jumps you!' -f $randomDrug.Name, (Get-Random -InputObject $mobBosses))
+                            Write-Centered ('You find a stash of {0}, but before you can celebrate {1} jumps you!' -f $randomDrug.Name, (Get-Random -InputObject $script:MobBossNames))
                             Start-Sleep 2
                             Write-Centered ('They beat you up, take back their drugs, and you spend a day recovering in the hospital.') -ForegroundColor Red
                             AdvanceGameDay -SkipPriceUpdate
@@ -1800,6 +1785,22 @@ $script:GunInfo = @(
         History       = "The FN FAL, or Fabrique Nationale Fusil Automatique Leger, is a battle rifle developed by the Belgian firearms manufacturer Fabrique Nationale de Herstal. It was introduced in the late 1940s and was widely used by various militaries around the world during the Cold War era."
         Onomatopoeia  = "Ka-chunk! Bang!"
     }
+)
+
+# Define Mob Boss Names
+$script:MobBossNames = @(
+    'Vinny "The Chemist" Marino',
+    'Tony "White Lines" Bianchi',
+    'Frankie "Crystal Clear" Corleone',
+    'Jimmy "Hash Hustler" Capone',
+    'Sal "Opium Queenpin" Santoro',
+    'Mikey "Blow Boss" Moretti',
+    'Louie "Molly Maestro" Lombardi',
+    'Benny "LSD Baron" Barzini',
+    'Nick "Narcotics Napper" Napoli',
+    'Rocco "Coke Cowboy" Colombo',
+    'Maria "The Mixer" Martino',
+    'Angela "Angel Dust" Amato'
 )
 #############################################
 #endregion Define Script-Wide Lists and Tables
