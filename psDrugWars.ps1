@@ -3542,6 +3542,7 @@ function DrawJailGraphic {
         'fool',
         'homie',
         'j-cat',
+        'lad',
         'playa',
         'sucka',
         'tuffy'
