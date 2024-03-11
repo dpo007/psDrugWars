@@ -3508,73 +3508,73 @@ function PressEnterPrompt {
     $Host.UI.RawUI.Flushinputbuffer()
 }
 
-# This function display the Jail graphic.
-function DrawJailGraphic {
-    $jailASCII = @(
-        '  _________________________',
-        '     ||   ||     ||   ||',
-        '     ||   ||, , ,||   ||',
-        '     ||  (||/|/(\||/  ||',
-        '     ||  ||| _''_`|||  ||',
-        '     ||   || o o ||   ||',
-        '     ||  (||  - `||)  ||',
-        '     ||   ||  =  ||   ||',
-        '     ||   ||\___/||   ||',
-        '     ||___||) , (||___||',
-        '    /||---||-\_/-||---||\',
-        '   / ||--_||_____||_--|| \',
-        '  (_(||)-| P[no]-42 |-(||)_)',
-        '|"""""""""""""""""""""""""""|',
-        '|  Enjoy the next 25-life,  |',
-        '|          [name]           |',
-        ' """""""""""""""""""""""""""'
-    )
-
-    # Generate a random "prisoner number".
-    $pNumberText = (Get-Random -Minimum 100 -Maximum 999).ToString()
-
-    # Array of nicknames for prisoner
-    $pNames = @(
-        'bro',
-        'bruh',
-        'chump',
-        'dummy',
-        'fish',
-        'fool',
-        'homie',
-        'j-cat',
-        'lad',
-        'playa',
-        'sucka',
-        'tuffy'
-    )
-
-    # Select a random name from the $pNames array and append an exclamation mark to it
-    $paddedName = "{0}!" -f ($pNames | Get-Random)
-
-    # Calculate the padding length for the name
-    $paddingLength = [Math]::Max(0, (6 - $paddedName.Length) / 2)
-
-    # Pad the name with spaces
-    $paddedName = $paddedName.PadLeft($paddingLength + $paddedName.Length).PadRight(6)
-
-    # Determine the longest line in the jail ASCII
-    $maxLength = ($jailASCII | Measure-Object -Property Length -Maximum).Maximum
-
-    foreach ($line in $jailASCII) {
-        $formattedLine = $line `
-            -replace '\[no\]', $pNumberText `
-            -replace '\[name\]', $paddedName
-
-        # Pad each line to the length of the longest line
-        $formattedLine = $formattedLine.PadRight($maxLength)
-
-        Write-Centered $formattedLine -ForegroundColor White
-    }
-}
-
-# Function to show 'goign to jail for life' screen
+# Function to show 'goign to jail for life' screen/end game.
 function JailForLife {
+    # Function display the Jail graphic.
+    function DrawJailGraphic {
+        $jailASCII = @(
+            '  _________________________',
+            '     ||   ||     ||   ||',
+            '     ||   ||, , ,||   ||',
+            '     ||  (||/|/(\||/  ||',
+            '     ||  ||| _''_`|||  ||',
+            '     ||   || o o ||   ||',
+            '     ||  (||  - `||)  ||',
+            '     ||   ||  =  ||   ||',
+            '     ||   ||\___/||   ||',
+            '     ||___||) , (||___||',
+            '    /||---||-\_/-||---||\',
+            '   / ||--_||_____||_--|| \',
+            '  (_(||)-| P[no]-42 |-(||)_)',
+            '|"""""""""""""""""""""""""""|',
+            '|  Enjoy the next 25-life,  |',
+            '|          [name]           |',
+            ' """""""""""""""""""""""""""'
+        )
+
+        # Generate a random "prisoner number".
+        $pNumberText = (Get-Random -Minimum 100 -Maximum 999).ToString()
+
+        # Array of nicknames for prisoner
+        $pNames = @(
+            'bro',
+            'bruh',
+            'chump',
+            'dummy',
+            'fish',
+            'fool',
+            'homie',
+            'j-cat',
+            'lad',
+            'playa',
+            'sucka',
+            'tuffy'
+        )
+
+        # Select a random name from the $pNames array and append an exclamation mark to it
+        $paddedName = "{0}!" -f ($pNames | Get-Random)
+
+        # Calculate the padding length for the name
+        $paddingLength = [Math]::Max(0, (6 - $paddedName.Length) / 2)
+
+        # Pad the name with spaces
+        $paddedName = $paddedName.PadLeft($paddingLength + $paddedName.Length).PadRight(6)
+
+        # Determine the longest line in the jail ASCII
+        $maxLength = ($jailASCII | Measure-Object -Property Length -Maximum).Maximum
+
+        foreach ($line in $jailASCII) {
+            $formattedLine = $line `
+                -replace '\[no\]', $pNumberText `
+                -replace '\[name\]', $paddedName
+
+            # Pad each line to the length of the longest line
+            $formattedLine = $formattedLine.PadRight($maxLength)
+
+            Write-Centered $formattedLine -ForegroundColor White
+        }
+    }
+
     $goingToJailPhrases = @(
         'Act dumb, get dumped.',
         'If you poke the bear, expect to get bit.',
@@ -3602,7 +3602,26 @@ function JailForLife {
     DrawJailGraphic
     Write-Host
     Write-Centered $(Get-Random -InputObject $goingToJailPhrases) -ForegroundColor DarkGray
-    Start-Sleep 3
+    Start-Sleep 2
+    Write-Host
+
+    # Remove players Drugs and Guns
+    if ($script:Player.Drugs.Count -gt 0) {
+        Write-Centered 'Drugs...'
+        $script:Player.Drugs = @()
+        Start-Sleep 1
+        Write-Centered 'Gone!' -ForegroundColor DarkGray
+        Write-Host
+    }
+
+    if ($script:Player.get_Guns().Count -gt 0) {
+        Write-Centered 'Guns...'
+        $script:Player.DumpGuns()
+        Start-Sleep 1
+        Write-Centered 'Gone!' -ForegroundColor DarkGray
+        Write-Host
+    }
+
     Write-Host
     PressEnterPrompt
     EndGame
