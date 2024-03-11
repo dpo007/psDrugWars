@@ -3477,6 +3477,11 @@ function StartRandomEvent {
             return
         }
 
+        # If the event name is 'Jail', then call the JailForLife function.
+        if ($EventName -eq 'Jail') {
+            JailForLife
+        }
+
         # Otherwise, set the random event to the event with the specified name.
         $randomEvent = $script:RandomEvents | Where-Object { $_.Name -eq $EventName }
     }
@@ -3619,6 +3624,19 @@ function JailForLife {
         Start-Sleep 1
         $script:Player.DumpGuns()
         Write-Centered 'Gone!' -ForegroundColor DarkGray
+        Write-Host
+    }
+
+    if ($script:Player.Cash -gt 10) {
+        # Calculate the lawyer fees (90% of their cash)
+        $lawyerFees = [Math]::Round($script:Player.Cash * 0.9, 2)
+
+        # Deduct the lawyer fees from the player's cash
+        $script:Player.Cash -= $lawyerFees
+
+        Write-Centered 'Lawyer fees:'
+        Start-Sleep 1
+        Write-Centered ('${0} deducted from your cash.' -f $lawyerFees) -ForegroundColor Yellow
         Write-Host
     }
 
