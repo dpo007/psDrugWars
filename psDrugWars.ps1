@@ -3471,6 +3471,8 @@ function StartRandomEvent {
         }
     }
     else {
+        # For debugging purposes...
+
         # If the event name is 'Cops' or 'CopFight', then call the CopFight function and return.
         if ($EventName -eq 'Cops' -or $EventName -eq 'CopFight') {
             CopFight
