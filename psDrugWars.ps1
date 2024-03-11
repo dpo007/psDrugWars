@@ -3574,7 +3574,7 @@ function DrawJailGraphic {
 }
 
 # Function to show 'goign to jail for life' screen
-function ShowLifeJail {
+function JailForLife {
     $goingToJailPhrases = @(
         'Act dumb, get dumped.',
         'If you poke the bear, expect to get bit.',
@@ -3605,6 +3605,7 @@ function ShowLifeJail {
     Start-Sleep 3
     Write-Host
     PressEnterPrompt
+    EndGame
 }
 
 # This function is called when the player chooses to quit the game.
