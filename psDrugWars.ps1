@@ -3482,6 +3482,7 @@ function StartRandomEvent {
         # If the event name is 'Jail', then call the JailForLife function.
         if ($EventName -eq 'Jail') {
             JailForLife
+            return
         }
 
         # Otherwise, set the random event to the event with the specified name.
@@ -3605,7 +3606,6 @@ function JailForLife {
     ShowMenuHeader
     Write-Host
     Write-Centered $(Get-Random -InputObject $caughtByPolicePhrases) -ForegroundColor Red
-    Write-Host
     DrawJailGraphic
     Write-Host
     Write-Centered $(Get-Random -InputObject $goingToJailPhrases) -ForegroundColor DarkGray
@@ -3642,7 +3642,6 @@ function JailForLife {
         Write-Host
     }
 
-    Write-Host
     PressEnterPrompt
     EndGame
 }
