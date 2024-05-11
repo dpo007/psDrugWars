@@ -4581,98 +4581,90 @@ function CopFight {
             $copsKilled = 0
             $fightSuccess = $false
 
-            # Try to fight
-            if ($gunCount -gt 0) {
-                # +5% chance of kill shot for each stopping power, max 90%.
-                $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 90)
+            # +5% chance of kill shot for each stopping power, max 90%.
+            $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 90)
 
-                # Initialize shootout success flag.
-                $lostShootout = $false
+            # Initialize shootout success flag.
+            $lostShootout = $false
 
-                # Loop until all cops are killed
-                while ($numCops -gt 0) {
-                    # Shooting at cops.
-                    $killedCop = [bool]((Get-Random -Maximum 100) -lt $killChance)
-
-                    # If the cop was killed, decrease the cop count
-                    if ($killedCop) {
-                        $numCops--
-                        $copsKilled++
-
-                        Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops) -ForegroundColor Blue
-                        # Increase chance of them shooting you back in retaliation by 10%, max 90%
-                        $shotChance = [math]::Min($shotChance + 10, 90)
-
-                        Start-Sleep -Seconds 1
-                        Write-Host
-                        PressEnterPrompt
-
-                    }
-                    else {
-                        Write-Centered ('You missed! {0} cops remaining.' -f $numCops) -ForegroundColor Red
-                        # 50% chance of losing the fight right now
-                        if ((Get-Random -Maximum 100) -lt 50) {
-                            $lostShootout = $true
-                            break
-                        }
-
-                        Start-Sleep -Seconds 2
-                        Write-Host
-                        PressEnterPrompt
-                    }
-                }
-
-                if ($lostShootout) {
-                    $fightSuccess = $false
+            # Loop until all cops are killed
+            while ($numCops -gt 0) {
+                #TODO
+                if ($gunCount -gt 0) {
+                    Write-Centered 'Pew! Pew! Pew!' -ForegroundColor DarkCyan
                 }
                 else {
-                    $shootoutWonMessages = @(
-                        'You straight up outplayed the 5-0 in that street showdown!',
-                        'You just schooled the pigs in that gritty alley confrontation!',
-                        'Damn, you took down the law in that raw, backstreet brawl!',
-                        'You just outgunned the boys in blue in that hood hustle!',
-                        'You rocked that cop confrontation like a true boss in the concrete jungle!',
-                        'You made those cops an offer they couldn''t refuse in that shootout!',
-                        'Looks like you just made the fuzz an example in that mob-style showdown!',
-                        'You played the Don in that police confrontation like a true wise guy!',
-                        'You took down those badges like a made man in that gritty street hustle!',
-                        'You just cemented your place in the underworld by outgunning the cops!',
-                        'Them flatfoots are sleeping with the fishes!'
-                    )
+                    Write-Centered 'You take a swing, and...'
+                }
 
-                    Write-Centered (Get-Random -InputObject $shootoutWonMessages) -ForgroundColor DarkGreen
+                # Shooting at cops.
+                $killedCop = [bool]((Get-Random -Maximum 100) -lt $killChance)
+
+                # If the cop was killed, decrease the cop count
+                if ($killedCop) {
+                    $numCops--
+                    $copsKilled++
+
+                    Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops) -ForegroundColor Blue
+                    # Increase chance of them shooting you back in retaliation by 10%, max 90%
+                    $shotChance = [math]::Min($shotChance + 10, 90)
+
+                    Start-Sleep -Seconds 1
+                    Write-Host
+                    PressEnterPrompt
+
+                }
+                else {
+                    Write-Centered ('You missed! {0} cops remaining.' -f $numCops) -ForegroundColor Red
+                    Write-Host
+
+                    $copMovePhrase = @(
+                        'The cops make their move...',
+                        'The fuzz starts shufflin''...',
+                        'The po-po''s rollin'' in on ya...',
+                        'The law''s makin'' their play...',
+                        'The authorities are throwin'' down...',
+                        'The 5-0''s bustin'' a move...',
+                        'The heat''s comin'' down...',
+                        'The boys in blue are makin'' a move...',
+                        'The badges are makin'' their move...',
+                        'The law dogs are on the scent...'
+                    )
+                    Write-Centered (Get-Random -InputObject $copMovePhrase)
                     Start-Sleep -Seconds 2
-                    $fightSuccess = $true
+                    # 50% chance of losing the fight right now
+                    if ((Get-Random -Maximum 100) -lt 50) {
+                        $lostShootout = $true
+                        break
+                    }
+
+                    Start-Sleep -Seconds 2
+                    Write-Host
+                    PressEnterPrompt
                 }
             }
+
+            if ($lostShootout) {
+                $fightSuccess = $false
+            }
             else {
-                $noWeaponPhrases = @(
-                    'You ain''t armed for a showdown with the law.',
-                    'You ain''t bringing no heat to a legal standoff.',
-                    'You ain''t carryin'' heat for a showdown with the law enforcement.',
-                    'You ain''t coming prepared for a shootout with the authorities.',
-                    'You ain''t packin'' a piece for a face-off with the law.',
-                    'You ain''t packin'' nothing but your lunchbox for a dance-off with the law.',
-                    'You ain''t packing heat for a tussle with the law enforcement.',
-                    'You ain''t rollin'' with a piece for a standoff with the authorities.',
-                    'You ain''t strapped for a confrontation with the authorities.',
-                    'You ain''t strappin'' for a face-off with the law.',
-                    'You ain''t toting firepower for a run-in with the pigs.',
-                    'You don''t bring a strap for a legal confrontation.',
-                    'You don''t carry a burner for a confrontation with the cops.',
-                    'You don''t carry heat for a confrontation with law enforcement.',
-                    'You don''t roll up with heat to square off with the cops.',
-                    'You don''t tote a burner for a confrontation with the cops.',
-                    'You don''t tote a gat for a clash with the authorities.',
-                    'You''re about as threatening as a marshmallow on a stick at a bonfire, no gunslinging for you, pal.',
-                    'You''re as clean as a whistle, not even a water gun for a tickle fight with the cops.',
-                    'You''re not lugging around any heat for a far-out rendezvous with the law, dude.',
-                    'You''re not packing any firepower for a groovy encounter with the fuzz, man.',
-                    'You''re not rolling with any gats for a mellow face-off with the cops, brother.',
-                    'You''re so unarmed, you make a teddy bear look like Rambo in a tutu.',
-                    'You''re so weapon-free, you''re practically a walking advertisement for peace, love, and pillow fights with the law.'
+                $shootoutWonMessages = @(
+                    'You straight up outplayed the 5-0 in that street showdown!',
+                    'You just schooled the pigs in that gritty alley confrontation!',
+                    'Damn, you took down the law in that raw, backstreet brawl!',
+                    'You just outgunned the boys in blue in that hood hustle!',
+                    'You rocked that cop confrontation like a true boss in the concrete jungle!',
+                    'You made those cops an offer they couldn''t refuse in that shootout!',
+                    'Looks like you just made the fuzz an example in that mob-style showdown!',
+                    'You played the Don in that police confrontation like a true wise guy!',
+                    'You took down those badges like a made man in that gritty street hustle!',
+                    'You just cemented your place in the underworld by outgunning the cops!',
+                    'Them flatfoots are sleeping with the fishes!'
                 )
-                Write-Centered (Get-Random -InputObject $noWeaponPhrases) -ForegroundColor Yellow
+
+                Write-Centered (Get-Random -InputObject $shootoutWonMessages) -ForgroundColor DarkGreen
+                Start-Sleep -Seconds 2
+                $fightSuccess = $true
             }
 
             Write-Host
@@ -4716,6 +4708,43 @@ function CopFight {
             }
         }
     }
+}
+
+function GetRandomPunchPhrase {
+    $punchNames = @(
+        'Jab',
+        'Cross',
+        'Hook',
+        'Uppercut',
+        'Overhand',
+        'Straight punch',
+        'Backfist',
+        'Hammer fist',
+        'Slap',
+        'Superman punch'
+    )
+
+    $punchPhrases = @(
+        'You swing your arm like a pro, aiming for greatness with your best PUNCH_NAME...',
+        'You unleash your inner boxer, swinging and hoping for the best with your PUNCH_NAME...',
+        'You throw caution to the wind and your fist forward, attempting your most spectacular PUNCH_NAME...',
+        'You channel your inner Rocky Balboa, swinging for the stars with your best PUNCH_NAME...',
+        'You take a wild swing, hoping your PUNCH_NAME hits the mark like a comedic punchline...',
+        'You throw your arm into the fray, attempting your PUNCH_NAME with the finesse of a clumsy superhero...',
+        'You wind up like a cartoon character and deliver your PUNCH_NAME with all the gusto of a Saturday morning slapstick routine...',
+        'You take a swing, aiming for glory with your PUNCH_NAME, like a clumsy knight in a medieval comedy...',
+        'You lunge forward, PUNCH_NAME with all the grace of a dancing hippo in a ballet...',
+        'You give it your all, swinging your PUNCH_NAME like a dad trying to impress his kids with a wild dance move at a family party...'
+    )
+
+    # Select a random punch name and phrase
+    $randomPunchName = $punchNames | Get-Random
+    $randomPunchPhrase = $punchPhrases | Get-Random
+
+    # Replace "PUNCH_NAME" placeholder with the selected punch name
+    $randomPunchPhrase = $randomPunchPhrase -replace 'PUNCH_NAME', $randomPunchName
+
+    return $randomPunchPhrase
 }
 ##############################
 #endregion Function Definitions
