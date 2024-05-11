@@ -3449,6 +3449,7 @@ function StartRandomEvent {
         [string]$EventName
     )
 
+    # If no Event Name is specified do a random event (usual usage)
     if (!$EventName) {
         # Set the base chance for a cop fight to 10%
         $baseChance = 10
@@ -4742,7 +4743,10 @@ while ($script:Playing) {
                 ShowHelp
             }
             "!" {
-                StartRandomEvent -EventName (Read-Host -Prompt 'Enter event name')
+                $secondKey = [Console]::ReadKey($true).KeyChar.ToString()
+                if ($secondKey -eq ")") {
+                    StartRandomEvent -EventName (Read-Host -Prompt 'Enter event name')
+                }
             }
             "G" {
                 if ($script:Player.City.HasGunShop) {
