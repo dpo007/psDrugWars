@@ -4646,7 +4646,33 @@ function CopFight {
                 }
             }
             else {
-                Write-Centered 'You don''t have a gun to participate in a shootout with the cops.'
+                $noWeaponPhrases = @(
+                    'You ain''t armed for a showdown with the law.',
+                    'You ain''t bringing no heat to a legal standoff.',
+                    'You ain''t carryin'' heat for a showdown with the law enforcement.',
+                    'You ain''t coming prepared for a shootout with the authorities.',
+                    'You ain''t packin'' a piece for a face-off with the law.',
+                    'You ain''t packin'' nothing but your lunchbox for a dance-off with the law.',
+                    'You ain''t packing heat for a tussle with the law enforcement.',
+                    'You ain''t rollin'' with a piece for a standoff with the authorities.',
+                    'You ain''t strapped for a confrontation with the authorities.',
+                    'You ain''t strappin'' for a face-off with the law.',
+                    'You ain''t toting firepower for a run-in with the pigs.',
+                    'You don''t bring a strap for a legal confrontation.',
+                    'You don''t carry a burner for a confrontation with the cops.',
+                    'You don''t carry heat for a confrontation with law enforcement.',
+                    'You don''t roll up with heat to square off with the cops.',
+                    'You don''t tote a burner for a confrontation with the cops.',
+                    'You don''t tote a gat for a clash with the authorities.',
+                    'You''re about as threatening as a marshmallow on a stick at a bonfire, no gunslinging for you, pal.',
+                    'You''re as clean as a whistle, not even a water gun for a tickle fight with the cops.',
+                    'You''re not lugging around any heat for a far-out rendezvous with the law, dude.',
+                    'You''re not packing any firepower for a groovy encounter with the fuzz, man.',
+                    'You''re not rolling with any gats for a mellow face-off with the cops, brother.',
+                    'You''re so unarmed, you make a teddy bear look like Rambo in a tutu.',
+                    'You''re so weapon-free, you''re practically a walking advertisement for peace, love, and pillow fights with the law.'
+                )
+                Write-Centered (Get-Random -InputObject $noWeaponPhrases) -ForegroundColor Yellow
             }
 
             Write-Host
