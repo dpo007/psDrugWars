@@ -4594,7 +4594,8 @@ function CopFight {
                     Write-Centered 'Pew! Pew! Pew!' -ForegroundColor DarkCyan
                 }
                 else {
-                    Write-Centered 'You take a swing, and...'
+                    $punchPhrase = GetRandomPunchPhrase
+                    Write-Centered $punchPhrase
                 }
 
                 # Shooting at cops.
@@ -4712,16 +4713,19 @@ function CopFight {
 
 function GetRandomPunchPhrase {
     $punchNames = @(
-        'Jab',
-        'Cross',
-        'Hook',
-        'Uppercut',
-        'Overhand',
-        'Straight punch',
         'Backfist',
+        'Bitch slap',
+        'Body blow',
         'Hammer fist',
+        'Haymaker',
+        'Hook',
+        'Jab',
+        'Overhand',
         'Slap',
-        'Superman punch'
+        'Sucker punch',
+        'Superman punch',
+        'Thorat punch',
+        'Uppercut'
     )
 
     $punchPhrases = @(
@@ -4733,7 +4737,6 @@ function GetRandomPunchPhrase {
         'You throw your arm into the fray, attempting your PUNCH_NAME with the finesse of a clumsy superhero...',
         'You wind up like a cartoon character and deliver your PUNCH_NAME with all the gusto of a Saturday morning slapstick routine...',
         'You take a swing, aiming for glory with your PUNCH_NAME, like a clumsy knight in a medieval comedy...',
-        'You lunge forward, PUNCH_NAME with all the grace of a dancing hippo in a ballet...',
         'You give it your all, swinging your PUNCH_NAME like a dad trying to impress his kids with a wild dance move at a family party...'
     )
 
