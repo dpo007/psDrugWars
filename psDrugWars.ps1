@@ -4711,6 +4711,7 @@ function CopFight {
     }
 }
 
+# Function to generate a random punch phrase
 function GetRandomPunchPhrase {
     $punchNames = @(
         'Backfist',
