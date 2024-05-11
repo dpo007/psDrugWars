@@ -4589,7 +4589,6 @@ function CopFight {
 
             # Loop until all cops are killed
             while ($numCops -gt 0) {
-                #TODO
                 if ($gunCount -gt 0) {
                     $aboutToShootPhrases = @(
                         'Crosshairs aligned, breath held...  Blam!',
@@ -4726,19 +4725,19 @@ function CopFight {
 # Function to generate a random punch phrase
 function GetRandomPunchPhrase {
     $punchNames = @(
-        'Backfist',
-        'Bitch slap',
-        'Body blow',
-        'Hammer fist',
-        'Haymaker',
-        'Hook',
-        'Jab',
-        'Overhand',
-        'Slap',
-        'Sucker punch',
-        'Superman punch',
-        'Thorat punch',
-        'Uppercut'
+        'backfist',
+        'bitch slap',
+        'body blow',
+        'hammer fist',
+        'haymaker',
+        'hook',
+        'jab',
+        'overhand',
+        'slap',
+        'sucker punch',
+        'superman punch',
+        'thorat punch',
+        'uppercut'
     )
 
     $punchPhrases = @(
