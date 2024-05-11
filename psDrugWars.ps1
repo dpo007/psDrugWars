@@ -4591,12 +4591,24 @@ function CopFight {
             while ($numCops -gt 0) {
                 #TODO
                 if ($gunCount -gt 0) {
-                    Write-Centered 'Pew! Pew! Pew!' -ForegroundColor DarkCyan
+                    $aboutToShootPhrases = @(
+                        'Crosshairs aligned, breath held...  Blam!',
+                        'One squeeze, one shot...',
+                        'Pew Pew Pew!',
+                        'Ready, aim, fire!',
+                        'The moment of truth...',
+                        'With precision honed, the shot rings out...',
+                        'You fire off a shot...',
+                        'You get a cop in your sights...'
+                    )
+                    Write-Centered (Get-Random -InputObject $aboutToShootPhrases) -ForegroundColor DarkCyan
                 }
                 else {
                     $punchPhrase = GetRandomPunchPhrase
                     Write-Centered $punchPhrase
                 }
+
+                Start-Sleep -Seconds 2
 
                 # Shooting at cops.
                 $killedCop = [bool]((Get-Random -Maximum 100) -lt $killChance)
