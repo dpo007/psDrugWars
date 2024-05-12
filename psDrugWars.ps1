@@ -234,11 +234,9 @@ class Player {
             $firstPart += $parts[0]
             $secondPart += $parts[1]
             Write-Centered ($firstPart -f $Gun.Name) -ForegroundColor Yellow
-            Start-Sleep 2
-            Write-Host
+            Start-Sleep 1
             Write-Centered ($secondPart) -ForegroundColor DarkGray
             Start-Sleep 2
-            Write-Host
             return
         }
 
