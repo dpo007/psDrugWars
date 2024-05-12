@@ -4586,16 +4586,13 @@ function CopFight {
 
             # Initialize shootout variables
             $copsKilled = 0
-            $fightSuccess = $false
+            $playerCaught = $false
 
-            # +5% chance of kill shot for each stopping power, max 90%.
-            $killChance = [math]::Min($script:Player.get_StoppingPower() * 5, 90)
+            # Kill chance is between 1% and 90%, with +5% for each stopping power.
+            $killChance = [math]::Max([math]::Min($script:Player.get_StoppingPower() * 5, 90), 1)
 
-            # Initialize shootout success flag.
-            $lostShootout = $false
-
-            # Loop until all cops are killed
-            while ($numCops -gt 0) {
+            # Loop until all cops are killed or player is caught or shot
+            while ($numCops -gt 0 -and -not $playerCaught) {
                 if ($gunCount -gt 0) {
                     $aboutToShootPhrases = @(
                         'Crosshairs aligned, breath held...  Blam!',
@@ -4625,16 +4622,39 @@ function CopFight {
                     $copsKilled++
 
                     Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops) -ForegroundColor Blue
-                    # Increase chance of them shooting you back in retaliation by 10%, max 90%
+                    # Increase chance of them shooting you in retaliation by 10%, max 90%
                     $shotChance = [math]::Min($shotChance + 10, 90)
 
-                    Start-Sleep -Seconds 1
+                    Start-Sleep -Seconds 2
                     Write-Host
                     PressEnterPrompt
-
+                    Write-Host
+                    Write-Host
                 }
                 else {
-                    Write-Centered ('You missed! {0} cops remaining.' -f $numCops) -ForegroundColor Red
+                    $youMissedPhrases = @(
+                        'Close, but no cigar!',
+                        'Come on, man, you gotta aim better than that!',
+                        'Dude, you''re like, totally off target, but keep grooving!',
+                        'Far out, that was way off! Channel your inner zen next time.',
+                        'Haha, you shootin'' blanks, son!',
+                        'Nice try, but you ain''t hitting nothin'' today.',
+                        'Nice try, but your aim''s about as good as a broken compass!',
+                        'Not even close, homey.',
+                        'Not even close, man, but keep spreading those good vibes!',
+                        'Swing! And a miss.',
+                        'That was so far off, it''s in a different zip code!',
+                        'Yo, you aiming with your eyes closed or what?!',
+                        'You missed!',
+                        'You missed, but hey, the universe still loves you!'
+                    )
+
+                    Write-Centered ('You missed!') -ForegroundColor Red
+                    Start-Sleep -Seconds 1
+                    Write-Centered ('{0} cops remaining.' -f $numCops) -ForegroundColor Blue
+
+                    # Increase chance of them shooting you in retaliation by 2%, max 90%
+                    $shotChance = [math]::Min($shotChance + 2, 90)
                     Write-Host
 
                     $copMovePhrase = @(
@@ -4653,8 +4673,7 @@ function CopFight {
                     Start-Sleep -Seconds 2
                     # 50% chance of losing the fight right now
                     if ((Get-Random -Maximum 100) -lt 50) {
-                        $lostShootout = $true
-                        break
+                        $playerCaught = $true
                     }
                     else {
                         $copsMissedPhrases = @(
@@ -4668,41 +4687,18 @@ function CopFight {
                             'You pull some Matrix-like shit and dodge the shots!'
                         )
                         Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
-                    }
 
-                    Start-Sleep -Seconds 2
-                    Write-Host
-                    PressEnterPrompt
-                    Write-Host
-                    Write-Host
+                        Start-Sleep -Seconds 2
+                        Write-Host
+                        PressEnterPrompt
+                        Write-Host
+                        Write-Host
+                    }
                 }
             }
 
-            if ($lostShootout) {
-                $fightSuccess = $false
-            }
-            else {
-                $shootoutWonMessages = @(
-                    'You straight up outplayed the 5-0 in that street showdown!',
-                    'You just schooled the pigs in that gritty alley confrontation!',
-                    'Damn, you took down the law in that raw, backstreet brawl!',
-                    'You just outgunned the boys in blue in that hood hustle!',
-                    'You rocked that cop confrontation like a true boss in the concrete jungle!',
-                    'You made those cops an offer they couldn''t refuse in that shootout!',
-                    'Looks like you just made the fuzz an example in that mob-style showdown!',
-                    'You played the Don in that police confrontation like a true wise guy!',
-                    'You took down those badges like a made man in that gritty street hustle!',
-                    'You just cemented your place in the underworld by outgunning the cops!',
-                    'Them flatfoots are sleeping with the fishes!'
-                )
-
-                Write-Centered (Get-Random -InputObject $shootoutWonMessages) -ForgroundColor DarkGreen
-                Start-Sleep -Seconds 2
-                $fightSuccess = $true
-            }
-
             Write-Host
-            if ($fightSuccess) {
+            if (!$playerCaught) {
                 $fightSuccessPhrases = @(
                     'You straight-up owned that scrap, ain''t no legal mess stuck to you.'
                     'You handled your business, no court bothered with you.'
