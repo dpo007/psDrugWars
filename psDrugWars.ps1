@@ -4671,12 +4671,37 @@ function CopFight {
                     $numCops--
                     $copsKilled++
 
-                    Write-Centered ('You killed a cop! {0} cops remaining.' -f $numCops) -ForegroundColor Blue
+                    $copKilledPhrases = @(
+                        'You killed a cop!',
+                        'You took out a cop!',
+                        'You smoked a flatfoot!',
+                        'You iced a pig!',
+                        'You dropped a cop!',
+                        'You capped his ass!',
+                        'Yo, you just dropped a badge!',
+                        'You took out the heat! Nice.',
+                        'Cop''s down, respect.',
+                        'One less pig on the streets, good job.',
+                        'You just made the streets safer, playa.',
+                        'RIP, officer. Good work.',
+                        'Damn, you smoked a cop!',
+                        'You just made a serious statement, son.',
+                        'Pig''s out of commission. Well done.',
+                        'You handled that blue uniform smooth, like a boss.',
+                        'You just rubbed out a flatfoot, see?',
+                        'That copper won''t be walking the beat no more, see?',
+                        'Looks like you made the big boss proud by knocking off that cop.',
+                        'You just sent that bull on a one-way trip to the morgue.',
+                        'That badge ain''t shining no more, thanks to you, see?',
+                        'You just made the headlines, kid. Cop down!',
+                        'You just made your bones with the family, taking out that cop.',
+                        'That flatfoot won''t be hassling nobody else, not after you got to him.',
+                        'You just earned yourself some serious respect in this town, see?'
+                    )
+                    Write-Centered (Get-Random -InputObject $copKilledPhrases) -ForegroundColor Green
+
                     # Increase chance of them shooting you in retaliation by 10%, max 90%
                     $shotChance = [math]::Min($shotChance + 10, 90)
-
-                    Start-Sleep -Seconds 5
-                    Clear-LastLines -Count 6
                 }
                 else {
                     $youMissedPhrases = @(
@@ -4697,48 +4722,50 @@ function CopFight {
                     )
 
                     Write-Centered (Get-Random -InputObject $youMissedPhrases) -ForegroundColor Red
-                    Start-Sleep -Seconds 1
-                    Write-Centered ('{0} cops remaining.' -f $numCops) -ForegroundColor Blue
-
-                    # Increase chance of them shooting you in retaliation by 2%, max 90%
-                    $shotChance = [math]::Min($shotChance + 2, 90)
-                    Write-Host
-
-                    $copMovePhrase = @(
-                        'The cops make their move...',
-                        'The fuzz starts shufflin''...',
-                        'The po-po''s rollin'' in on ya...',
-                        'The law''s makin'' their play...',
-                        'The authorities are throwin'' down...',
-                        'The 5-0''s bustin'' a move...',
-                        'The heat''s comin'' down...',
-                        'The boys in blue are makin'' a move...',
-                        'The badges are makin'' their move...',
-                        'The law dogs are on the scent...'
-                    )
-                    Write-Centered (Get-Random -InputObject $copMovePhrase) -ForegroundColor Blue
-                    Start-Sleep -Seconds 2
-                    # 50% chance of losing the fight right now
-                    if ((Get-Random -Maximum 100) -lt 50) {
-                        $playerCaught = $true
-                    }
-                    else {
-                        $copsMissedPhrases = @(
-                            'The cops miss their shot!',
-                            'The pigs'' shot goes wide!',
-                            'The law''s aim is off!',
-                            'The fuzz missed their mark!',
-                            'You dodge the cops'' shot!',
-                            'Duck and cover - the cops miss!',
-                            'Zing! Just missed you!',
-                            'You pull some Matrix-like shit and dodge the shots!'
-                        )
-                        Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
-
-                        Start-Sleep -Seconds 5
-                        Clear-LastLines -Count 6
-                    }
                 }
+
+                Start-Sleep -Seconds 1
+                Write-Centered ('{0} cops remaining.' -f $numCops) -ForegroundColor Blue
+
+                # Increase chance of them shooting you in retaliation by 2%, max 90%
+                $shotChance = [math]::Min($shotChance + 2, 90)
+                Write-Host
+
+                $copMovePhrase = @(
+                    'The cops make their move...',
+                    'The fuzz starts shufflin''...',
+                    'The po-po''s rollin'' in on ya...',
+                    'The law''s makin'' their play...',
+                    'The authorities are throwin'' down...',
+                    'The 5-0''s bustin'' a move...',
+                    'The heat''s comin'' down...',
+                    'The boys in blue are makin'' a move...',
+                    'The badges are makin'' their move...',
+                    'The law dogs are on the scent...'
+                )
+                Write-Centered (Get-Random -InputObject $copMovePhrase) -ForegroundColor Blue
+                Start-Sleep -Seconds 2
+                # 50% chance of losing the fight right now
+                if ((Get-Random -Maximum 100) -lt 50) {
+                    $playerCaught = $true
+                }
+                else {
+                    $copsMissedPhrases = @(
+                        'The cops miss their shot!',
+                        'The pigs'' shot goes wide!',
+                        'The law''s aim is off!',
+                        'The fuzz missed their mark!',
+                        'You dodge the cops'' shot!',
+                        'Duck and cover - the cops miss!',
+                        'Zing! Just missed you!',
+                        'You pull some Matrix-like shit and dodge the shots!'
+                    )
+                    Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
+
+                    Start-Sleep -Seconds 5
+                    Clear-LastLines -Count 6
+                }
+
             }
 
             Write-Host
