@@ -1647,7 +1647,7 @@ $script:RandomEvents = @(
 
             if (!$hasSlingshot) {
                 Write-Centered 'You bravely retrieve the slingshot, wiping off the filth as best as you can. It is now added to your inventory.' -ForegroundColor Green
-                $script:Player.AddGun($slingshotInfo)
+                $script:Player.AddGun($slingshotInfo) | Out-Null
             }
             else {
                 $sellPrice = [math]::Round($slingshotInfo.Price / 2)
