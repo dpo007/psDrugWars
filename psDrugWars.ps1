@@ -4570,11 +4570,11 @@ function CopFight {
                 if ($gunCount -gt 1) {
                     $gunName = $script:Player.get_Guns()[0].Name
                     $gunName2 = $script:Player.get_Guns()[1].Name
-                    Write-Centered ('You {0} out your {1} and {2} and prepare to fight!' -f $gunOutAction, $gunName, $gunName2) -ForegroundColor DarkCyan
+                    Write-Centered ('You {0} out your {1} and {2} and prepare to fight!' -f $gunOutAction, $gunName, $gunName2) -ForegroundColor Yellow
                 }
                 else {
                     $gunName = $script:Player.get_Guns()[0].Name
-                    Write-Centered ('You {0} out your {1} and prepare to fight!' -f $gunOutAction, $gunName)-ForegroundColor DarkCyan
+                    Write-Centered ('You {0} out your {1} and prepare to fight!' -f $gunOutAction, $gunName)-ForegroundColor Yellow
                 }
             }
             else {
@@ -4627,7 +4627,7 @@ function CopFight {
                         'You fire off a shot...',
                         'You get a cop in your sights...'
                     )
-                    Write-Centered (Get-Random -InputObject $aboutToShootPhrases) -ForegroundColor DarkCyan
+                    Write-Centered (Get-Random -InputObject $aboutToShootPhrases) -ForegroundColor White
                 }
                 else {
                     $punchPhrase = GetRandomPunchPhrase
@@ -4718,6 +4718,9 @@ function CopFight {
                         Write-Host
                     }
                 }
+
+                Start-Sleep -Seconds 3
+                Clear-LastLines -Count 8
             }
 
             Write-Host
