@@ -173,7 +173,7 @@ class Player {
         return $this.AddGun($Gun, $false)
     }
 
-    # Method to add a gun
+    # Method to add a gun to inventory
     [bool]AddGun([Gun]$Gun, [bool]$Silent = $false) {
         # Maximum two guns
         if ($this.Guns.Count -ge 2) {
@@ -218,6 +218,11 @@ class Player {
         return $true
     }
 
+    # Method to remove a gun from inventory
+    [void]RemoveGun([Gun]$Gun) {
+        $this.Guns = $this.Guns | Where-Object { $_.Name -ne $Gun.Name }
+    }
+
     # Method to Buy a gun
     [void]BuyGun([Gun]$Gun) {
         # If the player doesn't have enough cash, print a message and return
@@ -237,6 +242,7 @@ class Player {
             Start-Sleep 1
             Write-Centered ($secondPart) -ForegroundColor DarkGray
             Start-Sleep 2
+            Write-Host
             return
         }
 
@@ -265,13 +271,14 @@ class Player {
 
         # If the gun was found
         if ($gunToSell) {
-            # Increase the player's cash by 75% of the gun's price
-            $this.Cash += $gunToSell.Price * 0.75
+            # Increase the player's cash by 70% of the gun's price
+            $gunSellPrice = $gunToSell.Price * 0.70
+            $this.Cash += $gunSellPrice
 
             # Remove the sold gun from the player's inventory.
             $this.Guns = $this.Guns | Where-Object { $_.Name -ne $gunToSell.Name } | Select-Object -First 1
 
-            Write-Centered ('You sold your {0} for ${1}.' -f $gunToSell.Name, $gunToSell.Price) -ForegroundColor Green
+            Write-Centered ('You sold your {0} for ${1}.' -f $gunToSell.Name, $gunSellPrice) -ForegroundColor Green
         }
         else {
             Write-Centered ('You don''t have a {0} to sell.' -f $gunToSell.Name) -ForegroundColor Red
@@ -744,7 +751,7 @@ $script:RandomEvents = @(
                 if ($script:Player.Guns.Count -gt 0) {
                     $randomIndex = Get-Random -Minimum 0 -Maximum $script:Player.Guns.Count
                     $gunTaken = $script:Player.Guns[$randomIndex]
-                    $script:Player.Guns = $script:Player.Guns | Where-Object { $_ -ne $gunTaken }
+                    $script:Player.RemoveGun($gunTaken)
                     Write-Centered ('The cops let you go with a warning, but they confiscated your {0}!' -f $gunTaken.Name) -ForegroundColor DarkRed
                 }
                 else {
@@ -1743,8 +1750,8 @@ $script:GunInfo = @(
     @{
         Name          = "Colt Python"
         Type          = "Revolver"
-        StoppingPower = 9
-        Price         = 3800
+        StoppingPower = 7
+        Price         = 2700
         Description   = "A revolver with high stopping power."
         History       = "The Colt Python is a large-frame, double-action revolver produced by the Colt's Manufacturing Company. It was introduced in 1955 and is known for its power, accuracy, and reliability."
         Onomatopoeia  = "Bang!"
@@ -4372,6 +4379,8 @@ function CopFight {
         Write-Centered (Get-Random -InputObject $shotDeadStrings) -ForegroundColor Red
         Start-Sleep -Seconds 2
         Write-Host
+        Write-Centered ('You dead.') -ForegroundColor DarkRed
+        Write-Host
         PressEnterPrompt
         EndGame
     }
@@ -4643,14 +4652,21 @@ function CopFight {
                     $aboutToShootPhrases = @(
                         'Crosshairs aligned, breath held...  Blam!',
                         'One squeeze, one shot...',
-                        'Pew Pew Pew!',
                         'Ready, aim, fire!',
                         'The moment of truth...',
                         'With precision honed, the shot rings out...',
                         'You fire off a shot...',
-                        'You get a cop in your sights...'
+                        'You get a cop in your sights...',
+                        'Onomatopoeia'
                     )
-                    Write-Centered (Get-Random -InputObject $aboutToShootPhrases) -ForegroundColor White
+                    $randomAboutToShootPhrase = Get-Random -InputObject $aboutToShootPhrases
+                    if ($randomAboutToShootPhrase -eq 'Onomatopoeia') {
+                        $randomIndex = Get-Random -Minimum 0 -Maximum $script:Player.Guns.Count
+                        $randomGun = $script:Player.Guns[$randomIndex]
+                        $randomAboutToShootPhrase = $randomGun.Onomatopoeia
+                    }
+
+                    Write-Centered $randomAboutToShootPhrase -ForegroundColor White
                 }
                 else {
                     $punchPhrase = GetRandomPunchPhrase
