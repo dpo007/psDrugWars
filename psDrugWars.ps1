@@ -1818,6 +1818,26 @@ function CheckConsoleSize {
     }
 }
 
+# Function that will clear the last n lines in the console.
+function Clear-LastLines {
+    param (
+        [Parameter(Position = 1)]
+        [int32]$Count = 1
+    )
+
+    $CurrentLine = $Host.UI.RawUI.CursorPosition.Y
+    $ConsoleWidth = $Host.UI.RawUI.BufferSize.Width
+
+    $i = 1
+    for ($i; $i -le $Count; $i++) {
+
+        [Console]::SetCursorPosition(0, ($CurrentLine - $i))
+        [Console]::Write("{0,-$ConsoleWidth}" -f " ")
+    }
+
+    [Console]::SetCursorPosition(0, ($CurrentLine - $Count))
+}
+
 # Displays provided text in center of console.
 function Write-Centered {
     param (
