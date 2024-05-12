@@ -4291,7 +4291,16 @@ function CopFight {
 
     # Function to simulate getting arrested
     function GetArrested {
-        StartRandomEvent -EventName "Busted"
+        param (
+            [int]$CopsKilled = 0
+        )
+
+        if ($CopsKilled -lt 1) {
+            StartRandomEvent -EventName 'Busted'
+        }
+        else {
+            JailForLife
+        }
     }
 
     # Function to simulate getting shot dead by cops
@@ -4519,14 +4528,8 @@ function CopFight {
                 Write-Centered (Get-Random -InputObject $fleeFailedQuotes) -ForegroundColor DarkRed
                 Start-Sleep -Seconds 3
                 Write-Host
-
-                # Calculate the chance of getting shot
-                if ((Get-Random -Maximum 100) -lt $shotChance) {
-                    GetShotDead
-                }
-                else {
-                    GetArrested
-                }
+                PressEnterPrompt
+                GetArrested
             }
         }
         3 {
@@ -4743,7 +4746,7 @@ function CopFight {
                     GetShotDead
                 }
                 else {
-                    GetArrested
+                    GetArrested -CopsKilled $copsKilled
                 }
             }
         }
