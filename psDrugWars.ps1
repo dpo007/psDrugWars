@@ -746,7 +746,7 @@ $script:RandomEvents = @(
                 if ($script:Player.Guns.Count -gt 0) {
                     $randomIndex = Get-Random -Minimum 0 -Maximum $script:Player.Guns.Count
                     $gunTaken = $script:Player.Guns[$randomIndex]
-                    $script:Player.Guns = $script:Player.Guns | Where-Object {$_ -ne $gunTaken}
+                    $script:Player.Guns = $script:Player.Guns | Where-Object { $_ -ne $gunTaken }
                     Write-Centered ('The cops let you go with a warning, but they confiscated your {0}!' -f $gunTaken.Name) -ForegroundColor DarkRed
                 }
                 else {
@@ -1839,11 +1839,9 @@ function Clear-LastLines {
     $CurrentLine = $Host.UI.RawUI.CursorPosition.Y
     $ConsoleWidth = $Host.UI.RawUI.BufferSize.Width
 
-    $i = 1
-    for ($i; $i -le $Count; $i++) {
-
+    for ($i = 1; $i -le $Count; $i++) {
         [Console]::SetCursorPosition(0, ($CurrentLine - $i))
-        [Console]::Write("{0,-$ConsoleWidth}" -f " ")
+        [Console]::Write("{0,-$ConsoleWidth}" -f ' ')
     }
 
     [Console]::SetCursorPosition(0, ($CurrentLine - $Count))
