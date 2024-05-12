@@ -740,13 +740,24 @@ $script:RandomEvents = @(
             if ($script:Player.Drugs.Count -eq 0) {
                 Write-Centered 'You were searched, but you didn''t have any drugs on you!'
                 Write-Host
-                Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
+
+                # If the player has any guns, select a random gun from the player's inventory,
+                # remove it, and display a message indicating which gun was taken.
+                if ($script:Player.Guns.Count -gt 0) {
+                    $randomIndex = Get-Random -Minimum 0 -Maximum $script:Player.Guns.Count
+                    $gunTaken = $script:Player.Guns[$randomIndex]
+                    $script:Player.Guns = $script:Player.Guns | Where-Object {$_ -ne $gunTaken}
+                    Write-Centered ('The cops let you go with a warning, but they confiscated your {0}!' -f $gunTaken.Name) -ForegroundColor DarkRed
+                }
+                else {
+                    Write-Centered 'The cops let you go with a warning.' -ForegroundColor DarkGreen
+                }
 
                 $randomNumber = Get-Random -Minimum 1 -Maximum 101
                 if (($randomNumber -le 80) -and ($script:Player.Cash -gt 50)) {
                     Start-Sleep -Seconds 2
                     # Cops let you go, but take 5% of your cash (or $50, whichever is higher)
-                    Write-Centered '...after a bit of a shake-down.' -ForegroundColor Yellow
+                    Write-Centered '...and give you a bit of a shake-down.' -ForegroundColor Yellow
                     Start-Sleep -Seconds 3
                     $loss = [math]::Max([int]([math]::Round($script:Player.Cash * 0.05)), 50)
                     $script:Player.Cash = $script:Player.Cash - $loss
