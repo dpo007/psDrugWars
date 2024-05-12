@@ -4679,7 +4679,7 @@ function CopFight {
                         'You dropped a cop!',
                         'You capped his ass!',
                         'Yo, you just dropped a badge!',
-                        'You took out the heat! Nice.',
+                        'Coolin'' some of that heat! Nice.',
                         'Cop''s down, respect.',
                         'One less pig on the streets, good job.',
                         'You just made the streets safer, playa.',
@@ -4690,15 +4690,28 @@ function CopFight {
                         'You handled that blue uniform smooth, like a boss.',
                         'You just rubbed out a flatfoot, see?',
                         'That copper won''t be walking the beat no more, see?',
-                        'Looks like you made the big boss proud by knocking off that cop.',
+                        'Yous made the big boss proud by knocking off that cop.',
                         'You just sent that bull on a one-way trip to the morgue.',
                         'That badge ain''t shining no more, thanks to you, see?',
-                        'You just made the headlines, kid. Cop down!',
+                        'Yous just made the headlines, kid. Cop down!',
                         'You just made your bones with the family, taking out that cop.',
                         'That flatfoot won''t be hassling nobody else, not after you got to him.',
                         'You just earned yourself some serious respect in this town, see?'
                     )
-                    Write-Centered (Get-Random -InputObject $copKilledPhrases) -ForegroundColor Green
+                    $randomCopKilledPhrase = Get-Random -InputObject $copKilledPhrases
+
+                    if (copsKilled -gt 1) {
+                        $replacements = @{
+                            'a cop'      = 'another cop'
+                            'a flatfoot' = 'another flatfoot'
+                            'a pig'      = 'another pig'
+                        }
+
+                        foreach ($key in $replacements.Keys) {
+                            $randomCopKilledPhrase = $randomCopKilledPhrase.Replace($key, $replacements[$key])
+                        }
+                    }
+                    Write-Centered $randomCopKilledPhrase -ForegroundColor Green
 
                     # Increase chance of them shooting you in retaliation by 10%, max 90%
                     $shotChance = [math]::Min($shotChance + 10, 90)
@@ -4720,7 +4733,6 @@ function CopFight {
                         'You missed!',
                         'You missed, but hey, the universe still loves you!'
                     )
-
                     Write-Centered (Get-Random -InputObject $youMissedPhrases) -ForegroundColor Red
                 }
 
