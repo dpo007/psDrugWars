@@ -745,10 +745,10 @@ $script:RandomEvents = @(
                 $randomNumber = Get-Random -Minimum 1 -Maximum 101
                 if (($randomNumber -le 80) -and ($script:Player.Cash -gt 50)) {
                     Start-Sleep -Seconds 2
-                    # Cops let you go, but take 5% of your cash
+                    # Cops let you go, but take 5% of your cash (or $50, whichever is higher)
                     Write-Centered '...after a bit of a shake-down.' -ForegroundColor Yellow
                     Start-Sleep -Seconds 3
-                    $loss = [int]([math]::Round($script:Player.Cash * 0.05))
+                    $loss = [math]::Max([int]([math]::Round($script:Player.Cash * 0.05)), 50)
                     $script:Player.Cash = $script:Player.Cash - $loss
                     Write-Host
                     Write-Centered ('They took ${0}!' -f $loss) -ForegroundColor DarkRed
