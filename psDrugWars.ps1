@@ -3677,7 +3677,7 @@ function JailForLife {
 
     if ($script:Player.Cash -gt 10) {
         # Calculate the lawyer fees (90% of their cash)
-        $lawyerFees = [Math]::Round($script:Player.Cash * 0.9, 2)
+        $lawyerFees = [Math]::Round($script:Player.Cash * 0.9)
 
         # Deduct the lawyer fees from the player's cash
         $script:Player.Cash -= $lawyerFees
