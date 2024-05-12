@@ -4588,7 +4588,7 @@ function CopFight {
             $copsKilled = 0
             $playerCaught = $false
 
-            # Kill chance is between 1% and 90%, with +5% for each stopping power.
+            # Calculate chance of killing a cop. Kill chance is between 1% and 90%, with +5% for each stopping power.
             $killChance = [math]::Max([math]::Min($script:Player.get_StoppingPower() * 5, 90), 1)
 
             # Loop until all cops are killed or player is caught or shot
@@ -4649,7 +4649,7 @@ function CopFight {
                         'You missed, but hey, the universe still loves you!'
                     )
 
-                    Write-Centered ('You missed!') -ForegroundColor Red
+                    Write-Centered (Get-Random -InputObject $youMissedPhrases) -ForegroundColor Red
                     Start-Sleep -Seconds 1
                     Write-Centered ('{0} cops remaining.' -f $numCops) -ForegroundColor Blue
 
