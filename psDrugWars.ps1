@@ -4649,7 +4649,7 @@ function CopFight {
                         'The badges are makin'' their move...',
                         'The law dogs are on the scent...'
                     )
-                    Write-Centered (Get-Random -InputObject $copMovePhrase)
+                    Write-Centered (Get-Random -InputObject $copMovePhrase) -ForegroundColor Blue
                     Start-Sleep -Seconds 2
                     # 50% chance of losing the fight right now
                     if ((Get-Random -Maximum 100) -lt 50) {
