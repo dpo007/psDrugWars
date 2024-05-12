@@ -4737,45 +4737,46 @@ function CopFight {
                 Start-Sleep -Seconds 1
                 Write-Centered ('{0} cops remaining.' -f $numCops) -ForegroundColor Blue
 
-                # Increase chance of them shooting you in retaliation by 2%, max 90%
-                $shotChance = [math]::Min($shotChance + 2, 90)
-                Write-Host
+                if ($numCops -gt 0) {
+                    # Increase chance of them shooting you in retaliation by 2%, max 90%
+                    $shotChance = [math]::Min($shotChance + 2, 90)
+                    Write-Host
 
-                $copMovePhrase = @(
-                    'The cops make their move...',
-                    'The fuzz starts shufflin''...',
-                    'The po-po''s rollin'' in on ya...',
-                    'The law''s makin'' their play...',
-                    'The authorities are throwin'' down...',
-                    'The 5-0''s bustin'' a move...',
-                    'The heat''s comin'' down...',
-                    'The boys in blue are makin'' a move...',
-                    'The badges are makin'' their move...',
-                    'The law dogs are on the scent...'
-                )
-                Write-Centered (Get-Random -InputObject $copMovePhrase) -ForegroundColor Blue
-                Start-Sleep -Seconds 2
-                # 50% chance of losing the fight right now
-                if ((Get-Random -Maximum 100) -lt 50) {
-                    $playerCaught = $true
-                }
-                else {
-                    $copsMissedPhrases = @(
-                        'The cops miss their shot!',
-                        'The pigs'' shot goes wide!',
-                        'The law''s aim is off!',
-                        'The fuzz missed their mark!',
-                        'You dodge the cops'' shot!',
-                        'Duck and cover - the cops miss!',
-                        'Zing! Just missed you!',
-                        'You pull some Matrix-like shit and dodge the shots!'
+                    $copMovePhrase = @(
+                        'The cops make their move...',
+                        'The fuzz starts shufflin''...',
+                        'The po-po''s rollin'' in on ya...',
+                        'The law''s makin'' their play...',
+                        'The authorities are throwin'' down...',
+                        'The 5-0''s bustin'' a move...',
+                        'The heat''s comin'' down...',
+                        'The boys in blue are makin'' a move...',
+                        'The badges are makin'' their move...',
+                        'The law dogs are on the scent...'
                     )
-                    Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
+                    Write-Centered (Get-Random -InputObject $copMovePhrase) -ForegroundColor Blue
+                    Start-Sleep -Seconds 2
+                    # 50% chance of losing the fight right now
+                    if ((Get-Random -Maximum 100) -lt 50) {
+                        $playerCaught = $true
+                    }
+                    else {
+                        $copsMissedPhrases = @(
+                            'The cops miss their shot!',
+                            'The pigs'' shot goes wide!',
+                            'The law''s aim is off!',
+                            'The fuzz missed their mark!',
+                            'You dodge the cops'' shot!',
+                            'Duck and cover - the cops miss!',
+                            'Zing! Just missed you!',
+                            'You pull some Matrix-like shit and dodge the shots!'
+                        )
+                        Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
 
-                    Start-Sleep -Seconds 5
-                    Clear-LastLines -Count 6
+                        Start-Sleep -Seconds 5
+                        Clear-LastLines -Count 6
+                    }
                 }
-
             }
 
             Write-Host
