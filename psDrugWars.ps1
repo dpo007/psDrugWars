@@ -4367,7 +4367,6 @@ function CopFight {
         Clear-Host
         ShowMenuHeader
         Write-Host
-        Write-Host
 
         Write-BlockLetters 'Blammo!' -BackgroundColor DarkRed -ForegroundColor DarkGray -Align Center -VerticalPadding 1
         Start-Sleep -Seconds 3
@@ -4401,7 +4400,6 @@ function CopFight {
 
     Clear-Host
     ShowMenuHeader
-    Write-Host
     Write-Host
     $grawlixes = @(
         '$#@%',
@@ -4461,7 +4459,7 @@ function CopFight {
     # Find the length of the longest string
     $maxLength = ($options | Measure-Object -Property Length -Maximum).Maximum
 
-    $line = '-' + ('=' * $maxLength) + '-'
+    $line = '·' + ('=' * $maxLength) + '·'
     Write-Centered $line -ForegroundColor DarkGray
 
     # Loop through each option, pad it to the maximum length, and print it
