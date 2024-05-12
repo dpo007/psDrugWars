@@ -3520,6 +3520,17 @@ function StartRandomEvent {
             return
         }
 
+        # If the event name is 'Whale', then add $100000 to the player's cash.
+        if ($EventName -eq 'Whale') {
+            $script:Player.Cash += 100000
+            Write-Host
+            Write-Centered 'You found a whale!' -ForegroundColor Green
+            Write-Centered 'You get $100,000!' -ForegroundColor Green
+            Write-Host
+            PressEnterPrompt
+            return
+        }
+
         # Otherwise, set the random event to the event with the specified name.
         $randomEvent = $script:RandomEvents | Where-Object { $_.Name -eq $EventName }
     }
@@ -4425,7 +4436,7 @@ function CopFight {
     else {
         Write-Centered ('You encounter {0} cops!' -f $numCops) -ForegroundColor Red
         # if there's more than 5 cops, add a little extra drama
-        if ($numCops -gt 5) {
+        if ($numCops -gt 5 -and $numCops -le 10) {
             Write-Centered ('It''s a whole squad of cops!') -ForegroundColor DarkGray
         }
 
