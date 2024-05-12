@@ -4398,7 +4398,6 @@ function CopFight {
 
     # Display options
     Write-Host
-    Write-Host
     $options = @(
         '1. Attempt to bribe',
         '2. Try to flee',
@@ -4408,10 +4407,15 @@ function CopFight {
     # Find the length of the longest string
     $maxLength = ($options | Measure-Object -Property Length -Maximum).Maximum
 
+    $line = '-' + ('=' * $maxLength) + '-'
+    Write-Centered $line -ForegroundColor DarkGray
+
     # Loop through each option, pad it to the maximum length, and print it
     foreach ($option in $options) {
-        Write-Centered ($option.PadRight($maxLength))
+        Write-Centered ($option.PadRight($maxLength)) -ForegroundColor White
     }
+
+    Write-Centered $line -ForegroundColor DarkGray
 
     # Get player choice
     Write-Host
@@ -4649,6 +4653,19 @@ function CopFight {
                         $lostShootout = $true
                         break
                     }
+                    else {
+                        $copsMissedPhrases = @(
+                            'The cops miss their shot!',
+                            'The pigs'' shot goes wide!',
+                            'The law''s aim is off!',
+                            'The fuzz missed their mark!',
+                            'You dodge the cops'' shot!',
+                            'Duck and cover - the cops miss!',
+                            'Zing! Just missed you!',
+                            'You pull some Matrix-like shit and dodge the shots!'
+                        )
+                        Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
+                    }
 
                     Start-Sleep -Seconds 2
                     Write-Host
@@ -4705,11 +4722,21 @@ function CopFight {
                 PressEnterPrompt
             }
             else {
-                Write-Centered 'You lose the fight!' -ForegroundColor Red
+                $copsGotYouPhrases = @(
+                    'You lose the fight!',
+                    'They got ya, fam!',
+                    'The cops take you down!',
+                    'Pastafazool! They got you!',
+                    'Damn! They got you!'
+                )
+                Write-Centered (Get-Random -InputObject $copsGotYouPhrases) -ForegroundColor Red
                 Start-Sleep -Seconds 2
+
                 Write-Centered 'Uh oh...' -ForegroundColor DarkGray
                 Start-Sleep -Seconds 2
                 Write-Host
+                PressEnterPrompt
+
                 # Calculate the chance of getting shot
                 if ((Get-Random -Maximum 100) -lt $shotChance) {
                     GetShotDead
