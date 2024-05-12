@@ -2749,9 +2749,14 @@ function ShowMainMenu {
     # Define the column width
     $columnWidth = 40
 
-    # Combine Clothing and Guns into OtherInventory for display.
-    [string[]]$gunEntries = $script:Player.Guns | ForEach-Object {
-        '{0} (Power: {1})' -f $_.Name, $_.StoppingPower
+    if ($script:Player.get_Guns().Count -gt 0) {
+        # Combine Clothing and Guns into OtherInventory for display.
+        [string[]]$gunEntries = $script:Player.get_Guns() | ForEach-Object {
+            '{0} (Power: {1})' -f $_.Name, $_.StoppingPower
+        }
+    }
+    else {
+        $gunEntries = @()
     }
 
     $otherInventory = $script:Player.Clothing + $gunEntries
