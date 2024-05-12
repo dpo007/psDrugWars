@@ -4533,14 +4533,17 @@ function CopFight {
             # Pull out yer weapons...
             Write-Host
             $gunCount = $script:Player.get_Guns().Count
-            $gunOutActions = @(
-                'pull',
-                'whip',
-                'bust',
-                'pop'
-            )
-            $gunOutAction = Get-Random -InputObject $gunOutActions
+
             if ($gunCount -gt 0) {
+                $gunOutActions = @(
+                    'bust',
+                    'pop',
+                    'pull',
+                    'whip',
+                    'yank'
+                )
+                $gunOutAction = Get-Random -InputObject $gunOutActions
+
                 if ($gunCount -gt 1) {
                     $gunName = $script:Player.get_Guns()[0].Name
                     $gunName2 = $script:Player.get_Guns()[1].Name
@@ -4670,6 +4673,8 @@ function CopFight {
                     Start-Sleep -Seconds 2
                     Write-Host
                     PressEnterPrompt
+                    Write-Host
+                    Write-Host
                 }
             }
 
