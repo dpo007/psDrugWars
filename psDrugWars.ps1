@@ -4457,6 +4457,8 @@ function CopFight {
     }
     Write-Host
 
+    Clear-LastLines -Count 8
+
     # Calculate the chance of getting shot (10% + 2% per cop)
     $shotChance = 10 + ($numCops * 2)
 
@@ -4648,11 +4650,8 @@ function CopFight {
                     # Increase chance of them shooting you in retaliation by 10%, max 90%
                     $shotChance = [math]::Min($shotChance + 10, 90)
 
-                    Start-Sleep -Seconds 2
-                    Write-Host
-                    PressEnterPrompt
-                    Write-Host
-                    Write-Host
+                    Start-Sleep -Seconds 5
+                    Clear-LastLines -Count 6
                 }
                 else {
                     $youMissedPhrases = @(
@@ -4711,16 +4710,10 @@ function CopFight {
                         )
                         Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
 
-                        Start-Sleep -Seconds 2
-                        Write-Host
-                        PressEnterPrompt
-                        Write-Host
-                        Write-Host
+                        Start-Sleep -Seconds 5
+                        Clear-LastLines -Count 6
                     }
                 }
-
-                Start-Sleep -Seconds 3
-                Clear-LastLines -Count 8
             }
 
             Write-Host
