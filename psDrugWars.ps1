@@ -1745,7 +1745,7 @@ $script:GunInfo = @(
     @{
         Name          = "Colt Python"
         Type          = "Revolver"
-        StoppingPower = 10
+        StoppingPower = 9
         Price         = 3800
         Description   = "A revolver with high stopping power."
         History       = "The Colt Python is a large-frame, double-action revolver produced by the Colt's Manufacturing Company. It was introduced in 1955 and is known for its power, accuracy, and reliability."
@@ -4700,7 +4700,7 @@ function CopFight {
                     )
                     $randomCopKilledPhrase = Get-Random -InputObject $copKilledPhrases
 
-                    if (copsKilled -gt 1) {
+                    if ($copsKilled -gt 1) {
                         $replacements = @{
                             'a cop'      = 'another cop'
                             'a flatfoot' = 'another flatfoot'
