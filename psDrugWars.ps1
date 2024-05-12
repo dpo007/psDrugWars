@@ -4752,6 +4752,35 @@ function CopFight {
 
                 Write-Centered (Get-Random -InputObject $fightSuccessPhrases) -ForegroundColor Green
                 Start-Sleep -Seconds 2
+
+                if ($copsKilled -gt 0) {
+                    # Get paid by the mob for each cop you killed
+                    $bossName = $script:MobBossNames | Get-Random
+                    $mobPayment = $copsKilled * 5000
+                    $script:Player.Cash += $mobPayment
+                    Write-Host
+                    if ($copsKilled -eq 1) {
+                        Write-Centered ('{0} pays you ${1} for taking out a cop!' -f $bossName, $mobPayment) -ForegroundColor Green
+                    }
+                    else {
+                        Write-Centered ('{0} pays you ${1} for taking out {2} cops!' -f $bossName, $mobPayment, $copsKilled) -ForegroundColor Green
+                    }
+
+                    $mobAppreciationPhrases = @(
+                        'Thanks, you''re making the family proud.',
+                        'Appreciate your loyalty, keep up the good work.',
+                        'Solid work, you''re earning your stripes.',
+                        'You''re a real stand-up guy, thanks for holding it down.',
+                        'Good looks, your efforts don''t go unnoticed.',
+                        'Thanks for keeping things running smooth, capisce?',
+                        'Much obliged, you''re an asset to the operation.',
+                        'You''re an ace in our deck, thanks for your hustle.',
+                        'Respect for putting in the work, it''s noticed.',
+                        'Thanks, you''re keeping the wheels greased and turning.'
+                    )
+                    Write-Centered (Get-Random -InputObject $mobAppreciationPhrases) -ForegroundColor DarkGray
+                }
+
                 Write-Host
                 PressEnterPrompt
             }
