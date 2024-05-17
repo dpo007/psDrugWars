@@ -3457,6 +3457,7 @@ function Jet {
             # Generate a random number between 1 and 100 (inclusive) for use in determining if the player gets busted.
             $randomNumber = Get-Random -Minimum 1 -Maximum 101
             if ($randomNumber -le $percentageChanceOfGettingBusted -or $true) {
+                Write-Host
                 $colors = @('DarkRed', 'Blue')
                 for ($i = 0; $i -lt 3; $i++) {
                     foreach ($color in $colors) {
@@ -3478,6 +3479,7 @@ function Jet {
                     'strap',
                     'weapon'
                 )
+
                 Write-Centered ('The air marshals discover your {0}!' -f (Get-Random -InputObject $weaponSlang)) -ForegroundColor Yellow
                 Start-Sleep 3
                 Write-Host
@@ -3487,7 +3489,18 @@ function Jet {
                 return
             }
             else {
-                Write-Centered '...and nothing happens.'
+                $nothinHappensPhrases = @(
+                    'straight up, nothing pops off.  You good, homey.',
+                    'ain''t nobody doin'' nothin''.',
+                    'then?  Nothin'', capisce?',
+                    'what?  Nada, man.  All good.',
+                    'nothing happens.',
+                    'they don''t find shit.',
+                    'the inspectors are apparently blind.',
+                    'your connections have helped again. You got waved through.'
+                )
+
+                Write-Centered ('...and {0}' -f (Get-Random -InputObject $nothinHappensPhrases)) -ForegroundColor DarkGray
             }
         }
 
