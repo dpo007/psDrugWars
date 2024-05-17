@@ -3438,12 +3438,10 @@ function Jet {
         # Subtract ticket price from player's cash.
         $script:Player.Cash -= $ticketPrice
 
-        Start-Sleep 3
-        Write-Host
-
         # If the player has a gun, they migth get busted by air marshals.
         if ($script:Player.get_Guns().Count -gt 0) {
-
+            Start-Sleep 1
+            Write-Host
             Write-Centered 'You head on through the metal-detector...'
             Start-Sleep 2
 
@@ -3456,7 +3454,7 @@ function Jet {
 
             # Generate a random number between 1 and 100 (inclusive) for use in determining if the player gets busted.
             $randomNumber = Get-Random -Minimum 1 -Maximum 101
-            if ($randomNumber -le $percentageChanceOfGettingBusted -or $true) {
+            if ($randomNumber -le $percentageChanceOfGettingBusted) {
                 Write-Host
                 $colors = @('DarkRed', 'Blue')
                 for ($i = 0; $i -lt 3; $i++) {
@@ -3503,6 +3501,9 @@ function Jet {
                 Write-Centered ('...and {0}' -f (Get-Random -InputObject $nothinHappensPhrases)) -ForegroundColor DarkGray
             }
         }
+
+        Start-Sleep 3
+        Write-Host
 
         # Travel takes a day, change clothes
         AdvanceGameDay -ChangeOutfit
