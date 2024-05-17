@@ -3201,7 +3201,8 @@ function ShowFlushDrugsMenu {
         Write-Centered (Get-Random -InputObject $phrases)
         Start-Sleep 1
         Write-Host
-        Write-BlockLetters 'You have 0 marijuanas!' -Align Center -ForegroundColor White -BackgroundColor DarkRed -VerticalPadding 1
+        Write-BlockLetters 'You have' -Align Center -ForegroundColor White -BackgroundColor DarkRed -VerticalPadding 1
+        Write-BlockLetters '0 marijuanas!' -Align Center -ForegroundColor White -BackgroundColor DarkRed -VerticalPadding 1
         Start-Sleep 1
         Write-Host
         Write-Centered ('What are you gonna flush, {0}?' -f (Get-Random -InputObject $insults))
