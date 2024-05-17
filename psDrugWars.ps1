@@ -3488,8 +3488,6 @@ function Jet {
             }
             else {
                 Write-Centered '...and nothing happens.'
-                Write-Centered 'You make it through security without a hitch.' -ForegroundColor Green
-                Start-Sleep 2
             }
         }
 
