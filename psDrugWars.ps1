@@ -3428,44 +3428,70 @@ function Jet {
     [City[]]$alphabetizedCities = $script:GameCities | Sort-Object -Property Name
     $destinationCity = $alphabetizedCities[$newCity - 1]
 
-    # If the player has a gun, they are Busted
-    if ($script:Player.get_Guns().Count -gt 0) {
-        # Retrieve the player's stopping power
-        $stoppingPower = $script:Player.get_StoppingPower()
-
-        # Calculate the percentage chance of getting busted based on the player's stopping power.
-        # The chance is a quarter of the player's stopping power, with a minimum of 1% and a maximum of 5%.
-        $percentageChanceOfGettingBusted = [math]::Max(1, [math]::Min($stoppingPower * 0.25, 5))
-
-        # Generate a random number between 1 and 100 (inclusive) for use in determining if the player gets busted.
-        $randomNumber = Get-Random -Minimum 1 -Maximum 101
-        if ($randomNumber -le $percentageChanceOfGettingBusted) {
-            Write-Host
-            Write-Centered 'The air marshals discover your gun!' -ForegroundColor Red
-            Start-Sleep 3
-            Write-Host
-            StartRandomEvent -EventName 'Busted'
-            Write-Centered 'You are kicked out of the airport.'
-            Write-Host
-            PressEnterPrompt
-            return
-        }
-    }
-
-
-
     # If the new city is different from the player's current city, then travel to the new city.
     if ($script:Player.City -ne $destinationCity) {
         Write-Host
         Write-Centered ('You hit the airport and catch a flight to {0}.' -f $destinationCity.Name)
         Start-Sleep -Milliseconds 500
-        Write-Centered ('The ticket costs you ${0}, and the trip takes a day.' -f $ticketPrice) -ForegroundColor Yellow
+        Write-Centered ('The ticket costs you ${0}, and the trip will take a day.' -f $ticketPrice) -ForegroundColor Yellow
 
         # Subtract ticket price from player's cash.
         $script:Player.Cash -= $ticketPrice
 
         Start-Sleep 3
         Write-Host
+
+        # If the player has a gun, they migth get busted by air marshals.
+        if ($script:Player.get_Guns().Count -gt 0) {
+
+            Write-Centered 'You head on through the metal-detector...'
+            Start-Sleep 2
+
+            # Retrieve the player's stopping power
+            $stoppingPower = $script:Player.get_StoppingPower()
+
+            # Calculate the percentage chance of getting busted based on the player's stopping power.
+            # The chance is a quarter of the player's stopping power, with a minimum of 1% and a maximum of 5%.
+            $percentageChanceOfGettingBusted = [math]::Max(1, [math]::Min($stoppingPower * 0.25, 5))
+
+            # Generate a random number between 1 and 100 (inclusive) for use in determining if the player gets busted.
+            $randomNumber = Get-Random -Minimum 1 -Maximum 101
+            if ($randomNumber -le $percentageChanceOfGettingBusted -or $true) {
+                $colors = @('DarkRed', 'Blue')
+                for ($i = 0; $i -lt 3; $i++) {
+                    foreach ($color in $colors) {
+                        Write-Centered "Beep!`a" -ForegroundColor $color -NoNewline
+                        Write-Host "`r" -NoNewline
+                        Start-Sleep -Milliseconds 750
+                    }
+                }
+                Write-Centered "Beeeeeeeeeeep!`a`a`a" -ForegroundColor Red
+                Start-Sleep -Seconds 2
+                Write-Host
+                $weaponSlang = @(
+                    'piece',
+                    'burner',
+                    'gat',
+                    'iron',
+                    'blaster',
+                    'gun',
+                    'heater',
+                    'strap'
+                )
+                Write-Centered ('The air marshals discover your {0}!' -f (Get-Random -InputObject $weaponSlang)) -ForegroundColor Yellow
+                Start-Sleep 3
+                Write-Host
+                PressEnterPrompt
+                StartRandomEvent -EventName 'Busted'
+                # If the player is busted, return (back to main menu)
+                return
+            }
+            else {
+                Write-Centered '...and nothing happens.'
+                Write-Centered 'You make it through security without a hitch.' -ForegroundColor Green
+                Start-Sleep 2
+            }
+        }
 
         # Travel takes a day, change clothes
         AdvanceGameDay -ChangeOutfit
