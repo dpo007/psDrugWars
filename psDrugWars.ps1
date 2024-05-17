@@ -3472,11 +3472,11 @@ function Jet {
                     'piece',
                     'burner',
                     'gat',
-                    'iron',
                     'blaster',
                     'gun',
                     'heater',
-                    'strap'
+                    'strap',
+                    'weapon'
                 )
                 Write-Centered ('The air marshals discover your {0}!' -f (Get-Random -InputObject $weaponSlang)) -ForegroundColor Yellow
                 Start-Sleep 3
