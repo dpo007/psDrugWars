@@ -3424,11 +3424,37 @@ function Jet {
     }
     Write-Host
 
-    # Alphabetize the cities by name, then assign the player's city to the selected city.
+    # Alphabetize the cities by name, then assign the selected city.
     [City[]]$alphabetizedCities = $script:GameCities | Sort-Object -Property Name
     $destinationCity = $alphabetizedCities[$newCity - 1]
 
-    # If the new city is different from the current city, then travel to the new city.
+    # If the player has a gun, they are Busted
+    if ($script:Player.get_Guns().Count -gt 0) {
+        # Retrieve the player's stopping power
+        $stoppingPower = $script:Player.get_StoppingPower()
+
+        # Calculate the percentage chance of getting busted based on the player's stopping power.
+        # The chance is a quarter of the player's stopping power, with a minimum of 1% and a maximum of 5%.
+        $percentageChanceOfGettingBusted = [math]::Max(1, [math]::Min($stoppingPower * 0.25, 5))
+
+        # Generate a random number between 1 and 100 (inclusive) for use in determining if the player gets busted.
+        $randomNumber = Get-Random -Minimum 1 -Maximum 101
+        if ($randomNumber -le $percentageChanceOfGettingBusted) {
+            Write-Host
+            Write-Centered 'The air marshals discover your gun!' -ForegroundColor Red
+            Start-Sleep 3
+            Write-Host
+            StartRandomEvent -EventName 'Busted'
+            Write-Centered 'You are kicked out of the airport.'
+            Write-Host
+            PressEnterPrompt
+            return
+        }
+    }
+
+
+
+    # If the new city is different from the player's current city, then travel to the new city.
     if ($script:Player.City -ne $destinationCity) {
         Write-Host
         Write-Centered ('You hit the airport and catch a flight to {0}.' -f $destinationCity.Name)
