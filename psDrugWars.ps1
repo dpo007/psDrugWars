@@ -3888,7 +3888,7 @@ function ShowHelp {
     Write-Centered '------'
     Write-Host
     Write-Centered 'Drug Wars is a text-based game where you buy and sell drugs in various cities around the world.'
-    Write-Centered 'The goal is to make as much cash money as possible in {0} days.' -f $script:GameDays
+    Write-Centered ('The goal is to make as much cash money as possible in {0} days.' -f $script:GameDays)
     Write-Host
     Write-Host 'Main Menu'
     Write-Host '---------'
