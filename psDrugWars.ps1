@@ -3442,7 +3442,7 @@ function Jet {
         if ($script:Player.get_Guns().Count -gt 0) {
             Start-Sleep 1
             Write-Host
-            Write-Centered 'You head on through the metal-detector...'
+            Write-Centered 'You head on through the metal-detector, and...'
             Start-Sleep 2
 
             # Retrieve the player's stopping power
@@ -3490,15 +3490,15 @@ function Jet {
                 $nothinHappensPhrases = @(
                     'straight up, nothing pops off.  You good, homey.',
                     'ain''t nobody doin'' nothin''.',
-                    'then?  Nothin'', capisce?',
-                    'what?  Nada, man.  All good.',
+                    'nothin'', capisce?',
+                    'nada, man.  All good.',
                     'nothing happens.',
                     'they don''t find shit.',
                     'the inspectors are apparently blind.',
                     'your connections have helped again. You got waved through.'
                 )
 
-                Write-Centered ('...and {0}' -f (Get-Random -InputObject $nothinHappensPhrases)) -ForegroundColor DarkGray
+                Write-Centered ('...{0}' -f (Get-Random -InputObject $nothinHappensPhrases)) -ForegroundColor DarkGray
             }
         }
 
