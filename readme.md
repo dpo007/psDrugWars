@@ -21,9 +21,11 @@ A thrilling[^1] PowerShell [BBS door-game-style](https://en.wikipedia.org/wiki/D
 
 To run the game, follow these steps:
 
-1. Open a PowerShell terminal.
-2. Navigate to the directory containing the `psDrugWars.ps1` script.
-3. Run the script using the following command:
+1. Download it.
+2. [Unblock it](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/unblock-file).
+3. Open a PowerShell terminal.
+4. Navigate to the directory containing the `psDrugWars.ps1` script.
+5. Run the script using the following command:
 
 ```powershell
 .\psDrugWars.ps1
@@ -32,5 +34,13 @@ To run the game, follow these steps:
 ## Warning :warning:
 
 This game contains NSFW/16+ content, including immature, possibly offensive humor, as well as satirical references to illegal drugs and drug use. Parental discretion is advised. :innocent:
+
+## What it is :heavy_check_mark:
+
+This was craed as an excerise.
+
+## What it's not :x:
+
+-
 
 [^1]: _Note:_ May not actually be "Thrilling".
