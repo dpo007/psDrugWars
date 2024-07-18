@@ -1815,7 +1815,8 @@ $script:MobBossNames = @(
     'Nick "Narcotics Napper" Napoli',
     'Rocco "Coke Cowboy" Colombo',
     'Maria "The Mixer" Martino',
-    'Angela "Angel Dust" Amato'
+    'Angela "Angel Dust" Amato',
+    'Janny "Tow-Titz"'
 )
 #############################################
 #endregion Define Script-Wide Lists and Tables
@@ -4002,7 +4003,8 @@ function ShowTaglinePrompt {
         '"Monopoly''s side hustle. Laughed so hard, neighbours thought I was on something!" - ChuckleMaster69',
         '"Five stars for unexpected therapy!" - Johnny Two-eyes',
         '"In-game lawyer pricier than virtual stash. Legal drama with pixels, fewer objections." - The Gamer''s Ass',
-        '"Meh" - Most People'
+        '"Meh" - Most People',
+        'Dedicated to the big boss, Janny "Two-Titz". ♥'
     )
 
     # If no text is supplied, randomly pick a tagline to use as $text
