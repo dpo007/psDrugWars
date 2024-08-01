@@ -5127,15 +5127,19 @@ while ($script:Playing) {
                 if ($colour -eq [System.ConsoleColor]::Black) {
                     continue
                 }
+
                 Write-BlockLetters ('Day {0}!' -f ($script:GameDays + 1)) -ForegroundColor $colour -VerticalPadding 1 -Align Center
+
+                if ($colour -eq $colours[-1]) {
+                    break
+                }
                 Clear-LastLines -Count 7
             }
 
             Start-Sleep -Seconds 2
             Write-Host
             Write-Centered 'Time''s up, boss!' -ForegroundColor Green
-            Start-Sleep -Seconds 2
-            Write-Host
+            Start-Sleep -Seconds 3
             Write-Host
             PressEnterPrompt
             EndGame
