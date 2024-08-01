@@ -1804,19 +1804,19 @@ $script:GunInfo = @(
 
 # Define Mob Boss Names
 $script:MobBossNames = @(
-    'Vinny "The Chemist" Marino',
-    'Tony "White Lines" Bianchi',
-    'Frankie "Crystal Clear" Corleone',
-    'Jimmy "Hash Hustler" Capone',
-    'Sal "Opium Queenpin" Santoro',
-    'Mikey "Blow Boss" Moretti',
-    'Louie "Molly Maestro" Lombardi',
+    'Angela "Angel Dust" Amato',
     'Benny "LSD Baron" Barzini',
+    'Frankie "Crystal Clear" Corleone',
+    'Janny "Two-Titz"',
+    'Jimmy "Hash Hustler" Capone',
+    'Louie "Molly Maestro" Lombardi',
+    'Maria "The Mixer" Martino',
+    'Mikey "Blow Boss" Moretti',
     'Nick "Narcotics Napper" Napoli',
     'Rocco "Coke Cowboy" Colombo',
-    'Maria "The Mixer" Martino',
-    'Angela "Angel Dust" Amato',
-    'Janny "Tow-Titz"'
+    'Sal "Opium Queenpin" Santoro',
+    'Tony "White Lines" Bianchi',
+    'Vinny "The Chemist" Marino'
 )
 #############################################
 #endregion Define Script-Wide Lists and Tables
@@ -3601,6 +3601,25 @@ function StartRandomEvent {
             return
         }
 
+        # If the event name is 'TimeTravel', then let player pick the day to transport to (must be more than 0, and less than $script:GameDays)
+        if ($EventName -eq 'TimeTravel') {
+            $newDay = Read-Host ('Enter the day you want to travel to (1-{0})' -f $script:GameDays)
+            $newDayInt = 0
+            if (-not [int]::TryParse($newDay, [ref]$newDayInt) -or $newDayInt -lt 1 -or $newDayInt -gt $script:GameDays) {
+                Write-Centered "Invalid day."
+                PressEnterPrompt
+                return
+            }
+
+            $script:Player.GameDay = $newDayInt
+            Write-Host
+            Write-Centered ('Dr. Who music plays...') -ForegroundColor DarkGray
+            Write-Centered ('You travel in time to day {0}!' -f $newDayInt) -ForegroundColor Green
+            Write-Host
+            PressEnterPrompt
+            return
+        }
+
         # Otherwise, set the random event to the event with the specified name.
         $randomEvent = $script:RandomEvents | Where-Object { $_.Name -eq $EventName }
     }
@@ -5087,7 +5106,7 @@ while ($script:Playing) {
 
         # Out of days, game over.
         if ($script:Player.GameDay -gt $script:GameDays) {
-            Write-BlockLetters ('Day { 0 }!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
+            Write-BlockLetters ('Day {0}!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
             Start-Sleep -Seconds 2
             Write-Host
             Write-Centered 'Time''s up!' -ForegroundColor Green
