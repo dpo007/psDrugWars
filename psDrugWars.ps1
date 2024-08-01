@@ -3497,7 +3497,11 @@ function Jet {
                     'nothing happens.',
                     'they don''t find shit.',
                     'the inspectors are apparently blind.',
-                    'your connections have helped again. You got waved through.'
+                    'your connections have helped again. You got waved through.',
+                    'you breeze through security without a hitch.',
+                    'the air marshals are too busy chatting to notice anything.',
+                    'the metal-detector malfunctions and you walk right through.',
+                    'the air marshals mistake you for a celebrity and let you pass.'
                 )
 
                 Write-Centered ('...{0}' -f (Get-Random -InputObject $nothinHappensPhrases)) -ForegroundColor DarkGray
