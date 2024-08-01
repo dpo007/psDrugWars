@@ -4346,6 +4346,11 @@ function AdvanceGameDay {
 
     # Advance the game day
     $script:Player.GameDay += $Days
+
+    if ($script:Player.GameDay -gt $script:GameDays) {
+        return
+    }
+
     Write-Centered ('Welcome to day {0}! ({1} days left)' -f $script:Player.GameDay, ($script:GameDays - $script:Player.GameDay)) -ForegroundColor Yellow
 
     # If today is a Home Drug Sale day, announce it
@@ -5110,10 +5115,25 @@ while ($script:Playing) {
 
         # Out of days, game over.
         if ($script:Player.GameDay -gt $script:GameDays) {
-            Write-BlockLetters ('Day {0}!' -f $script:GameDays) -ForegroundColor Yellow -VerticalPadding 1 -Align Center
+            Clear-Host
+            ShowMenuHeader
+            Write-Host
+
+            # Define an array of colors
+            $colours = [System.ConsoleColor]::GetValues([System.ConsoleColor])
+
+            # Loop through each color in the array (skipping black)
+            foreach ($colour in $colours) {
+                if ($colour -eq [System.ConsoleColor]::Black) {
+                    continue
+                }
+                Write-BlockLetters ('Day {0}!' -f ($script:GameDays + 1)) -ForegroundColor $colour -VerticalPadding 1 -Align Center
+                Clear-LastLines -Count 7
+            }
+
             Start-Sleep -Seconds 2
             Write-Host
-            Write-Centered 'Time''s up!' -ForegroundColor Green
+            Write-Centered 'Time''s up, boss!' -ForegroundColor Green
             Start-Sleep -Seconds 2
             Write-Host
             Write-Host
