@@ -5102,6 +5102,9 @@ while ($script:Playing) {
 
         # No cash and no drugs, game over
         if ($script:Player.Cash -le 0 -and $script:Player.Drugs.Count -eq 0) {
+            Clear-Host
+            ShowMenuHeader
+            Write-Host
             Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
             Start-Sleep -Seconds 2
             Write-Centered 'You''re not really cut out for this business.' -ForegroundColor DarkGray
