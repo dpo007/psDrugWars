@@ -31,7 +31,7 @@ To run the game, follow these steps:
 .\psDrugWars.ps1
 ```
 
-***Or*** just download and run it directly from GitHub[^2]:
+***Or*** just download and run it directly from GitHub[^9er]:
 
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/dpo007/psDrugWars/main/psDrugWars.ps1')
@@ -42,4 +42,4 @@ iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 This game contains NSFW/16+ content, including immature, possibly offensive humor, as well as satirical references to illegal drugs and drug use. Parental discretion is advised. :innocent:
 
 [^1]: _Note:_ May not actually be "Thrilling".
-[^2]: High scores won't be saved.
+[^9er]: High scores won't be saved.
