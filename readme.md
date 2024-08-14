@@ -32,6 +32,7 @@ To run the game, follow these steps:
 ```
 
 ***Or*** just download and run it directly from GitHub:
+<small>(Note: high scores won't be saved)</small>
 
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/dpo007/psDrugWars/main/psDrugWars.ps1')
