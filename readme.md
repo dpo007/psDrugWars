@@ -2,7 +2,7 @@
 
 A thrilling[^1] PowerShell [BBS door-game-style](https://en.wikipedia.org/wiki/Door_(bulletin_board_system)) console RPG where you navigate through multiple locations, dealing with different types of drugs. But beware! Random events can affect your game.
 
-*Loosly* based on [John E. Dell's 1984 classic "Drug Wars"](https://en.wikipedia.org/wiki/Drug_Wars_(video_game)), and inspired by many of its clones from the decades since.
+*Loosely* based on [John E. Dell's 1984 classic "Drug Wars"](https://en.wikipedia.org/wiki/Drug_Wars_(video_game)), and inspired by many of its clones from the decades since.
 
 ## Features :sparkles:
 
@@ -32,7 +32,7 @@ To run the game, follow these steps:
 ```
 
 ***Or*** just download and run it directly from GitHub:
-<small>(Note: high scores won't be saved)</small>
+~(Note: high scores won't be saved)~
 
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/dpo007/psDrugWars/main/psDrugWars.ps1')
