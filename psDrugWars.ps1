@@ -3470,79 +3470,85 @@ function Jet {
         Write-Host
         Write-Centered ('You hit the airport and catch a flight to {0}.' -f $destinationCity.Name)
         Start-Sleep -Milliseconds 500
-        Write-Centered ('The ticket costs you ${0}, and the trip will take a day.' -f $ticketPrice) -ForegroundColor Yellow
 
-        # Subtract ticket price from player's cash.
-        $script:Player.Cash -= $ticketPrice
+        if ($script:Player.GameDay -eq $script:GameDays) {
+            # Last flight of the game is free.
+            Write-Centered 'You are whisked through to your flight as a VIP, and the ticket is free!' -ForegroundColor Green
+        }
+        else {
+            Write-Centered ('The ticket costs you ${0}, and the trip will take a day.' -f $ticketPrice) -ForegroundColor Yellow
 
-        # If the player has a gun, they migth get busted by air marshals.
-        if ($script:Player.get_Guns().Count -gt 0) {
-            Start-Sleep 1
-            Write-Host
-            Write-Centered 'You head on through the metal-detector, and...'
-            Start-Sleep 2
+            # Subtract ticket price from player's cash.
+            $script:Player.Cash -= $ticketPrice
 
-            # Retrieve the player's stopping power
-            $stoppingPower = $script:Player.get_StoppingPower()
-
-            # Calculate the percentage chance of getting busted based on the player's stopping power.
-            # The chance is a quarter of the player's stopping power, with a minimum of 1% and a maximum of 5%.
-            $percentageChanceOfGettingBusted = [math]::Max(1, [math]::Min($stoppingPower * 0.25, 5))
-
-            # Generate a random number between 1 and 100 (inclusive) for use in determining if the player gets busted.
-            $randomNumber = Get-Random -Minimum 1 -Maximum 101
-            if ($randomNumber -le $percentageChanceOfGettingBusted) {
+            # If the player has a gun, they migth get busted by air marshals.
+            if ($script:Player.get_Guns().Count -gt 0) {
+                Start-Sleep 1
                 Write-Host
-                $colors = @('DarkRed', 'Blue')
-                for ($i = 0; $i -lt 3; $i++) {
-                    foreach ($color in $colors) {
-                        Write-Centered "Beep!`a" -ForegroundColor $color -NoNewline
-                        Write-Host "`r" -NoNewline
-                        Start-Sleep -Milliseconds 750
+                Write-Centered 'You head on through the metal-detector, and...'
+                Start-Sleep 2
+
+                # Retrieve the player's stopping power
+                $stoppingPower = $script:Player.get_StoppingPower()
+
+                # Calculate the percentage chance of getting busted based on the player's stopping power.
+                # The chance is a quarter of the player's stopping power, with a minimum of 1% and a maximum of 5%.
+                $percentageChanceOfGettingBusted = [math]::Max(1, [math]::Min($stoppingPower * 0.25, 5))
+
+                # Generate a random number between 1 and 100 (inclusive) for use in determining if the player gets busted.
+                $randomNumber = Get-Random -Minimum 1 -Maximum 101
+                if ($randomNumber -le $percentageChanceOfGettingBusted) {
+                    Write-Host
+                    $colors = @('DarkRed', 'Blue')
+                    for ($i = 0; $i -lt 3; $i++) {
+                        foreach ($color in $colors) {
+                            Write-Centered "Beep!`a" -ForegroundColor $color -NoNewline
+                            Write-Host "`r" -NoNewline
+                            Start-Sleep -Milliseconds 750
+                        }
                     }
+                    Write-Centered "Beeeeeeeeeeep!`a`a`a" -ForegroundColor Red
+                    Start-Sleep -Seconds 2
+                    Write-Host
+                    $weaponSlang = @(
+                        'piece',
+                        'burner',
+                        'gat',
+                        'blaster',
+                        'gun',
+                        'heater',
+                        'strap',
+                        'weapon'
+                    )
+
+                    Write-Centered ('The air marshals discover your {0}!' -f (Get-Random -InputObject $weaponSlang)) -ForegroundColor Yellow
+                    Start-Sleep 3
+                    Write-Host
+                    PressEnterPrompt
+                    StartRandomEvent -EventName 'Busted'
+                    # If the player is busted, return (back to main menu)
+                    return
                 }
-                Write-Centered "Beeeeeeeeeeep!`a`a`a" -ForegroundColor Red
-                Start-Sleep -Seconds 2
-                Write-Host
-                $weaponSlang = @(
-                    'piece',
-                    'burner',
-                    'gat',
-                    'blaster',
-                    'gun',
-                    'heater',
-                    'strap',
-                    'weapon'
-                )
+                else {
+                    $nothinHappensPhrases = @(
+                        'straight up, nothing pops off.  You good, homey.',
+                        'ain''t nobody doin'' nothin''.',
+                        'nothin'', capisce?',
+                        'nada, man.  All good.',
+                        'nothing happens.',
+                        'they don''t find shit.',
+                        'the inspectors are apparently blind.',
+                        'your connections have helped again. You got waved through.',
+                        'you breeze through security without a hitch.',
+                        'the air marshals are too busy chatting to notice anything.',
+                        'the metal-detector malfunctions and you walk right through.',
+                        'the air marshals mistake you for a celebrity and let you pass.'
+                    )
 
-                Write-Centered ('The air marshals discover your {0}!' -f (Get-Random -InputObject $weaponSlang)) -ForegroundColor Yellow
-                Start-Sleep 3
-                Write-Host
-                PressEnterPrompt
-                StartRandomEvent -EventName 'Busted'
-                # If the player is busted, return (back to main menu)
-                return
-            }
-            else {
-                $nothinHappensPhrases = @(
-                    'straight up, nothing pops off.  You good, homey.',
-                    'ain''t nobody doin'' nothin''.',
-                    'nothin'', capisce?',
-                    'nada, man.  All good.',
-                    'nothing happens.',
-                    'they don''t find shit.',
-                    'the inspectors are apparently blind.',
-                    'your connections have helped again. You got waved through.',
-                    'you breeze through security without a hitch.',
-                    'the air marshals are too busy chatting to notice anything.',
-                    'the metal-detector malfunctions and you walk right through.',
-                    'the air marshals mistake you for a celebrity and let you pass.'
-                )
-
-                Write-Centered ('...{0}' -f (Get-Random -InputObject $nothinHappensPhrases)) -ForegroundColor DarkGray
+                    Write-Centered ('...{0}' -f (Get-Random -InputObject $nothinHappensPhrases)) -ForegroundColor DarkGray
+                }
             }
         }
-
         Start-Sleep 3
         Write-Host
 
@@ -5184,9 +5190,9 @@ while ($script:Playing) {
             ShowMenuHeader
             Write-Host
             Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds 3
             Write-Centered 'You''re not really cut out for this business.' -ForegroundColor DarkGray
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds 4
             Write-Host
             Write-BlockLetters 'Game over.' -ForegroundColor Black -BackgroundColor DarkRed -VerticalPadding 1 -Align Center
             Write-Host
