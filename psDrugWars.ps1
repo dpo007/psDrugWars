@@ -3938,6 +3938,43 @@ function EndGame {
     }
 }
 
+# This function displays the game over screen when the player runs out of days.
+function ShowGameOverCuzDays {
+    param (
+        [int]$GameDays
+    )
+
+    Clear-Host
+    ShowMenuHeader
+    Write-Host
+
+    # Define an array of colors
+    $colours = [System.ConsoleColor]::GetValues([System.ConsoleColor])
+
+    # Loop through each color in the array (skipping black)
+    foreach ($colour in $colours) {
+        if ($colour -eq [System.ConsoleColor]::Black) {
+            continue
+        }
+
+        Write-BlockLetters ('Day {0}!' -f ($GameDays + 1)) -ForegroundColor $colour -VerticalPadding 1 -Align Center
+
+        if ($colour -eq $colours[-1]) {
+            break
+        }
+        Clear-LastLines -Count 7
+    }
+
+    Start-Sleep -Seconds 2
+    Write-Host
+    Write-Centered 'Time''s up, boss!' -ForegroundColor Green
+    Start-Sleep -Seconds 3
+    Write-Host
+    PressEnterPrompt
+    EndGame
+}
+
+
 # This function displays the help screen.
 function ShowHelp {
     Clear-Host
@@ -5157,34 +5194,7 @@ while ($script:Playing) {
 
         # Out of days, game over.
         if ($script:Player.GameDay -gt $script:GameDays) {
-            Clear-Host
-            ShowMenuHeader
-            Write-Host
-
-            # Define an array of colors
-            $colours = [System.ConsoleColor]::GetValues([System.ConsoleColor])
-
-            # Loop through each color in the array (skipping black)
-            foreach ($colour in $colours) {
-                if ($colour -eq [System.ConsoleColor]::Black) {
-                    continue
-                }
-
-                Write-BlockLetters ('Day {0}!' -f ($script:GameDays + 1)) -ForegroundColor $colour -VerticalPadding 1 -Align Center
-
-                if ($colour -eq $colours[-1]) {
-                    break
-                }
-                Clear-LastLines -Count 7
-            }
-
-            Start-Sleep -Seconds 2
-            Write-Host
-            Write-Centered 'Time''s up, boss!' -ForegroundColor Green
-            Start-Sleep -Seconds 3
-            Write-Host
-            PressEnterPrompt
-            EndGame
+            ShowGameOverCuzDays -GameDay $script:Player.GameDay
         }
     }
 }
