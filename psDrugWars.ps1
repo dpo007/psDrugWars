@@ -267,7 +267,12 @@ class Player {
 
         # If the player has enough cash, and can add the gun to their inventory, buy the gun.
         if ($this.AddGun($Gun)) {
+            # Pay for gun
             $this.Cash -= $Gun.Price
+
+            # Track gun purchase in Game Statistics
+            $script:GameStats.GunsBought++
+
             Write-Host
             Write-Centered ('You bought a {0} for ${1}.' -f $Gun.Name, $Gun.Price) -ForegroundColor Green
             Start-Sleep -Milliseconds 1500
@@ -427,9 +432,12 @@ class Player {
                 }
                 # If the player has enough cash and free pockets, buy the drugs
                 $this.Cash -= $totalPrice
+
                 Write-Host ('You bought {0} {1} for ${2}.' -f $Drug.Quantity, $Drug.Name, $totalPrice)
                 $this.AddDrugs($Drug)
 
+                # Track drug purchase in Game Statistics
+                $script:GameStats.DrugsBought += $Drug.Quantity
             }
         }
         # Pause for 3 seconds before returning
