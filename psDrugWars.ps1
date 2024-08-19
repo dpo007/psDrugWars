@@ -8,6 +8,25 @@ param (
 ########################
 #region Class Definitions
 ##########################
+class GameStats {
+    [int]$HighestCash
+    [int]$DrugsBought
+    [int]$DrugsSold
+    [int]$GunsBought
+    [int]$CopFights
+    [int]$EventsExperienced
+
+    # Constructor to initialize all properties to 0
+    GameStats() {
+        $this.HighestCash = 0
+        $this.DrugsBought = 0
+        $this.DrugsSold = 0
+        $this.GunsBought = 0
+        $this.CopFights = 0
+        $this.EventsExperienced = 0
+    }
+}
+
 class Drug {
     [string]$Name
     [string]$Code
@@ -2520,6 +2539,9 @@ function InitGame {
     $script:GameOver = $false
     $script:RandomEventChance_Start = 10 # Percentage
     $script:RandomEventChance_Current = $script:RandomEventChance_Start
+
+    # Creat object to hold Game Statistics
+    $script:GameStats = [GameStats]::new()
 
     # Setup Home Drug sale days
     $script:HomeDrugSaleDays = GenerateSaleDays -SaleDaysCount 4 -DaysApart 5
