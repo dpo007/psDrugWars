@@ -464,6 +464,9 @@ class Player {
         $this.RemoveDrugs($Drug, $Quantity)
         $this.Cash += $totalPrice
         Write-Host ('You sold {0} {1} for ${2}.' -f $Quantity, $Drug.Name, $totalPrice)
+
+        # Track drug sale in Game Statistics
+        $script:GameStats.DrugsSold += $Quantity
     }
 
     # Method to add items to the player's Clothing collection.
