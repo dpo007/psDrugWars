@@ -3590,6 +3590,9 @@ function StartRandomEvent {
         [string]$EventName
     )
 
+    # Track Event in Game Statistics
+    $script:GameStats.EventsExperienced++
+
     # If no Event Name is specified do a random event (usual usage)
     if (!$EventName) {
         # Set the base chance for a cop fight to 10%
