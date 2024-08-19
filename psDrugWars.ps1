@@ -13,7 +13,7 @@ class GameStats {
     [int]$DrugsBought
     [int]$DrugsSold
     [int]$GunsBought
-    [int]$CopFights
+    [int]$CopShootOuts
     [int]$EventsExperienced
 
     # Constructor to initialize all properties to 0
@@ -22,7 +22,7 @@ class GameStats {
         $this.DrugsBought = 0
         $this.DrugsSold = 0
         $this.GunsBought = 0
-        $this.CopFights = 0
+        $this.CopShootOuts = 0
         $this.EventsExperienced = 0
     }
 }
@@ -4712,6 +4712,9 @@ function CopFight {
             }
         }
         3 {
+            # Track the cop fight in Game Statistics
+            $script:GameStats.CopShootOuts++
+
             # Pull out yer weapons...
             Write-Host
             $gunCount = $script:Player.get_Guns().Count
