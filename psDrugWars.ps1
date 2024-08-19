@@ -1864,21 +1864,23 @@ function CheckConsoleSize {
     }
 }
 
-# Function that will clear the last n lines in the console.
-function Clear-LastLines {
+# Function to move up N lines to overwrite, optionally clearing them.
+function OverWriteLastLines {
     param (
         [Parameter(Position = 1)]
-        [int32]$Count = 1
+        [int32]$Count = 1,
+        [switch]$WithClear
     )
 
-    $CurrentLine = $Host.UI.RawUI.CursorPosition.Y
-    $ConsoleWidth = $Host.UI.RawUI.BufferSize.Width
+    if ($WithClear) {
+        for ($i = 1; $i -le $Count; $i++) {
+            [Console]::SetCursorPosition(0, ($CurrentLine - $i))
+            [Console]::Write("{0,-$ConsoleWidth}" -f ' ')
+        }
 
-    for ($i = 1; $i -le $Count; $i++) {
-        [Console]::SetCursorPosition(0, ($CurrentLine - $i))
-        [Console]::Write("{0,-$ConsoleWidth}" -f ' ')
     }
 
+    $CurrentLine = $Host.UI.RawUI.CursorPosition.Y
     [Console]::SetCursorPosition(0, ($CurrentLine - $Count))
 }
 
@@ -3962,7 +3964,7 @@ function ShowGameOverCuzDays {
         if ($colour -eq $colours[-1]) {
             break
         }
-        Clear-LastLines -Count 7
+        OverWriteLastLines -Count 7
     }
 
     Start-Sleep -Seconds 2
@@ -4654,7 +4656,7 @@ function CopFight {
     }
     Write-Host
 
-    Clear-LastLines -Count 8
+    OverWriteLastLines -Count 8 -WithClear
 
     # Calculate the chance of getting shot (10% + 2% per cop)
     $shotChance = 10 + ($numCops * 2)
@@ -4958,7 +4960,7 @@ function CopFight {
                         Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
 
                         Start-Sleep -Seconds 5
-                        Clear-LastLines -Count 6
+                        OverWriteLastLines -Count 6 -WithClear
                     }
                 }
             }
@@ -5194,7 +5196,7 @@ while ($script:Playing) {
 
         # Out of days, game over.
         if ($script:Player.GameDay -gt $script:GameDays) {
-            ShowGameOverCuzDays -GameDay $script:Player.GameDay
+            ShowGameOverCuzDays -GameDay $script:GameDays
         }
     }
 }
