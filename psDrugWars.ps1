@@ -42,6 +42,13 @@ class GameStats {
 
         return $result
     }
+
+    # Method set the MostCashAtOnce property if it's lower than the provided amount
+    [void] SetMostCashAtOnce([int]$Cash) {
+        if ($Cash -gt $this.MostCashAtOnce) {
+            $this.MostCashAtOnce = $Cash
+        }
+    }
 }
 
 class Drug {
