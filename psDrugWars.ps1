@@ -2694,7 +2694,7 @@ function GetHomeDrugString {
 }
 
 # This function displays a menu header with the player's current cash, city, and home drug information in a formatted string.
-function ShowMenuHeader {
+function ShowHeader {
     $homeDrugString = GetHomeDrugString -HomeDrugNames $script:Player.City.HomeDrugNames
 
     Write-Host ('·' + ('═' * ($Host.UI.RawUI.WindowSize.Width - 2)) + '·') -ForegroundColor DarkGray
@@ -2748,7 +2748,7 @@ function Tripout {
 # This function displays the "Drug-o-peida".
 function ShowDrugopedia {
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     Write-Centered '--------------'
     Write-Centered 'Drug-o-pedia'
@@ -2781,7 +2781,7 @@ function ShowDrugopedia {
 # This function displays the main menu of the game.
 function ShowMainMenu {
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
 
     Write-Host
 
@@ -3005,7 +3005,7 @@ function ShowGunshopMenu {
 
     do {
         Clear-Host
-        ShowMenuHeader
+        ShowHeader
         Write-Host
         Write-Centered ('Welcome to {0}!' -f $script:Player.City.GunShopName)
         Write-Host
@@ -3106,7 +3106,7 @@ function ShowCityDrugs {
 # This function displays the drug buying menu.
 function ShowBuyDrugsMenu {
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     Write-Centered "Buy Drugs"
     Write-Host
@@ -3151,7 +3151,7 @@ function ShowBuyDrugsMenu {
 # This function displays the drug selling menu.
 function ShowSellDrugsMenu {
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     Write-Centered "Sell Drugs"
     Write-Host
@@ -3201,7 +3201,7 @@ function ShowSellDrugsMenu {
 # This function displays the drug flushing menu.
 function ShowFlushDrugsMenu {
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
 
     # If the user has no drugs, display a message and exit the function.
@@ -3418,7 +3418,7 @@ function ShowFlushDrugsMenu {
 
     # Flush the drugs.
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
 
     $script:Player.RemoveDrugs($drugToFlush, $quantityToFlush)
@@ -3433,7 +3433,7 @@ function ShowFlushDrugsMenu {
 # This function displays a list of cities to the console, and prompts the user to select a city to travel to.
 function Jet {
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     Write-Centered "Jet to Another City"
     Write-Host
@@ -3673,7 +3673,7 @@ function StartRandomEvent {
     }
 
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     $eventName = ('{0}!' -f $randomEvent.Name)
     if ((Write-BlockLetters $eventName -Align Center) -eq $false) {
@@ -3786,7 +3786,7 @@ function JailForLife {
     )
 
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     Write-Centered $(Get-Random -InputObject $caughtByPolicePhrases) -ForegroundColor Red
     DrawJailGraphic
@@ -3953,7 +3953,7 @@ function ShowGameOverCuzDays {
     )
 
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
 
     # Define an array of colors
@@ -3986,7 +3986,7 @@ function ShowGameOverCuzDays {
 # This function displays the help screen.
 function ShowHelp {
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     Write-Centered '------'
     Write-Centered 'Help'
@@ -4545,7 +4545,7 @@ function CopFight {
         )
 
         Clear-Host
-        ShowMenuHeader
+        ShowHeader
         Write-Host
 
         Write-BlockLetters 'Blammo!' -BackgroundColor DarkRed -ForegroundColor DarkGray -Align Center -VerticalPadding 1
@@ -4581,7 +4581,7 @@ function CopFight {
     #endregion Function Definitions
 
     Clear-Host
-    ShowMenuHeader
+    ShowHeader
     Write-Host
     $grawlixes = @(
         '$#@%',
@@ -5092,6 +5092,71 @@ function GetRandomPunchPhrase {
 
     return $randomPunchPhrase
 }
+
+function ShowGameStatsScreen {
+    param (
+        [int]$HeightReduction = 1,  # Default to 1 line shorter (for prompt)
+        [string[]]$Content,  # Array of strings to display in border
+        [ConsoleColor]$BorderColor = [ConsoleColor]::DarkGray,
+        [ConsoleColor]$ContentColor = [ConsoleColor]::White
+    )
+
+    # Get the current console size
+    $width = $Host.UI.RawUI.WindowSize.Width
+    $height = $Host.UI.RawUI.WindowSize.Height - $HeightReduction
+
+    # Clear the console
+    Clear-Host
+
+    # Display the header (as top border)
+    ShowHeader
+
+    # Define the side borders for content area
+    $sideBorderThin = '|' + (' ' * ($width - 2)) + '|'
+    $sideBorderThick = '║' + (' ' * ($width - 2)) + '║'
+
+    # Draw the border for the content area
+    Write-Host $sideBorderThin -ForegroundColor $BorderColor
+    for ($i = 0; $i -lt ($height - 6); $i++) {
+        Write-Host $sideBorderThick -ForegroundColor $BorderColor
+    }
+
+    # Draw the bottom border with conditional middle pattern
+    if (($width - 4) % 2 -eq 0) {
+        # Even width:
+        $middle = '-·  ·-'
+    } else {
+        # Odd width:
+        $middle = '-· ·-'
+    }
+
+    # Calculate the left and right part lengths (without the middle pattern)
+    $leftPartLength = [Math]::Floor(($width - 4 - $middle.Length) / 2) + 1
+    $rightPartLength = $width - 2 - $leftPartLength - $middle.Length
+
+    # Draw the bottom border
+    $bottomBorder = '╚' + ('═' * $leftPartLength) + $middle + ('═' * $rightPartLength) + '╝'
+    Write-Host $bottomBorder -ForegroundColor $BorderColor
+
+    # Calculate the starting row for content placement (vertical centering)
+    $currentRow = [Math]::Floor(($height - $Content.Length) / 2)
+
+    # Place content at the correct locations (centered horizontally)
+    foreach ($line in $Content) {
+        $lineLength = $line.Length
+        $padding = [Math]::Floor(($width - 2 - $lineLength) / 2)
+
+        # Move cursor to the correct position and write the line
+        $Host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates($padding, $currentRow)
+        Write-Host $line -ForegroundColor $ContentColor -NoNewline
+
+        # Move to the next row
+        $currentRow++
+    }
+
+    # Set the cursor position to the line below the bottom border
+    $Host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates(0, $height)
+}
 ##############################
 #endregion Function Definitions
 ################################
@@ -5187,7 +5252,7 @@ while ($script:Playing) {
         # No cash and no drugs, game over
         if ($script:Player.Cash -le 0 -and $script:Player.Drugs.Count -eq 0) {
             Clear-Host
-            ShowMenuHeader
+            ShowHeader
             Write-Host
             Write-Centered 'You''re broke and you have no drugs left.' -ForegroundColor DarkRed
             Start-Sleep -Seconds 3
