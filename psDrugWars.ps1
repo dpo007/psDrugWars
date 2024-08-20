@@ -9,21 +9,38 @@ param (
 #region Class Definitions
 ##########################
 class GameStats {
-    [int]$HighestCash
     [int]$DrugsBought
     [int]$DrugsSold
     [int]$GunsBought
     [int]$CopShootOuts
     [int]$EventsExperienced
+    [int]$MostCashAtOnce
 
     # Constructor to initialize all properties to 0
     GameStats() {
-        $this.HighestCash = 0
         $this.DrugsBought = 0
         $this.DrugsSold = 0
         $this.GunsBought = 0
         $this.CopShootOuts = 0
         $this.EventsExperienced = 0
+        $this.MostCashAtOnce = 0
+    }
+
+    # Method to get all properties as an array of strings
+    [string[]] GetPropertiesAsStrings() {
+        # Get the properties of the GameStats object
+        $properties = $this.PSObject.Properties
+
+        # Create an array to hold the property values as strings
+        $result = @()
+
+        foreach ($property in $properties) {
+            # Perform the replacement inline to split PascalCase or camelCase names
+            $formattedName = $property.Name -creplace '([a-z])([A-Z])', '$1 $2'
+            $result += ('{0}: {1}' -f $formattedName, $property.Value)
+        }
+
+        return $result
     }
 }
 
@@ -2849,7 +2866,7 @@ function ShowMainMenu {
     #endregion Display menu options
 
     # Wait for user to press a valid key
-    $choices = @('B', 'S', 'F', 'J', 'Q', '?', 'D', '!')
+    $choices = @('B', 'S', 'F', 'J', 'D', 'Q', 'T', '?', '!')
     # If there is gunshop include 'G' in choices
     if ($script:Player.City.HasGunShop()) {
         $choices += 'G'
@@ -5095,8 +5112,8 @@ function GetRandomPunchPhrase {
 
 function ShowGameStatsScreen {
     param (
-        [int]$HeightReduction = 1,  # Default to 1 line shorter (for prompt)
-        [string[]]$Content,  # Array of strings to display in border
+        [int]$HeightReduction = 1, # Default to 1 line shorter (for prompt)
+        [string[]]$Content, # Array of strings to display in border
         [ConsoleColor]$BorderColor = [ConsoleColor]::DarkGray,
         [ConsoleColor]$ContentColor = [ConsoleColor]::White
     )
@@ -5125,7 +5142,8 @@ function ShowGameStatsScreen {
     if (($width - 4) % 2 -eq 0) {
         # Even width:
         $middle = '-·  ·-'
-    } else {
+    }
+    else {
         # Odd width:
         $middle = '-· ·-'
     }
@@ -5156,6 +5174,8 @@ function ShowGameStatsScreen {
 
     # Set the cursor position to the line below the bottom border
     $Host.UI.RawUI.CursorPosition = New-Object System.Management.Automation.Host.Coordinates(0, $height)
+
+    PressEnterPrompt
 }
 ##############################
 #endregion Function Definitions
@@ -5185,6 +5205,13 @@ while ($script:Playing) {
 
     # Main game loop.
     while (!$script:GameOver) {
+
+        # Update MostCashAtOnce stats by checking player's current cash
+        if ($script:Player.Cash -gt $script:GameStats.MostCashAtOnce) {
+            $script:GameStats.MostCashAtOnce = $script:Player.Cash
+        }
+
+        # Show main menu and get user choice
         $choice = ShowMainMenu
         switch ($choice) {
             "B" {
@@ -5204,6 +5231,9 @@ while ($script:Playing) {
             }
             "S" {
                 ShowSellDrugsMenu
+            }
+            "T" {
+                ShowGameStatsScreen -Content $script:GameStats.GetPropertiesAsStrings()
             }
             "?" {
                 ShowHelp
