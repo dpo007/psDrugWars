@@ -44,7 +44,7 @@ class GameStats {
     }
 
     # Method set the MostCashAtOnce property if it's lower than the provided amount
-    [void] SetMostCashAtOnce([int]$Cash) {
+    [void] UpdateMostCashAtOnce([int]$Cash) {
         if ($Cash -gt $this.MostCashAtOnce) {
             $this.MostCashAtOnce = $Cash
         }
@@ -322,6 +322,9 @@ class Player {
             $gunSellPrice = $gunToSell.Price * 0.70
             $this.Cash += $gunSellPrice
 
+            # Update MostCashAtOnce stats by comparing player's current cash
+            $script:GameStats.UpdateMostCashAtOnce($this.Cash)
+
             # Remove the sold gun from the player's inventory.
             $this.Guns = $this.Guns | Where-Object { $_.Name -ne $gunToSell.Name } | Select-Object -First 1
 
@@ -491,6 +494,9 @@ class Player {
 
         # Track drug sale in Game Statistics
         $script:GameStats.DrugsSold += $Quantity
+
+        # Update MostCashAtOnce stats by comparing player's current cash
+        $script:GameStats.UpdateMostCashAtOnce($script:Player.Cash)
     }
 
     # Method to add items to the player's Clothing collection.
@@ -1896,6 +1902,9 @@ function OverWriteLastLines {
         [switch]$WithClear
     )
 
+    $CurrentLine = $Host.UI.RawUI.CursorPosition.Y
+    $ConsoleWidth = $Host.UI.RawUI.BufferSize.Width
+
     if ($WithClear) {
         for ($i = 1; $i -le $Count; $i++) {
             [Console]::SetCursorPosition(0, ($CurrentLine - $i))
@@ -1904,7 +1913,6 @@ function OverWriteLastLines {
 
     }
 
-    $CurrentLine = $Host.UI.RawUI.CursorPosition.Y
     [Console]::SetCursorPosition(0, ($CurrentLine - $Count))
 }
 
@@ -3706,7 +3714,12 @@ function StartRandomEvent {
     Write-Host
     Write-Host
     Write-Centered $randomEvent.Description
+    # Execute the effect of the random event
     & $randomEvent.Effect
+
+    # Update MostCashAtOnce stats by comparing player's current cash
+    $script:GameStats.UpdateMostCashAtOnce($script:Player.Cash)
+
     Write-Host
     PressEnterPrompt
 }
@@ -5213,10 +5226,8 @@ while ($script:Playing) {
     # Main game loop.
     while (!$script:GameOver) {
 
-        # Update MostCashAtOnce stats by checking player's current cash
-        if ($script:Player.Cash -gt $script:GameStats.MostCashAtOnce) {
-            $script:GameStats.MostCashAtOnce = $script:Player.Cash
-        }
+        # Update MostCashAtOnce stats by comparing player's current cash
+        $script:GameStats.UpdateMostCashAtOnce($script:Player.Cash)
 
         # Show main menu and get user choice
         $choice = ShowMainMenu
