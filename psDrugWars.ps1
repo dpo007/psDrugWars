@@ -968,7 +968,26 @@ $script:RandomEvents = @(
                 Write-Centered ('The shadowy figure tells you that the next Home Drug Sale Day is in {0} days, on day {1}.' -f $daysUntilNextSale, $nextSaleDay) -ForegroundColor DarkYellow
             }
             else {
-                Write-Centered 'There''s no more Home Drug Sale Days left.' -ForegroundColor DarkYellow
+                $noDrugSaleDaysLeftMsg = @(
+                    "Ain't no more Home Drug Sale Days, pal. You snooze, you lose, capisce?",
+                    "That Home Drug Sale Days ship sailed, buddy. Better luck next time!",
+                    "Home Drug Sale Days? Nah, those are long gone, kid. Better ask the boss about 'em.",
+                    "Yo, ain't no more Home Drug Sale Days, fool. Guess you missed the party, huh?",
+                    "No more Home Drug Sale Days, champ. What, you just crawled outta a rock?",
+                    "Those Home Drug Sale Days? Gone quicker than your paycheck, homie.",
+                    "Forget about it! No more Home Drug Sale Days, wiseguy. Try again next year!",
+                    "Aww, you late for Home Drug Sale Days? Too bad, player, game's over.",
+                    "Home Drug Sale Days are history, see? You're gonna have to find your own score now.",
+                    "No Home Drug Sale Days left, sucka. Guess you didn't get the memo!",
+                    "Whoa, man, the Home Drug Sale Days are, like, totally over. You missed the cosmic wave, dude.",
+                    "Home Drug Sale Days? Nah, those are long gone, brother. The universe has spoken.",
+                    "Sorry, friend, no more Home Drug Sale Days. Guess the vibes didn't align this time.",
+                    "Oh, bummer, dude. Home Drug Sale Days? They're, like, a thing of the past now, ya know?",
+                    "Home Drug Sale Days? Yeah, they've floated away with the breeze, man. Better luck next trip!"
+                )
+
+                $noSaleDaysLeftMsg = Get-Random -InputObject $noDrugSaleDaysLeftMsg
+                Write-Centered $noSaleDaysLeftMsg -ForegroundColor DarkYellow
             }
 
             Start-Sleep -Seconds 2
