@@ -881,6 +881,7 @@ $script:RandomEvents = @(
                 $message = Get-Random -InputObject $messages
 
                 # Display the message
+                Write-Host
                 Write-Centered $message -ForegroundColor DarkGreen
             }
 
@@ -958,13 +959,13 @@ $script:RandomEvents = @(
         "Description" = "A shadowy figure approaches you and whispers, 'Psst... I know when the next Home Drug Sale Day is. Interested?'"
         "Effect"      = {
             # Figure out when next Home Drug sale day is from $script:HomeDrugSaleDays list
-            $nextSaleday = $script:HomeDrugSaleDays | Sort-Object | Where-Object { $_ -gt $script:Player.GameDay } | Select-Object -First 1
-            $daysUntilNextSale = $nextSaleday - $script:Player.GameDay
+            $nextSaleDay = $script:HomeDrugSaleDays | Sort-Object | Where-Object { $_ -gt $script:Player.GameDay } | Select-Object -First 1
+            $daysUntilNextSale = $nextSaleDay - $script:Player.GameDay
 
             Start-Sleep -Seconds 2
             Write-Host
-            if ($nextSaleday) {
-                Write-Centered ('The shadowy figure tells you that the next Home Drug Sale Day is in {0} days, on day {1}.' -f $daysUntilNextSale, $nextSaleday) -ForegroundColor DarkYellow
+            if ($nextSaleDay) {
+                Write-Centered ('The shadowy figure tells you that the next Home Drug Sale Day is in {0} days, on day {1}.' -f $daysUntilNextSale, $nextSaleDay) -ForegroundColor DarkYellow
             }
             else {
                 Write-Centered 'There''s no more Home Drug Sale Days left.' -ForegroundColor DarkYellow
