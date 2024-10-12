@@ -963,7 +963,7 @@ $script:RandomEvents = @(
 
             Start-Sleep -Seconds 2
             Write-Host
-            if ($daysUntilNextSale) {
+            if ($nextSaleday) {
                 Write-Centered ('The shadowy figure tells you that the next Home Drug Sale Day is in {0} days, on day {1}.' -f $daysUntilNextSale, $nextSaleday) -ForegroundColor DarkYellow
             }
             else {
