@@ -955,14 +955,14 @@ $script:RandomEvents = @(
         }
     },
     @{
-        "Name"        = "The Shadow"
-        "Description" = "A shadowy figure approaches you and whispers, 'Psst... I know when the next Home Drug Sale Day is. Interested?'"
+        "Name"        = 'The Shadow'
+        "Description" = 'A shadowy figure approaches you and whispers, "Psst... I know when the next Home Drug Sale Day is..."'
         "Effect"      = {
             # Figure out when next Home Drug sale day is from $script:HomeDrugSaleDays list
             $nextSaleDay = $script:HomeDrugSaleDays | Sort-Object | Where-Object { $_ -gt $script:Player.GameDay } | Select-Object -First 1
             $daysUntilNextSale = $nextSaleDay - $script:Player.GameDay
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds 3
             Write-Host
             if ($nextSaleDay) {
                 Write-Centered ('The shadowy figure tells you that the next Home Drug Sale Day is in {0} days, on day {1}.' -f $daysUntilNextSale, $nextSaleDay) -ForegroundColor DarkYellow
