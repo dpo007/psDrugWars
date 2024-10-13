@@ -1381,7 +1381,7 @@ $script:RandomEvents = @(
 
                     if ($choice -eq 'Y') {
                         $randomDrugs = ($script:GameDrugs | Get-Random -Count 4).Name -join ', '
-                        # repalce the last ',' with "and"
+                        # replace the last ',' with "and"
                         $randomDrugs = $randomDrugs -replace ', ([^,]+)$', ' and $1'
                         $tripOutcome = Get-Random -Minimum 1 -Maximum 11
                         if ($tripOutcome -le 5) {
@@ -1489,7 +1489,7 @@ $script:RandomEvents = @(
                             }
                         )
 
-                        # Display 5 random questions and answers, with a 3 seconds pause between each.
+                        # Display 5 random questions and answers, with a 3 second pause between each.
                         $triviaQuestionsAnswers | Get-Random -Count 5 | ForEach-Object {
                             Write-Centered $_.Question -ForegroundColor DarkCyan
                             Start-Sleep -Milliseconds (Get-Random -Minimum 1000 -Maximum 3001)
