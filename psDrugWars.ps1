@@ -12,7 +12,7 @@ class GameStats {
     [int]$DrugsBought
     [int]$DrugsSold
     [int]$GunsBought
-    [int]$CopShootOuts
+    [int]$CopFights
     [int]$EventsExperienced
     [int]$MostCashAtOnce
 
@@ -21,7 +21,7 @@ class GameStats {
         $this.DrugsBought = 0
         $this.DrugsSold = 0
         $this.GunsBought = 0
-        $this.CopShootOuts = 0
+        $this.CopFights = 0
         $this.EventsExperienced = 0
         $this.MostCashAtOnce = 0
     }
@@ -4818,7 +4818,7 @@ function CopFight {
         }
         3 {
             # Track the cop fight in Game Statistics
-            $script:GameStats.CopShootOuts++
+            $script:GameStats.CopFights++
 
             # Pull out yer weapons...
             Write-Host
