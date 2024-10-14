@@ -15,8 +15,8 @@ class GameStats {
     [int]$CopFights
     [int]$EventsExperienced
     [int]$MostCashAtOnce
-    [string[]]$CitiesVisited
-    [int]$UniqueCitiesCount
+    [string[]]$VisitedCityNames
+    [int]$CitiesVisited
 
     # Constructor to initialize all properties to 0 or empty array
     GameStats() {
@@ -26,8 +26,8 @@ class GameStats {
         $this.CopFights = 0
         $this.EventsExperienced = 0
         $this.MostCashAtOnce = 0
-        $this.CitiesVisited = @()
-        $this.UniqueCitiesCount = 0
+        $this.VisitedCityNames = @()
+        $this.CitiesVisited = 0
     }
 
     # Method to get all numeric properties as an array of strings
@@ -62,21 +62,22 @@ class GameStats {
     # Method to add a city name to the list
     [void] AddCity([string]$City) {
         if (-not [string]::IsNullOrEmpty($City)) {
-            $this.CitiesVisited += $City
-            $this.UniqueCitiesCount = ($this.GetUniqueCitiesVisited()).Count
-        } else {
+            $this.VisitedCityNames += $City
+            $this.CitiesVisited = ($this.GetUniqueVisitedCityNames()).Count
+        }
+        else {
             throw "City name cannot be null or empty."
         }
     }
 
     # Method to retrieve the list of city names
-    [string[]] GetCitiesVisited() {
-        return $this.CitiesVisited
+    [string[]] GetVisitedCityNames() {
+        return $this.VisitedCityNames
     }
 
     # Method to return the list of unique city names
-    [string[]] GetUniqueCitiesVisited() {
-        return $this.CitiesVisited | Sort-Object -Unique
+    [string[]] GetUniqueVisitedCityNames() {
+        return $this.VisitedCityNames | Sort-Object -Unique
     }
 }
 
