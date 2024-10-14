@@ -61,15 +61,15 @@ class GameStats {
         }
     }
 
-    # Method to add a city name to the list of visited cities
-    [void] AddVisitedCity([string]$City) {
-        if (-not [string]::IsNullOrEmpty($City)) {
-            $this.TravelPath += $City
+    # Method to add a city (name) to the list of visited cities
+    [void] AddVisitedCity([City]$City) {
+        if ($null -ne $City -and -not [string]::IsNullOrEmpty($City.Name)) {
+            $this.TravelPath += $City.Name
             $this.CitiesVisited = ($this.GetVisitedCityNames()).Count
             $this.FlightsTaken = $this.TravelPath.Count - 1
         }
         else {
-            throw "City name cannot be null or empty."
+            throw "City object or its Name property cannot be null or empty."
         }
     }
 
@@ -2658,6 +2658,9 @@ function InitGame {
 
     # Fill starting City with random drugs.
     $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
+
+    # Update travel statistics
+    $script:GameStats.AddVisitedCity($script:Player.City)
 }
 
 # Populates an array of City objects, using randomly chosen, unique names from the CityNames array.
@@ -3642,6 +3645,9 @@ function Jet {
 
         # Set player's new location.
         $script:Player.City = $destinationCity
+
+        # Update travel statistics.
+        $script:GameStats.AddVisitedCity($destinationCity)
 
         # Fill landing City with random drugs.
         $script:Player.City.Drugs = $script:GameDrugs | Get-Random -Count $script:Player.City.MaxDrugCount
