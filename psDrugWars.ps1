@@ -15,8 +15,10 @@ class GameStats {
     [int]$CopFights
     [int]$EventsExperienced
     [int]$MostCashAtOnce
+    [string[]]$CitiesVisited
+    [int]$UniqueCitiesCount
 
-    # Constructor to initialize all properties to 0
+    # Constructor to initialize all properties to 0 or empty array
     GameStats() {
         $this.DrugsBought = 0
         $this.DrugsSold = 0
@@ -24,9 +26,13 @@ class GameStats {
         $this.CopFights = 0
         $this.EventsExperienced = 0
         $this.MostCashAtOnce = 0
+        $this.CitiesVisited = @()
+        $this.UniqueCitiesCount = 0
     }
 
-    # Method to get all properties as an array of strings
+    # Method to get all numeric properties as an array of strings
+    # This method filters the properties of the GameStats object and returns only those with numeric values (int or double).
+    # Each property name is formatted to split PascalCase or camelCase names, and the result is returned as an array of strings.
     [string[]] GetPropertiesAsStrings() {
         # Get the properties of the GameStats object
         $properties = $this.PSObject.Properties
@@ -35,19 +41,42 @@ class GameStats {
         $result = @()
 
         foreach ($property in $properties) {
-            # Perform the replacement inline to split PascalCase or camelCase names
-            $formattedName = $property.Name -creplace '([a-z])([A-Z])', '$1 $2'
-            $result += ('{0}: {1}' -f $formattedName, $property.Value)
+            # Check if the property value is numeric
+            if ($property.Value -is [int] -or $property.Value -is [double]) {
+                # Perform the replacement inline to split PascalCase or camelCase names
+                $formattedName = $property.Name -creplace '([a-z])([A-Z])', '$1 $2'
+                $result += ('{0}: {1}' -f $formattedName, $property.Value)
+            }
         }
 
         return $result
     }
 
-    # Method set the MostCashAtOnce property if it's lower than the provided amount
+    # Method to set the MostCashAtOnce property if it's lower than the provided amount
     [void] UpdateMostCashAtOnce([int]$Cash) {
         if ($Cash -gt $this.MostCashAtOnce) {
             $this.MostCashAtOnce = $Cash
         }
+    }
+
+    # Method to add a city name to the list
+    [void] AddCity([string]$City) {
+        if (-not [string]::IsNullOrEmpty($City)) {
+            $this.CitiesVisited += $City
+            $this.UniqueCitiesCount = ($this.GetUniqueCitiesVisited()).Count
+        } else {
+            throw "City name cannot be null or empty."
+        }
+    }
+
+    # Method to retrieve the list of city names
+    [string[]] GetCitiesVisited() {
+        return $this.CitiesVisited
+    }
+
+    # Method to return the list of unique city names
+    [string[]] GetUniqueCitiesVisited() {
+        return $this.CitiesVisited | Sort-Object -Unique
     }
 }
 
@@ -5153,7 +5182,7 @@ function GetRandomPunchPhrase {
 function ShowGameStatsScreen {
     param (
         [int]$HeightReduction = 1, # Default to 1 line shorter (for prompt)
-        [string[]]$Content, # Array of strings to display in border
+        [string[]]$Content, # Array of strings to display inside border
         [ConsoleColor]$BorderColor = [ConsoleColor]::DarkGray,
         [ConsoleColor]$ContentColor = [ConsoleColor]::White
     )
