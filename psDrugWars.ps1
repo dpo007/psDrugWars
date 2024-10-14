@@ -11,28 +11,30 @@ param (
 class GameStats {
     [int]$DrugsBought
     [int]$DrugsSold
+    [int]$CitiesVisited
+    [int]$FlightsTaken
     [int]$GunsBought
     [int]$CopFights
     [int]$EventsExperienced
     [int]$MostCashAtOnce
-    [string[]]$VisitedCityNames
-    [int]$CitiesVisited
+    hidden [string[]]$TravelPath
 
     # Constructor to initialize all properties to 0 or empty array
     GameStats() {
         $this.DrugsBought = 0
         $this.DrugsSold = 0
+        $this.CitiesVisited = 0
+        $this.FlightsTaken = 0
         $this.GunsBought = 0
         $this.CopFights = 0
         $this.EventsExperienced = 0
         $this.MostCashAtOnce = 0
-        $this.VisitedCityNames = @()
-        $this.CitiesVisited = 0
+        $this.TravelPath = @()
     }
 
     # Method to get all numeric properties as an array of strings
     # This method filters the properties of the GameStats object and returns only those with numeric values (int or double).
-    # Each property name is formatted to split PascalCase or camelCase names, and the result is returned as an array of strings.
+    # Each property name is formatted to split PascalCase or camelCase names, and the result is returned as an array of strings (in the order they are defined in the class).
     [string[]] GetPropertiesAsStrings() {
         # Get the properties of the GameStats object
         $properties = $this.PSObject.Properties
@@ -59,25 +61,26 @@ class GameStats {
         }
     }
 
-    # Method to add a city name to the list
-    [void] AddCity([string]$City) {
+    # Method to add a city name to the list of visited cities
+    [void] AddVisitedCity([string]$City) {
         if (-not [string]::IsNullOrEmpty($City)) {
-            $this.VisitedCityNames += $City
-            $this.CitiesVisited = ($this.GetUniqueVisitedCityNames()).Count
+            $this.TravelPath += $City
+            $this.CitiesVisited = ($this.GetVisitedCityNames()).Count
+            $this.FlightsTaken = $this.TravelPath.Count - 1
         }
         else {
             throw "City name cannot be null or empty."
         }
     }
 
-    # Method to retrieve the list of city names
-    [string[]] GetVisitedCityNames() {
-        return $this.VisitedCityNames
+    # Method to retrieve the full list of visited city names, in the order visited.
+    [string[]] GetTravelPath() {
+        return $this.TravelPath
     }
 
-    # Method to return the list of unique city names
-    [string[]] GetUniqueVisitedCityNames() {
-        return $this.VisitedCityNames | Sort-Object -Unique
+    # Method to return the list of (unique) city names visited
+    [string[]] GetVisitedCityNames() {
+        return $this.TravelPath | Sort-Object -Unique
     }
 }
 
