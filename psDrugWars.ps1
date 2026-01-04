@@ -1773,6 +1773,213 @@ $script:RandomEvents = @(
             }
             Start-Sleep -Seconds 2
         }
+    },
+    @{
+        "Name"        = "Alleyway Tarot"
+        "Description" = "A neon-lit tarot table appears in a back alley like it was copy/pasted from a bad movie. A sketchy fortune-teller squints at you and whispers: 'I can read your POCKET AURA... for a price.'"
+        "Effect"      = {
+            Start-Sleep -Seconds 2
+            Write-Host
+            Write-Centered 'A fortune-teller in a velvet hoodie points at your pockets like they owe her money.'
+            Write-Centered '"Your vibe is... heavily pocket-based."'
+            Write-Host
+            Write-Centered 'What do you do?'
+            Write-Host '1. Pay $200 for a reading.'
+            Write-Host '2. Walk away (nope).'
+            Write-Host '3. Mock the whole thing.'
+
+            $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
+            Write-Host
+
+            switch ($choice) {
+                '1' {
+                    if ($script:Player.Cash -lt 200) {
+                        Write-Centered 'You reach for your cash... and immediately remember you''re broke.'
+                        Write-Centered 'The fortune-teller nods like she already knew. "Yep. That tracks."'
+                        Write-Host
+                        break
+                    }
+
+                    $script:Player.Cash -= 200
+                    Write-Centered 'You slap down $200. She snatches it like it''s rent day.'
+                    Start-Sleep -Seconds 1
+                    Write-Centered 'She flips three greasy cards onto the table...'
+                    Start-Sleep -Seconds 2
+                    Write-Host
+
+                    $roll = Get-Random -Minimum 1 -Maximum 101
+
+                    if ($roll -le 45) {
+                        # Good fortune: pockets
+                        $pocketsGained = Get-Random -InputObject @(2, 3, 4, 5)
+                        $script:Player.AdjustPocketCount($pocketsGained)
+                        Write-Centered ('"THE MULTI-POCKET PATH OPENS." You gained {0} extra pockets!' -f $pocketsGained) -ForegroundColor DarkGreen
+                    }
+                    elseif ($roll -le 80) {
+                        # Medium fortune: cash
+                        $cashWin = [Math]::Floor((Get-Random -Minimum 300 -Maximum 901) / 10) * 10
+                        $script:Player.Cash += $cashWin
+                        Write-Centered ('"THE MONEY WIND BLOWS YOUR WAY." Somehow you come out ahead by {0} cash.' -f $cashWin) -ForegroundColor DarkGreen
+                    }
+                    else {
+                        # Bad fortune: pickpocket
+                        $extraStolen = [Math]::Floor((Get-Random -Minimum 200 -Maximum 801) / 10) * 10
+                        if ($extraStolen -gt $script:Player.Cash) { $extraStolen = $script:Player.Cash }
+                        $script:Player.Cash -= $extraStolen
+
+                        Write-Centered '"OOH... that''s the ''Betrayal of the Wallet'' card."'
+                        Write-Centered ('While you''re processing that, she "accidentally" bumps you and vanishes. You lost {0} extra cash.' -f $extraStolen) -ForegroundColor Red
+
+                        # Tiny consolation prize, if possible
+                        if ($script:Player.get_FreePocketCount() -ge 1) {
+                            $mysteryDrug = $script:GameDrugs | Get-Random
+                            $mysteryDrug.Quantity = 1
+                            $script:Player.AddDrugs($mysteryDrug)
+                            Write-Host
+                            Write-Centered ('At least she dropped something: 1 pocket of {0}.' -f $mysteryDrug.Name) -ForegroundColor Yellow
+                        }
+                    }
+                }
+
+                '2' {
+                    Write-Centered 'You walk away.'
+                    Start-Sleep -Seconds 1
+                    Write-Centered 'She yells after you: "RUN FROM DESTINY THEN, CARGO BOY!"'
+                }
+
+                '3' {
+                    Write-Centered 'You laugh and say, "Oh yeah? Read THIS pocket aura."'
+                    Start-Sleep -Seconds 1
+
+                    $roll = Get-Random -Minimum 1 -Maximum 101
+                    if ($roll -le 50) {
+                        $cashLose = [Math]::Floor((Get-Random -Minimum 50 -Maximum 251) / 10) * 10
+                        if ($cashLose -gt $script:Player.Cash) { $cashLose = $script:Player.Cash }
+                        $script:Player.Cash -= $cashLose
+
+                        Write-Centered '"RUDE." She flicks a card at your forehead and you immediately get hustled by a passing dude.'
+                        Write-Centered ('You lost {0} cash.' -f $cashLose) -ForegroundColor Red
+                    }
+                    else {
+                        $pocketsGained = Get-Random -InputObject @(1, 2, 3)
+                        $script:Player.AdjustPocketCount($pocketsGained)
+
+                        Write-Centered 'She stares at you for a long second... then smirks.'
+                        Write-Centered ('"Honestly? Respect." You gained {0} extra pockets from pure spite energy.' -f $pocketsGained) -ForegroundColor DarkGreen
+                    }
+                }
+
+                default {
+                    Write-Centered 'You just stand there, frozen in decision paralysis.'
+                    Write-Centered 'She flips a card that just says: "BRUH."'
+                }
+            }
+
+            Write-Host
+            AdvanceGameDay -SkipPriceUpdate
+        }
+    },
+    @{
+        Name        = "Stoner Alien Encounter"
+        Description = "A glowing UFO wobbles into existence overhead, scraping a chimney on the way down. A dazed alien stumbles out, squints at you, and says: 'Whoa… wrong dispensary.'"
+        Effect      = {
+            Start-Sleep -Seconds 2
+            Write-Host
+            Write-Centered 'The alien rubs his enormous eyes and points at your pockets.'
+            Write-Centered '"Dude. Your cargo situation is… majestic."'
+            Write-Host
+            Write-Centered 'What do you do?'
+            Write-Host '1. Trade vibes for space drugs.'
+            Write-Host '2. Ask for a ride.'
+            Write-Host '3. Panic and run.'
+
+            $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
+            Write-Host
+
+            switch ($choice) {
+                '1' {
+                    Write-Centered 'The alien nods enthusiastically and opens a hatch labeled "NOT FOOD."'
+                    Start-Sleep -Seconds 1
+
+                    $drugCount = Get-Random -Minimum 3 -Maximum 7
+                    1..$drugCount | ForEach-Object {
+                        $drug = $script:GameDrugs | Get-Random
+                        $drug.Quantity = 1
+                        $script:Player.AddDrugs($drug)
+                    }
+
+                    Write-Centered ("You receive {0} random alien-approved drugs." -f $drugCount) -ForegroundColor DarkGreen
+
+                    $roll = Get-Random -Minimum 1 -Maximum 101
+                    if ($roll -le 30) {
+                        Write-Host
+                        Write-Centered '"Uh… hold still, bro."'
+                        Start-Sleep -Seconds 1
+
+                        if ($script:Player.PocketCount -gt 2) {
+                            $pocketsLost = Get-Random -InputObject @(1, 2)
+                            $script:Player.AdjustPocketCount(-$pocketsLost)
+                            Write-Centered ("You were lightly probed and lost {0} pockets." -f $pocketsLost) -ForegroundColor Red
+                        }
+                        else {
+                            $cashLost = Get-Random -Minimum 100 -Maximum 401
+                            if ($cashLost -gt $script:Player.Cash) { $cashLost = $script:Player.Cash }
+                            $script:Player.Cash -= $cashLost
+                            Write-Centered ("You were probed financially. Lost {0} cash." -f $cashLost) -ForegroundColor Red
+                        }
+                    }
+                }
+
+                '2' {
+                    Write-Centered 'You ask for a ride. The alien blinks. "Oh yeah. I forgot I can do that."'
+                    Start-Sleep -Seconds 2
+
+                    $roll = Get-Random -Minimum 1 -Maximum 101
+                    if ($roll -le 40) {
+                        $cashGain = Get-Random -Minimum 100 -Maximum 401
+                        $script:Player.Cash += $cashGain
+                        Write-Centered ("You reappear downtown holding {0} cash and a taco you don't remember buying." -f $cashGain) -ForegroundColor DarkGreen
+                    }
+                    elseif ($roll -le 80) {
+                        $drug = $script:GameDrugs | Get-Random
+                        $drug.Quantity = 2
+                        $script:Player.AddDrugs($drug)
+                        Write-Centered ("You black out and wake up with 2 pockets of {0}." -f $drug.Name) -ForegroundColor DarkGreen
+                    }
+                    else {
+                        Write-Centered 'You wake up exactly where you started. The alien is gone. So is your dignity.'
+                    }
+                }
+
+                '3' {
+                    Write-Centered 'You scream and sprint.'
+                    Start-Sleep -Seconds 1
+
+                    $roll = Get-Random -Minimum 1 -Maximum 101
+                    if ($roll -le 25) {
+                        $cashLost = Get-Random -Minimum 50 -Maximum 201
+                        if ($cashLost -gt $script:Player.Cash) { $cashLost = $script:Player.Cash }
+                        $script:Player.Cash -= $cashLost
+                        Write-Centered ("You trip and lose {0} cash." -f $cashLost) -ForegroundColor Red
+                    }
+                    else {
+                        Write-Centered 'Behind you, the alien yells: "SORRY!" and tosses something.'
+                        $drug = $script:GameDrugs | Get-Random
+                        $drug.Quantity = 1
+                        $script:Player.AddDrugs($drug)
+                        Write-Centered ("You gained 1 pocket of {0}." -f $drug.Name) -ForegroundColor Yellow
+                    }
+                }
+
+                default {
+                    Write-Centered 'You hesitate too long.'
+                    Write-Centered 'The alien salutes you, walks into a wall, and vanishes.'
+                }
+            }
+
+            Write-Host
+            AdvanceGameDay -SkipPriceUpdate
+        }
     }
 )
 
@@ -1943,7 +2150,7 @@ function CheckConsoleSize {
     if ($Host.UI.RawUI.WindowSize.Width -lt 120 -or $Host.UI.RawUI.WindowSize.Height -lt 30) {
         Write-Host 'Please resize your console window to at least 120 x 30 and run the script again.' -ForegroundColor Red
         Write-Host ('Current size: {0}x{1}' -f $Host.UI.RawUI.WindowSize.Width, $Host.UI.RawUI.WindowSize.Height) -ForegroundColor Red
-        Exit 666
+        exit 666
     }
 }
 
