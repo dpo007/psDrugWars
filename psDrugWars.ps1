@@ -286,7 +286,7 @@ class Player {
                 ('Boom shakalaka! You''ve upgraded to a {0}! Watch out, world - you''re armed and hilarious.' -f $Gun.Name),
                 ('Woo-hoo! You got a {0}! It''s like winning the lottery, but with more pew-pew and fewer numbers.' -f $Gun.Name)
             )
-            Write-Centered (Get-Random -InputObject $newGunExpressions)
+            Write-RandomCenteredLine -Lines $newGunExpressions
             Start-Sleep 2
         }
 
@@ -1778,12 +1778,6 @@ $script:RandomEvents = @(
         "Name"        = "Backroom Blackjack"
         "Description" = "A velvet rope shifts like it''s alive. A guy nods once. You''re already inside."
         "Effect"      = {
-
-            function Write-RandomCenteredLine {
-                param([string[]]$Lines)
-                Write-Centered ($Lines | Get-Random)
-            }
-
             function Get-PoliceRaidChance {
                 param([int]$TotalBet)
                 # Low base chance, scales with bet size (Hollywood logic)
@@ -2649,6 +2643,33 @@ function Write-Centered {
         # Write text to console with padding, using the filtered parameters.
         Write-Host ((' ' * $padding) + $line + (' ' * $rightPadding)) @filteredParams
     }
+}
+
+# Picks a random line from a provided list and writes it centered using the same options as Write-Centered.
+function Write-RandomCenteredLine {
+    param (
+        [Parameter(Mandatory)]
+        [AllowNull()]
+        [string[]]$Lines,
+        [switch]$NoNewline,
+        [AllowNull()]
+        $BackgroundColor = $null,
+        [AllowNull()]
+        $ForegroundColor = $null
+    )
+
+    if ($null -eq $Lines) {
+        throw 'Write-RandomCenteredLine: Lines cannot be null.'
+    }
+
+    # Filter out null or whitespace-only entries; require at least one usable line.
+    $usableLines = $Lines | Where-Object { $_ -ne $null -and ($_.Trim()).Length -gt 0 }
+    if (-not $usableLines -or $usableLines.Count -eq 0) {
+        throw 'Write-RandomCenteredLine: Lines must contain at least one non-empty string.'
+    }
+
+    $chosen = $usableLines | Get-Random
+    Write-Centered -Text $chosen -NoNewline:$NoNewline -BackgroundColor $BackgroundColor -ForegroundColor $ForegroundColor
 }
 
 # Function to write large block letters to the console, based on provided text.
@@ -3639,7 +3660,7 @@ function ShowGunshopMenu {
                 'Get lost.',
                 'Scram.'
             )
-            Write-Centered (Get-Random -InputObject $getLostMessages)
+            Write-RandomCenteredLine -Lines $getLostMessages
             Start-Sleep -Seconds 2
             Write-Host
             PressEnterPrompt
@@ -3917,7 +3938,7 @@ function ShowFlushDrugsMenu {
             'wiseguy'
         )
 
-        Write-Centered (Get-Random -InputObject $phrases)
+        Write-RandomCenteredLine -Lines $phrases
         Start-Sleep 1
         Write-Host
         Write-BlockLetters 'You have' -Align Center -ForegroundColor White -BackgroundColor DarkRed -VerticalPadding 1
@@ -5242,7 +5263,7 @@ function CopFight {
         Write-BlockLetters 'Blammo!' -BackgroundColor DarkRed -ForegroundColor DarkGray -Align Center -VerticalPadding 1
         Start-Sleep -Seconds 3
         Write-Host
-        Write-Centered (Get-Random -InputObject $shotDeadStrings) -ForegroundColor Red
+        Write-RandomCenteredLine -Lines $shotDeadStrings -ForegroundColor Red
         Start-Sleep -Seconds 2
         Write-Host
         Write-Centered ('You dead.') -ForegroundColor DarkRed
@@ -5421,7 +5442,7 @@ function CopFight {
                     'Running like the wind, man! You''re a free spirit, unstoppable!',
                     'Unbelievable speed, man! You''re like a mythical creature or something.'
                 )
-                Write-Centered (Get-Random -InputObject $fleeQuotes) -ForegroundColor Green
+                Write-RandomCenteredLine -Lines $fleeQuotes -ForegroundColor Green
                 Start-Sleep -Seconds 2
                 Write-Host
                 PressEnterPrompt
@@ -5443,7 +5464,7 @@ function CopFight {
                     'Cosmic fail, dude! You''re snagged in their astral lasso.',
                     'Bummer deal, man! The pigs have crashed your psychedelic party.'
                 )
-                Write-Centered (Get-Random -InputObject $fleeFailedQuotes) -ForegroundColor DarkRed
+                Write-RandomCenteredLine -Lines $fleeFailedQuotes -ForegroundColor DarkRed
                 Start-Sleep -Seconds 3
                 Write-Host
                 PressEnterPrompt
@@ -5502,7 +5523,7 @@ function CopFight {
                     'You preppin'' to duke it out, fists ready to fly!',
                     'You gettin'' your knuckles ready for a throwdown, ain''t holdin'' back!'
                 )
-                Write-Centered (Get-Random -InputObject $fistDrawMessages) -ForegroundColor Yellow
+                Write-RandomCenteredLine -Lines $fistDrawMessages -ForegroundColor Yellow
             }
 
             Start-Sleep -Seconds 2
@@ -5614,7 +5635,7 @@ function CopFight {
                         'You missed!',
                         'You missed, but hey, the universe still loves you!'
                     )
-                    Write-Centered (Get-Random -InputObject $youMissedPhrases) -ForegroundColor Red
+                    Write-RandomCenteredLine -Lines $youMissedPhrases -ForegroundColor Red
                 }
 
                 Start-Sleep -Seconds 1
@@ -5637,7 +5658,7 @@ function CopFight {
                         'The badges are makin'' their move...',
                         'The law dogs are on the scent...'
                     )
-                    Write-Centered (Get-Random -InputObject $copMovePhrase) -ForegroundColor Blue
+                    Write-RandomCenteredLine -Lines $copMovePhrase -ForegroundColor Blue
                     Start-Sleep -Seconds 2
                     # 50% chance of losing the fight right now
                     if ((Get-Random -Maximum 100) -lt 50) {
@@ -5654,7 +5675,7 @@ function CopFight {
                             'Zing! Just missed you!',
                             'You pull some Matrix-like shit and dodge the shots!'
                         )
-                        Write-Centered (Get-Random -InputObject $copsMissedPhrases) -ForegroundColor Green
+                        Write-RandomCenteredLine -Lines $copsMissedPhrases -ForegroundColor Green
 
                         Start-Sleep -Seconds 5
                         OverWriteLastLines -Count 6 -WithClear
@@ -5682,7 +5703,7 @@ function CopFight {
                     'You came out on top, no legal mess stuck to you.'
                 )
 
-                Write-Centered (Get-Random -InputObject $fightSuccessPhrases) -ForegroundColor Green
+                Write-RandomCenteredLine -Lines $fightSuccessPhrases -ForegroundColor Green
                 Start-Sleep -Seconds 2
 
                 if ($copsKilled -gt 0) {
@@ -5710,7 +5731,7 @@ function CopFight {
                         'Respect for putting in the work, it''s noticed.',
                         'Thanks, you''re keeping the wheels greased and turning.'
                     )
-                    Write-Centered (Get-Random -InputObject $mobAppreciationPhrases) -ForegroundColor DarkGray
+                    Write-RandomCenteredLine -Lines $mobAppreciationPhrases -ForegroundColor DarkGray
                 }
 
                 Write-Host
@@ -5724,7 +5745,7 @@ function CopFight {
                     'Pastafazool! They got you!',
                     'Damn! They got you!'
                 )
-                Write-Centered (Get-Random -InputObject $copsGotYouPhrases) -ForegroundColor Red
+                Write-RandomCenteredLine -Lines $copsGotYouPhrases -ForegroundColor Red
                 Start-Sleep -Seconds 2
 
                 Write-Centered 'Uh oh...' -ForegroundColor DarkGray
