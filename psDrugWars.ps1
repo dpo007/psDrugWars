@@ -1775,210 +1775,597 @@ $script:RandomEvents = @(
         }
     },
     @{
-        "Name"        = "Alleyway Tarot"
-        "Description" = "A neon-lit tarot table appears in a back alley like it was copy/pasted from a bad movie. A sketchy fortune-teller squints at you and whispers: 'I can read your POCKET AURA... for a price.'"
+        "Name"        = "Backroom Blackjack"
+        "Description" = "A velvet rope shifts like it''s alive. A guy nods once. You''re already inside."
         "Effect"      = {
-            Start-Sleep -Seconds 2
-            Write-Host
-            Write-Centered 'A fortune-teller in a velvet hoodie points at your pockets like they owe her money.'
-            Write-Centered '"Your vibe is... heavily pocket-based."'
-            Write-Host
-            Write-Centered 'What do you do?'
-            Write-Host '1. Pay $200 for a reading.'
-            Write-Host '2. Walk away (nope).'
-            Write-Host '3. Mock the whole thing.'
 
-            $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
-            Write-Host
-
-            switch ($choice) {
-                '1' {
-                    if ($script:Player.Cash -lt 200) {
-                        Write-Centered 'You reach for your cash... and immediately remember you''re broke.'
-                        Write-Centered 'The fortune-teller nods like she already knew. "Yep. That tracks."'
-                        Write-Host
-                        break
-                    }
-
-                    $script:Player.Cash -= 200
-                    Write-Centered 'You slap down $200. She snatches it like it''s rent day.'
-                    Start-Sleep -Seconds 1
-                    Write-Centered 'She flips three greasy cards onto the table...'
-                    Start-Sleep -Seconds 2
-                    Write-Host
-
-                    $roll = Get-Random -Minimum 1 -Maximum 101
-
-                    if ($roll -le 45) {
-                        # Good fortune: pockets
-                        $pocketsGained = Get-Random -InputObject @(2, 3, 4, 5)
-                        $script:Player.AdjustPocketCount($pocketsGained)
-                        Write-Centered ('"THE MULTI-POCKET PATH OPENS." You gained {0} extra pockets!' -f $pocketsGained) -ForegroundColor DarkGreen
-                    }
-                    elseif ($roll -le 80) {
-                        # Medium fortune: cash
-                        $cashWin = [Math]::Floor((Get-Random -Minimum 300 -Maximum 901) / 10) * 10
-                        $script:Player.Cash += $cashWin
-                        Write-Centered ('"THE MONEY WIND BLOWS YOUR WAY." Somehow you come out ahead by {0} cash.' -f $cashWin) -ForegroundColor DarkGreen
-                    }
-                    else {
-                        # Bad fortune: pickpocket
-                        $extraStolen = [Math]::Floor((Get-Random -Minimum 200 -Maximum 801) / 10) * 10
-                        if ($extraStolen -gt $script:Player.Cash) { $extraStolen = $script:Player.Cash }
-                        $script:Player.Cash -= $extraStolen
-
-                        Write-Centered '"OOH... that''s the ''Betrayal of the Wallet'' card."'
-                        Write-Centered ('While you''re processing that, she "accidentally" bumps you and vanishes. You lost {0} extra cash.' -f $extraStolen) -ForegroundColor Red
-
-                        # Tiny consolation prize, if possible
-                        if ($script:Player.get_FreePocketCount() -ge 1) {
-                            $mysteryDrug = $script:GameDrugs | Get-Random
-                            $mysteryDrug.Quantity = 1
-                            $script:Player.AddDrugs($mysteryDrug)
-                            Write-Host
-                            Write-Centered ('At least she dropped something: 1 pocket of {0}.' -f $mysteryDrug.Name) -ForegroundColor Yellow
-                        }
-                    }
-                }
-
-                '2' {
-                    Write-Centered 'You walk away.'
-                    Start-Sleep -Seconds 1
-                    Write-Centered 'She yells after you: "RUN FROM DESTINY THEN, CARGO BOY!"'
-                }
-
-                '3' {
-                    Write-Centered 'You laugh and say, "Oh yeah? Read THIS pocket aura."'
-                    Start-Sleep -Seconds 1
-
-                    $roll = Get-Random -Minimum 1 -Maximum 101
-                    if ($roll -le 50) {
-                        $cashLose = [Math]::Floor((Get-Random -Minimum 50 -Maximum 251) / 10) * 10
-                        if ($cashLose -gt $script:Player.Cash) { $cashLose = $script:Player.Cash }
-                        $script:Player.Cash -= $cashLose
-
-                        Write-Centered '"RUDE." She flicks a card at your forehead and you immediately get hustled by a passing dude.'
-                        Write-Centered ('You lost {0} cash.' -f $cashLose) -ForegroundColor Red
-                    }
-                    else {
-                        $pocketsGained = Get-Random -InputObject @(1, 2, 3)
-                        $script:Player.AdjustPocketCount($pocketsGained)
-
-                        Write-Centered 'She stares at you for a long second... then smirks.'
-                        Write-Centered ('"Honestly? Respect." You gained {0} extra pockets from pure spite energy.' -f $pocketsGained) -ForegroundColor DarkGreen
-                    }
-                }
-
-                default {
-                    Write-Centered 'You just stand there, frozen in decision paralysis.'
-                    Write-Centered 'She flips a card that just says: "BRUH."'
-                }
+            function Write-RandomCenteredLine {
+                param([string[]]$Lines)
+                Write-Centered ($Lines | Get-Random)
             }
 
-            Write-Host
-            AdvanceGameDay -SkipPriceUpdate
-        }
-    },
-    @{
-        Name        = "Stoner Alien Encounter"
-        Description = "A glowing UFO wobbles into existence overhead, scraping a chimney on the way down. A dazed alien stumbles out, squints at you, and says: 'Whoa… wrong dispensary.'"
-        Effect      = {
-            Start-Sleep -Seconds 2
-            Write-Host
-            Write-Centered 'The alien rubs his enormous eyes and points at your pockets.'
-            Write-Centered '"Dude. Your cargo situation is… majestic."'
-            Write-Host
-            Write-Centered 'What do you do?'
-            Write-Host '1. Trade vibes for space drugs.'
-            Write-Host '2. Ask for a ride.'
-            Write-Host '3. Panic and run.'
+            function Get-PoliceRaidChance {
+                param([int]$TotalBet)
+                # Low base chance, scales with bet size (Hollywood logic)
+                # Example: $100 => ~4%, $500 => ~8%, $1000 => ~13%, cap ~18%
+                $chance = 3 + [Math]::Floor($TotalBet / 100)   # +1% per $100 bet
+                if ($chance -gt 18) { $chance = 18 }
+                return $chance
+            }
 
-            $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
+            function Test-PoliceRaid {
+                param(
+                    [int]$TotalBet,
+                    [string]$Stage
+                )
+
+                $chance = Get-PoliceRaidChance -TotalBet $TotalBet
+                $roll   = Get-Random -Minimum 1 -Maximum 101
+                if ($roll -gt $chance) { return $false }
+
+                Write-Host
+                Write-RandomCenteredLine @(
+                    '🚨 Somebody yells "FIVE-O!" and the room instantly becomes a magic trick.'
+                    '🚨 Sirens outside. Inside? Everybody teleports into panic.'
+                    '🚨 Red-and-blue lights smear across the blinds like a discount rave.'
+                    '🚨 The vibe dies so fast you can hear it hit the floor.'
+                    '🚨 A door kicks. A chair flips. Somebody prays. Somebody runs.'
+                    '🚨 The dealer goes pale and mutters, "Aw, c''mon… not tonight."'
+                    '🚨 The whole room suddenly remembers they left the stove on.'
+                    '🚨 Reality interrupts the movie scene.'
+                )
+
+                Write-RandomCenteredLine @(
+                    'Cards scatter. Cash vanishes. The table pretends it was never born.'
+                    'A dude in a hoodie scoops the felt like it owes him rent.'
+                    'Chips disappear into pockets with the speed of regret.'
+                    'Someone yanks a curtain and the "VIP room" becomes a hallway.'
+                    'The dealer''s hands move so fast you question physics.'
+                    'Everything not bolted down becomes somebody else''s property.'
+                    'The room empties like someone pulled a drain plug.'
+                    'You watch your bet get reincarnated as "gone."'
+                )
+
+                # Default: you lose whatever was on the table (TotalBet already deducted from cash)
+                # Small chance of a consolation escape
+                $escapeRoll = Get-Random -Minimum 1 -Maximum 101
+                if ($escapeRoll -le 25) {
+                    $consolationMode = Get-Random -InputObject @('cash','drug')
+                    if ($consolationMode -eq 'cash') {
+                        $cashBack = [Math]::Min([Math]::Floor($TotalBet * 0.25), 300)
+                        if ($cashBack -gt 0) { $script:Player.Cash += $cashBack }
+
+                        Write-RandomCenteredLine @(
+                            ("You slip out like smoke with +{0} cash clenched in your hand." -f $cashBack)
+                            ("You duck behind a coat rack and find +{0} cash like fate apologized." -f $cashBack)
+                            ("You emerge with +{0} cash and a brand-new fear of doors." -f $cashBack)
+                            ("Somehow you keep +{0} cash. Call it hazard pay." -f $cashBack)
+                            ("You crawl out with +{0} cash and zero dignity." -f $cashBack)
+                            ("You survive the chaos and pocket +{0} cash. Don''t ask questions." -f $cashBack)
+                            ("You stumble outside with +{0} cash, blinking like a newborn." -f $cashBack)
+                            ("You escape with +{0} cash and a story nobody will believe." -f $cashBack)
+                        )
+                    }
+                    else {
+                        $d = $script:GameDrugs | Get-Random
+                        $d.Quantity = 1
+                        $script:Player.AddDrugs($d)
+
+                        Write-RandomCenteredLine @(
+                            ("You flee clutching 1 pocket of {0}. It''s a weird night." -f $d.Name)
+                            ("Somebody drops a pouch. Congrats: 1 pocket of {0}." -f $d.Name)
+                            ("You trip, roll, stand up holding 1 pocket of {0} like it chose you." -f $d.Name)
+                            ("You escape with 1 pocket of {0} and a suspicious amount of confidence." -f $d.Name)
+                            ("You snag 1 pocket of {0} mid-chaos. Athletic." -f $d.Name)
+                            ("A baggie survives the stampede: 1 pocket of {0}." -f $d.Name)
+                            ("You end up outside with 1 pocket of {0} and no memory of doors." -f $d.Name)
+                            ("You keep 1 pocket of {0}. The universe says 'my bad.'" -f $d.Name)
+                        )
+                    }
+                }
+                else {
+                    Write-RandomCenteredLine @(
+                        ("No refunds. The raid just ate your bet. (-{0} cash)" -f $TotalBet)
+                        ("You blink and it''s gone. Bet lost. (-{0} cash)" -f $TotalBet)
+                        ("Table got vacuumed into the void. (-{0} cash)" -f $TotalBet)
+                        ("You leave empty-handed. (-{0} cash)" -f $TotalBet)
+                        ("That bet? It belongs to the night now. (-{0} cash)" -f $TotalBet)
+                        ("Your money did a vanishing act. (-{0} cash)" -f $TotalBet)
+                        ("The house didn''t win—chaos did. (-{0} cash)" -f $TotalBet)
+                        ("Congratulations, you donated to *panic*. (-{0} cash)" -f $TotalBet)
+                    )
+                }
+
+                Write-Host
+                AdvanceGameDay -SkipPriceUpdate
+                return $true
+            }
+
+            function Test-WreckedOutcome {
+                param(
+                    [int]$TotalBet,
+                    [string]$Reason
+                )
+
+                # Low chance; scales mildly with bet size.
+                # Base 8% + 1% per $200 bet, capped at 20%.
+                $chance = 8 + [Math]::Floor($TotalBet / 200)
+                if ($chance -gt 20) { $chance = 20 }
+
+                if ((Get-Random -Minimum 1 -Maximum 101) -gt $chance) { return $false }
+
+                Write-Host
+                Write-RandomCenteredLine @(
+                    'You stagger out into the night like your bones are made of neon.'
+                    'You blink too long and the world fast-forwards.'
+                    'Your legs file a complaint and shut down.'
+                    'The room spins, then the sidewalk takes over.'
+                    'Everything goes soft-focus. Cinematic. Unhelpful.'
+                    'You try to walk it off. The universe says "no."'
+                    'Your brain hits the "buffering" icon.'
+                    'You become one with a very uncomfortable chair.'
+                )
+
+                Write-RandomCenteredLine @(
+                    'Next thing you know, it''s the next day.'
+                    'You wake up somewhere safe-ish, confused and annoyed.'
+                    'You lose the rest of the night to pure nonsense.'
+                    'Time passes without your consent.'
+                    'You wake up feeling like you got edited out of your own evening.'
+                    'You sleep it off. The night is over.'
+                    'You come to later, with the taste of regret.'
+                    'You wake up. The sun is rude.'
+                )
+
+                Write-Host
+                AdvanceGameDay -SkipPriceUpdate
+                return $true
+            }
+
+            # ---- Minimum cash check ----
+            if ($script:Player.Cash -lt 100) {
+                Write-RandomCenteredLine @(
+                    '"You don''t even meet the *vibe* requirement."'
+                    '"Come back with at least a hundred, kid. This ain''t a charity table."'
+                    '"You look broke in surround sound. Respectfully."'
+                    '"This table eats people with less than $100."'
+                    '"You got big dreams and small pockets, huh?"'
+                    '"Beat it, pal—this joint''s for players."'
+                    '"You''re short. Like… financially short."'
+                    '"Not enough cash. Even the dealer''s sunglasses are judging you."'
+                )
+                Write-Host
+                return
+            }
+
+            # ---- Table minimum bet (NOT auto-deducted) ----
+            $minBet = [Math]::Floor($script:Player.Cash * 0.10)
+            if ($minBet -lt 100) { $minBet = 100 }
+            if ($minBet -gt $script:Player.Cash) { $minBet = $script:Player.Cash }
+
+            Write-Host
+            Write-RandomCenteredLine @(
+                ('"Backroom rules: minimum bet is ${0}. No haggling."' -f $minBet)
+                ('"House minimum: ${0}. Keep it classy."' -f $minBet)
+                ('"Minimum''s ${0}, my dude. The felt demands tribute."' -f $minBet)
+                ('"Minimum ${0}. Big energy only."' -f $minBet)
+                ('"Minimum ${0}. The universe is watching your wallet."' -f $minBet)
+                ('"Minimum ${0}. If you can''t swing it, don''t sing it."' -f $minBet)
+                ('"Minimum ${0}. Don''t bring pennies to a problem."' -f $minBet)
+                ('"Minimum ${0}. This table doesn''t do mercy."' -f $minBet)
+            )
+
+            Write-Centered ("Table Minimum Bet: ${0}" -f $minBet)
+            Write-Centered ("Your Cash:          ${0}" -f $script:Player.Cash)
             Write-Host
 
-            switch ($choice) {
-                '1' {
-                    Write-Centered 'The alien nods enthusiastically and opens a hatch labeled "NOT FOOD."'
-                    Start-Sleep -Seconds 1
+            # ---- Proceed? ----
+            Write-RandomCenteredLine @(
+                '"You in, or you out?"'
+                '"You playing or sightseeing?"'
+                '"Step up or step back."'
+                '"Don''t stand there looking cinematic. Choose."'
+                '"Make a move before the smoke alarm goes off."'
+                '"Decide, pal. This joint don''t do loitering."'
+                '"Pick a lane, traveler of the neon void."'
+                '"Come on—either bet or bounce."'
+            )
 
-                    $drugCount = Get-Random -Minimum 3 -Maximum 7
+            Write-Host 'P. Place a bet'
+            Write-Host 'W. Walk away'
+            $go = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
+            Write-Host
+
+            if ($go -ne 'P') {
+                Write-RandomCenteredLine @(
+                    '"Smart. Fear keeps people alive."'
+                    '"Cool. Go breathe regular air."'
+                    '"Yeah, walk. This table bites."'
+                    '"No shame. Some nights you just observe."'
+                    '"Peace, my dude. Protect your aura."'
+                    '"Wise choice, see? Live to gamble another day."'
+                    '"You fade back into the hallway like a sensible ghost."'
+                    '"Alright. Come back louder."'
+                )
+                Write-Host
+                return
+            }
+
+            # ---- Bet entry (minBet .. cash) ----
+            $bet = $null
+            while ($true) {
+                $raw = Read-Host ("Enter your bet ({0}-{1})" -f $minBet, $script:Player.Cash)
+
+                if (-not [int]::TryParse($raw, [ref]$bet)) {
+                    Write-RandomCenteredLine @(
+                        '"That ain''t a number. Try again."'
+                        '"Use digits, not vibes."'
+                        '"I don''t speak whatever that was."'
+                        '"Numbers. In order. Please."'
+                        '"Buddy… that''s not even math-adjacent."'
+                        '"C''mon, pal. Type a real figure."'
+                        '"The symbols are melting—still gotta pick a number though."'
+                        '"Focus up. Numbers only."'
+                    )
+                    continue
+                }
+
+                if ($bet -lt $minBet) {
+                    Write-RandomCenteredLine @(
+                        ('"Minimum is ${0}. Don''t insult the table."' -f $minBet)
+                        ('"Nah. Minimum''s ${0}. Respect it."' -f $minBet)
+                        ('"Too small. ${0} or more."' -f $minBet)
+                        ('"We said minimum, not suggestion. ${0}."' -f $minBet)
+                        ('"Minimum is ${0}. This ain''t a yard sale."' -f $minBet)
+                        ('"Listen, kid—${0} minimum. That''s the line."' -f $minBet)
+                        ('"Your wallet just whispered: ${0} or higher."' -f $minBet)
+                        ('"The felt requires ${0}. Feed the felt."' -f $minBet)
+                    )
+                    continue
+                }
+
+                if ($bet -gt $script:Player.Cash) {
+                    Write-RandomCenteredLine @(
+                        '"You can''t bet money you don''t got."'
+                        '"That''s imaginary cash, boss."'
+                        '"Try a number that exists in your wallet."'
+                        '"You''re over-drafting the universe."'
+                        '"That''s a gorgeous fantasy. Not accepted here."'
+                        '"Pal, this ain''t a bank. Pick a real amount."'
+                        '"Your money is not infinite. Sadly."'
+                        '"The cosmos denies your overdraft request."'
+                    )
+                    continue
+                }
+
+                break
+            }
+
+            Write-RandomCenteredLine @(
+                ('"Alright. ${0}. Let''s see what you''re made of."' -f $bet)
+                ('"Big talk. ${0} on the felt."' -f $bet)
+                ('"Cool. ${0}. Don''t blink."' -f $bet)
+                ('"${0}. That''s a real bet. Respect."' -f $bet)
+                ('"${0}. Now we''re speaking the same language."' -f $bet)
+                ('"${0}? Bold. Like ordering chaos with extra sauce."' -f $bet)
+                ('"${0}. The spirits of bad decisions applaud."' -f $bet)
+                ('"${0}. Alright, see? Now we got a picture."' -f $bet)
+            )
+
+            # Deduct the chosen bet now (this is the stake on the table)
+            $totalBet = $bet
+            $script:Player.Cash -= $bet
+            Write-Host
+
+            # Police raid can happen right after the bet hits the table
+            if (Test-PoliceRaid -TotalBet $totalBet -Stage 'post-bet') { return }
+
+            # ---- Cards / helpers ----
+            $ranks = @('A','2','3','4','5','6','7','8','9','10','J','Q','K')
+
+            function New-Card { "{0}{1}" -f ($ranks | Get-Random), (@('♠','♥','♦','♣') | Get-Random) }
+
+            function Get-HandValue {
+                param([string[]]$hand)
+
+                $total = 0; $aces = 0
+                foreach ($c in $hand) {
+                    $r = ($c -replace '[^0-9AJQK]', '')
+                    switch ($r) {
+                        'A'  { $total += 11; $aces++ }
+                        'K'  { $total += 10 }
+                        'Q'  { $total += 10 }
+                        'J'  { $total += 10 }
+                        '10' { $total += 10 }
+                        default { $total += [int]$r }
+                    }
+                }
+                while ($total -gt 21 -and $aces -gt 0) { $total -= 10; $aces-- }
+                return $total
+            }
+
+            function Show-HandState {
+                param([string[]]$p,[string[]]$d,[switch]$Reveal)
+                if ($Reveal) {
+                    Write-Centered ("Dealer: {0} ({1})" -f ($d -join ' '),(Get-HandValue $d))
+                }
+                else {
+                    Write-Centered ("Dealer: {0} [??]" -f $d[0])
+                }
+                Write-Centered ("You:    {0} ({1})" -f ($p -join ' '),(Get-HandValue $p))
+                Write-Host
+            }
+
+            function Grant-WinLoot {
+                param([int]$CashPayout)
+
+                $lootRoll = Get-Random -Minimum 1 -Maximum 101
+                if ($lootRoll -le 55) {
+                    $script:Player.Cash += $CashPayout
+                    Write-RandomCenteredLine @(
+                        ("Dealer slides you a roll: +{0} cash." -f $CashPayout)
+                        ("He pays you like it hurts: +{0} cash." -f $CashPayout)
+                        ("Cash hits your hand: +{0}." -f $CashPayout)
+                        ("You get paid. Finally: +{0} cash." -f $CashPayout)
+                        ("He counts it out slow: +{0} cash." -f $CashPayout)
+                        ("A fat stack lands your way: +{0} cash." -f $CashPayout)
+                        ("The house coughs up +{0} cash and pretends it''s fine." -f $CashPayout)
+                        ("You take +{0} cash like it''s rent day." -f $CashPayout)
+                    )
+                }
+                else {
+                    $drugCount = Get-Random -Minimum 2 -Maximum 5
                     1..$drugCount | ForEach-Object {
-                        $drug = $script:GameDrugs | Get-Random
-                        $drug.Quantity = 1
-                        $script:Player.AddDrugs($drug)
+                        $dd = $script:GameDrugs | Get-Random
+                        $dd.Quantity = 1
+                        $script:Player.AddDrugs($dd)
                     }
-
-                    Write-Centered ("You receive {0} random alien-approved drugs." -f $drugCount) -ForegroundColor DarkGreen
-
-                    $roll = Get-Random -Minimum 1 -Maximum 101
-                    if ($roll -le 30) {
-                        Write-Host
-                        Write-Centered '"Uh… hold still, bro."'
-                        Start-Sleep -Seconds 1
-
-                        if ($script:Player.PocketCount -gt 2) {
-                            $pocketsLost = Get-Random -InputObject @(1, 2)
-                            $script:Player.AdjustPocketCount(-$pocketsLost)
-                            Write-Centered ("You were lightly probed and lost {0} pockets." -f $pocketsLost) -ForegroundColor Red
-                        }
-                        else {
-                            $cashLost = Get-Random -Minimum 100 -Maximum 401
-                            if ($cashLost -gt $script:Player.Cash) { $cashLost = $script:Player.Cash }
-                            $script:Player.Cash -= $cashLost
-                            Write-Centered ("You were probed financially. Lost {0} cash." -f $cashLost) -ForegroundColor Red
-                        }
-                    }
-                }
-
-                '2' {
-                    Write-Centered 'You ask for a ride. The alien blinks. "Oh yeah. I forgot I can do that."'
-                    Start-Sleep -Seconds 2
-
-                    $roll = Get-Random -Minimum 1 -Maximum 101
-                    if ($roll -le 40) {
-                        $cashGain = Get-Random -Minimum 100 -Maximum 401
-                        $script:Player.Cash += $cashGain
-                        Write-Centered ("You reappear downtown holding {0} cash and a taco you don't remember buying." -f $cashGain) -ForegroundColor DarkGreen
-                    }
-                    elseif ($roll -le 80) {
-                        $drug = $script:GameDrugs | Get-Random
-                        $drug.Quantity = 2
-                        $script:Player.AddDrugs($drug)
-                        Write-Centered ("You black out and wake up with 2 pockets of {0}." -f $drug.Name) -ForegroundColor DarkGreen
-                    }
-                    else {
-                        Write-Centered 'You wake up exactly where you started. The alien is gone. So is your dignity.'
-                    }
-                }
-
-                '3' {
-                    Write-Centered 'You scream and sprint.'
-                    Start-Sleep -Seconds 1
-
-                    $roll = Get-Random -Minimum 1 -Maximum 101
-                    if ($roll -le 25) {
-                        $cashLost = Get-Random -Minimum 50 -Maximum 201
-                        if ($cashLost -gt $script:Player.Cash) { $cashLost = $script:Player.Cash }
-                        $script:Player.Cash -= $cashLost
-                        Write-Centered ("You trip and lose {0} cash." -f $cashLost) -ForegroundColor Red
-                    }
-                    else {
-                        Write-Centered 'Behind you, the alien yells: "SORRY!" and tosses something.'
-                        $drug = $script:GameDrugs | Get-Random
-                        $drug.Quantity = 1
-                        $script:Player.AddDrugs($drug)
-                        Write-Centered ("You gained 1 pocket of {0}." -f $drug.Name) -ForegroundColor Yellow
-                    }
-                }
-
-                default {
-                    Write-Centered 'You hesitate too long.'
-                    Write-Centered 'The alien salutes you, walks into a wall, and vanishes.'
+                    Write-RandomCenteredLine @(
+                        ("No cash? Fine. You get {0} random drugs." -f $drugCount)
+                        ("He can''t pay in money… so he pays in chaos: +{0} drugs." -f $drugCount)
+                        ("A little bundle gets tossed your way: +{0} random drugs." -f $drugCount)
+                        ("He shrugs and hands over {0} mystery pockets." -f $drugCount)
+                        ("You get paid in vibes: +{0} random drugs." -f $drugCount)
+                        ("The dealer whispers, 'Don''t tell nobody.' +{0} drugs." -f $drugCount)
+                        ("Payment arrives in tiny questionable parcels: +{0} drugs." -f $drugCount)
+                        ("You receive +{0} random drugs and a wink you didn''t ask for." -f $drugCount)
+                    )
                 }
             }
 
+            # ---- Deal ----
+            $player = @((New-Card),(New-Card))
+            $dealer = @((New-Card),(New-Card))
+
+            Write-RandomCenteredLine @(
+                'Cards slap the table like it''s a music video.'
+                'The deck sings. The dealer doesn''t.'
+                'Plastic snaps. Fate shuffles.'
+                'Cards slide like they got attitude.'
+                'The table goes quiet in that fake dramatic way.'
+                'You smell cologne, fear, and bad ideas.'
+                'The room hums like it''s judging your soul.'
+                'Everything feels slightly too bright.'
+            )
+
+            Show-HandState $player $dealer
+
+            # ---- Player turn (Hit / Stand / Double Down) ----
+            while ((Get-HandValue $player) -lt 21) {
+
+                # Police raid can happen mid-hand
+                if (Test-PoliceRaid -TotalBet $totalBet -Stage 'player-turn') { return }
+
+                Write-RandomCenteredLine @(
+                    '"Hit, stand… or double if you feel unstoppable."'
+                    '"H, S, or D. Don''t freestyle the alphabet."'
+                    '"You chasing or you chilling? Double''s on the menu."'
+                    '"Pick it: Hit. Stand. Double. No speeches."'
+                    '"Let''s go. H, S, or D."'
+                    '"Make your move, see? The night''s on a clock."'
+                    '"Follow the vibes: H, S, or D… the felt is speaking."'
+                    '"Choose before the cards start talking back."'
+                )
+
+                Write-Host 'H. Hit'
+                Write-Host 'S. Stand'
+                Write-Host 'D. Double Down (one card only)'
+                $k = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
+                Write-Host
+
+                if ($k -eq 'S') {
+                    Write-RandomCenteredLine @(
+                        '"Standing? Brave… or tired."'
+                        '"Cool. Lock it in."'
+                        '"Alright. We see you."'
+                        '"Hope that math works out."'
+                        '"You stand. The table judges you silently."'
+                        '"You plant your flag. Now we see what it means."'
+                        '"You stand like you meant it the whole time."'
+                        '"You stand. The universe raises an eyebrow."'
+                    )
+                    break
+                }
+
+                if ($k -eq 'D') {
+                    if ($script:Player.Cash -lt $bet) {
+                        Write-RandomCenteredLine @(
+                            '"You tryna double with empty pockets? Cute."'
+                            '"Double-down requires double-money, boss."'
+                            '"You ain''t got the juice to double."'
+                            '"Nah. Come correct if you want that option."'
+                            '"That''s a strong choice for someone broke."'
+                            '"You can''t double the bet if you can''t double the bread."'
+                            '"Nice dream. Needs funding."'
+                            '"Your wallet just said ''absolutely not.''"'
+                        )
+                        continue
+                    }
+
+                    $script:Player.Cash -= $bet
+                    $totalBet += $bet
+
+                    Write-RandomCenteredLine @(
+                        ('"DOUBLE. Okay." Another ${0} hits the table hard.' -f $bet)
+                        ('"Big moves." You drop another ${0} like it''s nothing.' -f $bet)
+                        ('"Respect." Another ${0} goes in—no hesitation.' -f $bet)
+                        ('"You sure?" Too late. ${0} more is gone.' -f $bet)
+                        ('"Alright, movie star." ${0} more on the felt.' -f $bet)
+                        ('"Double down, see? That''s the spirit." +${0} bet.' -f $bet)
+                        ('"You just turned the volume up." ${0} more.' -f $bet)
+                        ('"The cosmos just blinked." ${0} more lands.' -f $bet)
+                    )
+
+                    # One card only, then forced stand
+                    $player += New-Card
+                    Write-RandomCenteredLine @(
+                        ("One card. That''s it: {0}" -f $player[-1])
+                        ("Dealer deals your fate: {0}" -f $player[-1])
+                        ("You get exactly one more: {0}" -f $player[-1])
+                        ("The table gives you one last card: {0}" -f $player[-1])
+                        ("Last card. Make it count: {0}" -f $player[-1])
+                        ("Here''s your finale: {0}" -f $player[-1])
+                        ("The universe hands you: {0}" -f $player[-1])
+                        ("One last sparkle of doom: {0}" -f $player[-1])
+                    )
+
+                    Show-HandState $player $dealer
+                    break
+                }
+
+                if ($k -ne 'H') {
+                    Write-RandomCenteredLine @(
+                        '"That ain''t a choice. Focus."'
+                        '"Try again. With letters this time."'
+                        '"You okay? Pick H, S, or D."'
+                        '"We ain''t got all night. H, S, or D."'
+                        '"Stop free-styling. H, S, or D."'
+                        '"C''mon, pal—pick one of the options, not a new religion."'
+                        '"Your button pressed… nothing. Try again."'
+                        '"Your choice was… interpretive. Pick H/S/D."'
+                    )
+                    continue
+                }
+
+                # Hit
+                $player += New-Card
+                Write-RandomCenteredLine @(
+                    ("You take a card: {0}" -f $player[-1])
+                    ("Dealer flicks you one: {0}" -f $player[-1])
+                    ("Another card slides in: {0}" -f $player[-1])
+                    ("You reach. You receive: {0}" -f $player[-1])
+                    ("One more hits your stack: {0}" -f $player[-1])
+                    ("The deck coughs up: {0}" -f $player[-1])
+                    ("A new rectangle of fate appears: {0}" -f $player[-1])
+                    ("The table whispers and delivers: {0}" -f $player[-1])
+                )
+                Show-HandState $player $dealer
+            }
+
+            $pVal = Get-HandValue $player
+            if ($pVal -gt 21) {
+                Show-HandState $player $dealer -Reveal
+                Write-RandomCenteredLine @(
+                    '"BUSTED. That''s tragic."'
+                    '"Yeah… nah. You cooked."'
+                    '"Twenty-two is ambitious."'
+                    '"You flew too close."'
+                    '"House appreciates your donation."'
+                    '"Oof. That''s a wrap. Fade to black."'
+                    '"You busted. The table smiles without warmth."'
+                    '"That hand just exploded in slow motion."'
+                )
+
+                # Side-activity rule: no day advance on a normal bust.
+                # But: sometimes you get *wrecked* and lose the day anyway.
+                if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'bust') { return }
+
+                Write-Host
+                return
+            }
+
+            # ---- Dealer turn ----
+            if (Test-PoliceRaid -TotalBet $totalBet -Stage 'dealer-turn') { return }
+
+            Write-RandomCenteredLine @(
+                'Dealer reveals the hole card slow like he practiced in a mirror.'
+                'The hole card flips. Drama included for free.'
+                'Dealer shows the card like it''s evidence.'
+                'The table leans in. The dealer doesn''t.'
+                'Reality arrives in card form.'
+                'The dealer turns a card like it''s a confession.'
+                'The room holds its breath in a very fake way.'
+                'The card flips and the vibe recalculates.'
+            )
+
+            while ((Get-HandValue $dealer) -lt 17) {
+                $dealer += New-Card
+                Write-RandomCenteredLine @(
+                    ("Dealer hits: {0}" -f $dealer[-1])
+                    ("Dealer pulls: {0}" -f $dealer[-1])
+                    ("Dealer takes one: {0}" -f $dealer[-1])
+                    ("Dealer draws: {0}" -f $dealer[-1])
+                    ("Dealer snags a card: {0}" -f $dealer[-1])
+                    ("Dealer taps the deck and takes: {0}" -f $dealer[-1])
+                    ("Dealer quietly adds: {0}" -f $dealer[-1])
+                    ("Dealer deals himself: {0}" -f $dealer[-1])
+                )
+            }
+
+            Show-HandState $player $dealer -Reveal
+
+            $dVal = Get-HandValue $dealer
+
+            # ---- Resolve ----
+            if ($dVal -gt 21 -or $pVal -gt $dVal) {
+                Write-RandomCenteredLine @(
+                    '"You win. Don''t act surprised."'
+                    '"Luck smiled. Briefly."'
+                    '"Take it and vanish."'
+                    '"Alright… fair."'
+                    '"Yeah yeah. You got it."'
+                    '"You win, see? Don''t let it go to your head."'
+                    '"The universe blinked first. You win."'
+                    '"Congrats. The table hates you a little."'
+                )
+
+                # Cash-mode payout returns + winnings => 2x totalBet
+                $cashPayout = $totalBet * 2
+                Grant-WinLoot -CashPayout $cashPayout
+            }
+            elseif ($pVal -eq $dVal) {
+                Write-RandomCenteredLine @(
+                    '"Push. Nobody wins."'
+                    '"Same math. Reset."'
+                    '"Dead even. Cute."'
+                    '"That''s a wash."'
+                    '"Run it again another day."'
+                    '"A tie. Everybody wastes time. Beautiful."'
+                    '"Push. The universe shrugs."'
+                    '"It''s even. Like a stalemate in a neon dream."'
+                )
+
+                # Return the full bet
+                $script:Player.Cash += $totalBet
+            }
+            else {
+                Write-RandomCenteredLine @(
+                    '"House wins. Always."'
+                    '"That''s how tables eat."'
+                    '"Thanks for playing yourself."'
+                    '"Dealer stays winning."'
+                    '"Cash stays here."'
+                    '"Tough break, see? The joint takes its cut."'
+                    '"You lose. The table purrs."'
+                    '"The night collects its tax."'
+                )
+
+                # But: sometimes a big loss spirals into "welp, that night is done."
+                if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'loss') { return }
+            }
+
             Write-Host
-            AdvanceGameDay -SkipPriceUpdate
+
         }
     }
 )
