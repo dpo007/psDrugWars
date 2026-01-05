@@ -1775,6 +1775,289 @@ $script:RandomEvents = @(
         }
     },
     @{
+        "Name"        = 'Alleyway Tarot'
+        "Description" = 'A neon-lit tarot table appears in a back alley like it was copy/pasted from a bad movie. A sketchy fortune-teller squints at you and whispers: "I can read your POCKET AURA... for a price."'
+        "Effect"      = {
+
+            function Write-TarotLine {
+                param(
+                    [string[]]$Lines,
+                    [ConsoleColor]$ForegroundColor = [ConsoleColor]::Gray
+                )
+
+                Write-Centered (Get-Random -InputObject $Lines) -ForegroundColor $ForegroundColor
+            }
+
+            function Get-RoundedCash {
+                param(
+                    [int]$Min,
+                    [int]$Max
+                )
+
+                # Returns a random cash amount rounded down to the nearest $10
+                [Math]::Floor((Get-Random -Minimum $Min -Maximum ($Max + 1)) / 10) * 10
+            }
+
+            function Read-Choice {
+                param(
+                    [string[]]$MenuLines
+                )
+
+                Write-Host
+                foreach ($line in $MenuLines) {
+                    Write-Host $line
+                }
+
+                $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString()
+                Write-Host
+                return $key
+            }
+
+            $readingCost = 200
+
+            Start-Sleep -Seconds 2
+            Write-Host
+
+            Write-TarotLine -Lines @(
+                'A fortune-teller in a velvet hoodie points at your pockets like they owe her money.'
+                'A fortune-teller leans in and squints at your pockets like they''re a crime scene.'
+                'A fortune-teller taps the table twice and eyes your pockets with professional suspicion.'
+                'A fortune-teller gestures at your pockets with the confidence of someone about to scam you.'
+            )
+
+            Write-TarotLine -Lines @(
+                '"Your vibe is... heavily pocket-based."'
+                '"Your aura smells like pocket lint and ambition."'
+                '"Oh wow. That''s a *lot* of pocket energy."'
+                '"Your pockets are screaming. I can hear them."'
+            )
+
+            Write-Host
+            Write-Centered 'What do you do?'
+            $choice = Read-Choice -MenuLines @(
+                ('1. Pay ${0} for a reading.' -f $readingCost)
+                '2. Walk away (nope).'
+                '3. Mock the whole thing.'
+            )
+
+            switch ($choice) {
+
+                '1' {
+                    # Pay for a reading
+                    if ($script:Player.Cash -lt $readingCost) {
+                        Write-Host
+                        Write-TarotLine -Lines @(
+                            'You reach for your cash... and immediately remember you''re broke.'
+                            'You check your wallet and it checks out: empty.'
+                            'You pat your pockets and find only confidence and crumbs.'
+                            'You go to pay and discover you''re financially fictional.'
+                        ) -ForegroundColor DarkYellow
+
+                        Write-TarotLine -Lines @(
+                            'The fortune-teller nods like she already knew. "Yep. That tracks."'
+                            'She sighs like she''s seen this movie. "Mhm. Predictable."'
+                            'She smiles sadly. "I saw this outcome in the cards."'
+                            '"Come back when your money exists," she says, kindly mean.'
+                        ) -ForegroundColor DarkYellow
+
+                        Write-Host
+                        break
+                    }
+
+                    $script:Player.Cash -= $readingCost
+
+                    Write-Host
+                    Write-TarotLine -Lines @(
+                        ('You slap down ${0}. She snatches it like it''s rent day.' -f $readingCost)
+                        ('You pay ${0}. Her hand moves faster than your regret.' -f $readingCost)
+                        ('You hand over ${0}. It vanishes into her hoodie immediately.' -f $readingCost)
+                        ('You drop ${0}. She pockets it with religious certainty.' -f $readingCost)
+                    )
+
+                    Start-Sleep -Seconds 1
+                    Write-TarotLine -Lines @(
+                        'She flips three greasy cards onto the table...'
+                        'She deals three cards like she''s dealing damage...'
+                        'She lays out three cards with the confidence of a scammer priest...'
+                        'She fans three cards like the alley itself is holding its breath...'
+                    )
+
+                    Start-Sleep -Seconds 2
+                    Write-Host
+
+                    $roll = Get-Random -Minimum 1 -Maximum 101
+
+                    if ($roll -le 45) {
+                        # Good fortune: pockets
+                        $pocketsGained = Get-Random -InputObject @(2, 3, 4, 5)
+                        $script:Player.AdjustPocketCount($pocketsGained)
+
+                        Write-TarotLine -Lines @(
+                            ('"THE MULTI-POCKET PATH OPENS." You gained {0} extra pockets!' -f $pocketsGained)
+                            ('"THE ZIPPER CONSTELLATION ALIGNS." +{0} pockets.' -f $pocketsGained)
+                            ('"THE POUCHES HAVE SPOKEN." You gain {0} pockets and a questionable destiny.' -f $pocketsGained)
+                            ('"THE MANY-POCKET PROPHECY." {0} pockets appear like a DLC.' -f $pocketsGained)
+                        ) -ForegroundColor DarkGreen
+                    }
+                    elseif ($roll -le 80) {
+                        # Medium fortune: cash
+                        $cashWin = Get-RoundedCash -Min 300 -Max 900
+                        $script:Player.Cash += $cashWin
+
+                        Write-TarotLine -Lines @(
+                            ('"THE MONEY WIND BLOWS YOUR WAY." Somehow you come out ahead by {0} cash.' -f $cashWin)
+                            ('"THE WALLET SPIRIT APPROVES." +{0} cash. Don''t ask why.' -f $cashWin)
+                            ('"THE UNIVERSE TIPS YOU." +{0} cash lands in your life like a clerical error.' -f $cashWin)
+                            ('"PROFIT ARC DETECTED." +{0} cash. The alley winks.' -f $cashWin)
+                        ) -ForegroundColor DarkGreen
+                    }
+                    else {
+                        # Bad fortune: pickpocket
+                        $extraStolen = Get-RoundedCash -Min 200 -Max 800
+                        if ($extraStolen -gt $script:Player.Cash) {
+                            $extraStolen = $script:Player.Cash
+                        }
+                        $script:Player.Cash -= $extraStolen
+
+                        Write-Host
+                        Write-TarotLine -Lines @(
+                            '"OOH... that''s the ''Betrayal of the Wallet'' card."'
+                            '"Yikes. That one''s called ''Hands Too Fast''."'
+                            '"Oh no. This card is literally just ''L''."'
+                            '"Ah. The ''You Got Played'' arc. Classic."'
+                        ) -ForegroundColor DarkYellow
+
+                        Write-TarotLine -Lines @(
+                            ('While you''re processing that, she "accidentally" bumps you and vanishes. You lost {0} extra cash.' -f $extraStolen)
+                            ('She bumps you, apologizes with her eyes, and evaporates. -{0} cash.' -f $extraStolen)
+                            ('She mutters something mystical, taps your shoulder, and you instantly regret it. -{0} cash.' -f $extraStolen)
+                            ('She leans in like she''s blessing you, then you notice your money moved. -{0} cash.' -f $extraStolen)
+                        ) -ForegroundColor Red
+
+                        # Tiny consolation prize, if possible
+                        if ($script:Player.get_FreePocketCount() -ge 1) {
+                            $mysteryDrug = $script:GameDrugs | Get-Random
+                            $mysteryDrug.Quantity = 1
+                            $script:Player.AddDrugs($mysteryDrug)
+
+                            Write-Host
+                            Write-TarotLine -Lines @(
+                                ('At least she dropped something: 1 pocket of {0}.' -f $mysteryDrug.Name)
+                                ('A pouch hits the ground. Congrats: 1 pocket of {0}.' -f $mysteryDrug.Name)
+                                ('You look down and find 1 pocket of {0}. The alley apologizes.' -f $mysteryDrug.Name)
+                                ('Something skitters away—except one pocket of {0}. Lucky you.' -f $mysteryDrug.Name)
+                            ) -ForegroundColor Yellow
+                        }
+                    }
+
+                    break
+                }
+
+                '2' {
+                    # Walk away
+                    Write-Host
+                    Write-TarotLine -Lines @(
+                        'You walk away.'
+                        'You back out slowly like this is haunted.'
+                        'You decide you like your future unread.'
+                        'You leave before the alley charges interest.'
+                    )
+
+                    Start-Sleep -Seconds 1
+
+                    Write-TarotLine -Lines @(
+                        'She yells after you: "RUN FROM DESTINY THEN, CARGO BOY!"'
+                        'She shouts: "DENY YOUR POCKET TRUTH, THEN!"'
+                        '"FLEE, FLEE!" she screams, very professionally.'
+                        '"YOUR POCKETS WILL REMEMBER THIS!" she howls.'
+                    )
+
+                    break
+                }
+
+                '3' {
+                    # Mock her
+                    Write-Host
+                    Write-TarotLine -Lines @(
+                        'You laugh and say, "Oh yeah? Read THIS pocket aura."'
+                        'You grin. "Tell my pockets what''s up, wizard."'
+                        '"Check the vibe," you say, gesturing aggressively at your pants.'
+                        '"Go on then," you smirk. "Consult the lint."'
+                    )
+
+                    Start-Sleep -Seconds 1
+
+                    $roll = Get-Random -Minimum 1 -Maximum 101
+
+                    if ($roll -le 50) {
+                        $cashLose = Get-RoundedCash -Min 50 -Max 250
+                        if ($cashLose -gt $script:Player.Cash) {
+                            $cashLose = $script:Player.Cash
+                        }
+                        $script:Player.Cash -= $cashLose
+
+                        Write-Host
+                        Write-TarotLine -Lines @(
+                            '"RUDE." She flicks a card at your forehead and you immediately get hustled by a passing dude.'
+                            '"Disrespect detected." She snaps a card at you and suddenly you''re missing money.'
+                            '"Bad manners, bad outcomes." A card taps your face and your wallet goes lighter.'
+                            '"Cool attitude." She tags you with a card and you instantly donate to a stranger.'
+                        ) -ForegroundColor DarkYellow
+
+                        Write-TarotLine -Lines @(
+                            ('You lost {0} cash.' -f $cashLose)
+                            ('- {0} cash. The alley laughs softly.' -f $cashLose)
+                            ('Your wallet takes {0} damage.' -f $cashLose)
+                            ('You blink and {0} cash is gone.' -f $cashLose)
+                        ) -ForegroundColor Red
+                    }
+                    else {
+                        $pocketsGained = Get-Random -InputObject @(1, 2, 3)
+                        $script:Player.AdjustPocketCount($pocketsGained)
+
+                        Write-Host
+                        Write-TarotLine -Lines @(
+                            'She stares at you for a long second... then smirks.'
+                            'She pauses like she''s buffering... then grins.'
+                            'She looks you up and down like she just met a worthy enemy.'
+                            'She goes quiet. Then her mouth twitches into a smile.'
+                        )
+
+                        Write-TarotLine -Lines @(
+                            ('"Honestly? Respect." You gained {0} extra pockets from pure spite energy.' -f $pocketsGained)
+                            ('"That''s bold." +{0} pockets. Petty power unlocks.' -f $pocketsGained)
+                            ('"You got heart." {0} pockets appear out of nowhere.' -f $pocketsGained)
+                            ('"Alright then." +{0} pockets. The alley approves.' -f $pocketsGained)
+                        ) -ForegroundColor DarkGreen
+                    }
+
+                    break
+                }
+
+                default {
+                    Write-Host
+                    Write-TarotLine -Lines @(
+                        'You just stand there, frozen in decision paralysis.'
+                        'You lock up and forget how choices work.'
+                        'You stare at the table like it''s going to choose for you.'
+                        'You take so long the alley starts judging you.'
+                    ) -ForegroundColor DarkYellow
+
+                    Write-TarotLine -Lines @(
+                        'She flips a card that just says: "BRUH."'
+                        'She reveals a card that reads: "NPC MOMENT."'
+                        'She draws a card labeled: "BUFFERING..."'
+                        'She turns over a card that says: "SKILL ISSUE."'
+                    ) -ForegroundColor DarkYellow
+
+                    break
+                }
+            }
+
+            Write-Host
+        }
+    },
+    @{
         "Name"        = "Backroom Blackjack"
         "Description" = "A velvet rope shifts like it's alive. A guy nods once. You're already inside."
         "Effect"      = {
