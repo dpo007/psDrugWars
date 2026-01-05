@@ -1776,7 +1776,7 @@ $script:RandomEvents = @(
     },
     @{
         "Name"        = "Backroom Blackjack"
-        "Description" = "A velvet rope shifts like it''s alive. A guy nods once. You''re already inside."
+        "Description" = "A velvet rope shifts like it's alive. A guy nods once. You're already inside."
         "Effect"      = {
             function Get-PoliceRaidChance {
                 param([int]$TotalBet)
@@ -1794,7 +1794,7 @@ $script:RandomEvents = @(
                 )
 
                 $chance = Get-PoliceRaidChance -TotalBet $TotalBet
-                $roll   = Get-Random -Minimum 1 -Maximum 101
+                $roll = Get-Random -Minimum 1 -Maximum 101
                 if ($roll -gt $chance) { return $false }
 
                 Write-Host
@@ -1824,7 +1824,7 @@ $script:RandomEvents = @(
                 # Small chance of a consolation escape
                 $escapeRoll = Get-Random -Minimum 1 -Maximum 101
                 if ($escapeRoll -le 25) {
-                    $consolationMode = Get-Random -InputObject @('cash','drug')
+                    $consolationMode = Get-Random -InputObject @('cash', 'drug')
                     if ($consolationMode -eq 'cash') {
                         $cashBack = [Math]::Min([Math]::Floor($TotalBet * 0.25), 300)
                         if ($cashBack -gt 0) { $script:Player.Cash += $cashBack }
@@ -1949,8 +1949,8 @@ $script:RandomEvents = @(
                 ('"Minimum ${0}. This table doesn''t do mercy."' -f $minBet)
             )
 
-            Write-Centered ("Table Minimum Bet: ${0}" -f $minBet)
-            Write-Centered ("Your Cash:          ${0}" -f $script:Player.Cash)
+            Write-Host
+            Write-Centered ('Your Cash:          ${0}' -f $script:Player.Cash)
             Write-Host
 
             # ---- Proceed? ----
@@ -2055,9 +2055,9 @@ $script:RandomEvents = @(
             if (Test-PoliceRaid -TotalBet $totalBet -Stage 'post-bet') { return }
 
             # ---- Cards / helpers ----
-            $ranks = @('A','2','3','4','5','6','7','8','9','10','J','Q','K')
+            $ranks = @('A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K')
 
-            function New-Card { "{0}{1}" -f ($ranks | Get-Random), (@('♠','♥','♦','♣') | Get-Random) }
+            function New-Card { "{0}{1}" -f ($ranks | Get-Random), (@('♠', '♥', '♦', '♣') | Get-Random) }
 
             function Get-HandValue {
                 param([string[]]$hand)
@@ -2066,10 +2066,10 @@ $script:RandomEvents = @(
                 foreach ($c in $hand) {
                     $r = ($c -replace '[^0-9AJQK]', '')
                     switch ($r) {
-                        'A'  { $total += 11; $aces++ }
-                        'K'  { $total += 10 }
-                        'Q'  { $total += 10 }
-                        'J'  { $total += 10 }
+                        'A' { $total += 11; $aces++ }
+                        'K' { $total += 10 }
+                        'Q' { $total += 10 }
+                        'J' { $total += 10 }
                         '10' { $total += 10 }
                         default { $total += [int]$r }
                     }
@@ -2079,14 +2079,14 @@ $script:RandomEvents = @(
             }
 
             function Show-HandState {
-                param([string[]]$p,[string[]]$d,[switch]$Reveal)
+                param([string[]]$p, [string[]]$d, [switch]$Reveal)
                 if ($Reveal) {
-                    Write-Centered ("Dealer: {0} ({1})" -f ($d -join ' '),(Get-HandValue $d))
+                    Write-Centered ("Dealer: {0} ({1})" -f ($d -join ' '), (Get-HandValue $d))
                 }
                 else {
                     Write-Centered ("Dealer: {0} [??]" -f $d[0])
                 }
-                Write-Centered ("You:    {0} ({1})" -f ($p -join ' '),(Get-HandValue $p))
+                Write-Centered ("You:    {0} ({1})" -f ($p -join ' '), (Get-HandValue $p))
                 Write-Host
             }
 
@@ -2128,8 +2128,8 @@ $script:RandomEvents = @(
             }
 
             # ---- Deal ----
-            $player = @((New-Card),(New-Card))
-            $dealer = @((New-Card),(New-Card))
+            $player = @((New-Card), (New-Card))
+            $dealer = @((New-Card), (New-Card))
 
             Write-RandomCenteredLine @(
                 'Cards slap the table like it''s a music video.'
