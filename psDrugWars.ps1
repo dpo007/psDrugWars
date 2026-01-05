@@ -1780,9 +1780,11 @@ $script:RandomEvents = @(
         "Effect"      = {
             function Get-PoliceRaidChance {
                 param([int]$TotalBet)
-                # Low base chance, scales with bet size (Hollywood logic)
+
+                # Calculate raid chance based on bet size
+                # Low base chance, scales with bet size
                 # Example: $100 => ~4%, $500 => ~8%, $1000 => ~13%, cap ~18%
-                $chance = 3 + [Math]::Floor($TotalBet / 100)   # +1% per $100 bet
+                $chance = 3 + [Math]::Floor($TotalBet / 100)
                 if ($chance -gt 18) { $chance = 18 }
                 return $chance
             }
@@ -1881,8 +1883,9 @@ $script:RandomEvents = @(
                     [string]$Reason
                 )
 
-                # Low chance; scales mildly with bet size.
-                # Base 8% + 1% per $200 bet, capped at 20%.
+                # Calculate chance of getting wrecked (losing the day)
+                # Low chance that scales mildly with bet size
+                # Base 8% + 1% per $200 bet, capped at 20%
                 $chance = 8 + [Math]::Floor($TotalBet / 200)
                 if ($chance -gt 20) { $chance = 20 }
 
@@ -1916,7 +1919,7 @@ $script:RandomEvents = @(
                 return $true
             }
 
-            # ---- Minimum cash check ----
+            # Minimum cash check
             if ($script:Player.Cash -lt 100) {
                 Write-RandomCenteredLine @(
                     '"You don''t even meet the *vibe* requirement."'
@@ -1932,7 +1935,7 @@ $script:RandomEvents = @(
                 return
             }
 
-            # ---- Table minimum bet (NOT auto-deducted) ----
+            # Calculate table minimum bet
             $minBet = [Math]::Floor($script:Player.Cash * 0.10)
             if ($minBet -lt 100) { $minBet = 100 }
             if ($minBet -gt $script:Player.Cash) { $minBet = $script:Player.Cash }
@@ -1950,10 +1953,10 @@ $script:RandomEvents = @(
             )
 
             Write-Host
-            Write-Centered ('Your Cash:          ${0}' -f $script:Player.Cash)
+            Write-Centered ('Your Cash: ${0}' -f $script:Player.Cash) -ForegroundColor Green
             Write-Host
 
-            # ---- Proceed? ----
+            # Ask player if they want to place a bet
             Write-RandomCenteredLine @(
                 '"You in, or you out?"'
                 '"You playing or sightseeing?"'
@@ -1965,8 +1968,7 @@ $script:RandomEvents = @(
                 '"Come on—either bet or bounce."'
             )
 
-            Write-Host 'P. Place a bet'
-            Write-Host 'W. Walk away'
+            Show-BlackjackPrompt @('P. Place a bet', 'W. Walk away')
             $go = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
             Write-Host
 
@@ -1985,7 +1987,7 @@ $script:RandomEvents = @(
                 return
             }
 
-            # ---- Bet entry (minBet .. cash) ----
+            # Get player's bet amount
             $bet = $null
             while ($true) {
                 $raw = Read-Host ("Enter your bet ({0}-{1})" -f $minBet, $script:Player.Cash)
@@ -2054,14 +2056,34 @@ $script:RandomEvents = @(
             # Police raid can happen right after the bet hits the table
             if (Test-PoliceRaid -TotalBet $totalBet -Stage 'post-bet') { return }
 
-            # ---- Cards / helpers ----
+            # Initialize cards and helper functions
             $ranks = @('A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K')
+
+            function Show-BlackjackPrompt {
+                param(
+                    [string[]]$MenuOptions
+                )
+
+                # Display a random prompt header followed by menu options
+                $prompts = @(
+                    '"What next, boss?"'
+                    '"So what''s it gonna be?"'
+                    '"You ready, chief?"'
+                    '"Make your move, partner."'
+                    '"What''ll it be, pal?"'
+                )
+                Write-Host (Get-Random -InputObject $prompts).Trim('"')
+                foreach ($option in $MenuOptions) {
+                    Write-Host $option
+                }
+            }
 
             function New-Card { "{0}{1}" -f ($ranks | Get-Random), (@('♠', '♥', '♦', '♣') | Get-Random) }
 
             function Get-HandValue {
                 param([string[]]$hand)
 
+                # Calculate blackjack hand value, handling aces properly
                 $total = 0; $aces = 0
                 foreach ($c in $hand) {
                     $r = ($c -replace '[^0-9AJQK]', '')
@@ -2080,6 +2102,8 @@ $script:RandomEvents = @(
 
             function Show-HandState {
                 param([string[]]$p, [string[]]$d, [switch]$Reveal)
+
+                # Display dealer and player hands
                 if ($Reveal) {
                     Write-Centered ("Dealer: {0} ({1})" -f ($d -join ' '), (Get-HandValue $d))
                 }
@@ -2093,6 +2117,7 @@ $script:RandomEvents = @(
             function Grant-WinLoot {
                 param([int]$CashPayout)
 
+                # Randomly grant either cash or drugs as winnings
                 $lootRoll = Get-Random -Minimum 1 -Maximum 101
                 if ($lootRoll -le 55) {
                     $script:Player.Cash += $CashPayout
@@ -2127,7 +2152,7 @@ $script:RandomEvents = @(
                 }
             }
 
-            # ---- Deal ----
+            # Deal initial cards
             $player = @((New-Card), (New-Card))
             $dealer = @((New-Card), (New-Card))
 
@@ -2144,7 +2169,7 @@ $script:RandomEvents = @(
 
             Show-HandState $player $dealer
 
-            # ---- Player turn (Hit / Stand / Double Down) ----
+            # Player turn: Hit, Stand, or Double Down
             while ((Get-HandValue $player) -lt 21) {
 
                 # Police raid can happen mid-hand
@@ -2161,9 +2186,7 @@ $script:RandomEvents = @(
                     '"Choose before the cards start talking back."'
                 )
 
-                Write-Host 'H. Hit'
-                Write-Host 'S. Stand'
-                Write-Host 'D. Double Down (one card only)'
+                Show-BlackjackPrompt @('H. Hit', 'S. Stand', 'D. Double Down (one card only)')
                 $k = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
                 Write-Host
 
@@ -2182,6 +2205,7 @@ $script:RandomEvents = @(
                 }
 
                 if ($k -eq 'D') {
+                    # Check if player can afford to double down
                     if ($script:Player.Cash -lt $bet) {
                         Write-RandomCenteredLine @(
                             '"You tryna double with empty pockets? Cute."'
@@ -2196,6 +2220,7 @@ $script:RandomEvents = @(
                         continue
                     }
 
+                    # Double the bet
                     $script:Player.Cash -= $bet
                     $totalBet += $bet
 
@@ -2210,7 +2235,7 @@ $script:RandomEvents = @(
                         ('"The cosmos just blinked." ${0} more lands.' -f $bet)
                     )
 
-                    # One card only, then forced stand
+                    # Deal one card only for double down, then forced stand
                     $player += New-Card
                     Write-RandomCenteredLine @(
                         ("One card. That''s it: {0}" -f $player[-1])
@@ -2241,7 +2266,7 @@ $script:RandomEvents = @(
                     continue
                 }
 
-                # Hit
+                # Player chose to hit
                 $player += New-Card
                 Write-RandomCenteredLine @(
                     ("You take a card: {0}" -f $player[-1])
@@ -2256,6 +2281,7 @@ $script:RandomEvents = @(
                 Show-HandState $player $dealer
             }
 
+            # Check if player busted
             $pVal = Get-HandValue $player
             if ($pVal -gt 21) {
                 Show-HandState $player $dealer -Reveal
@@ -2270,15 +2296,15 @@ $script:RandomEvents = @(
                     '"That hand just exploded in slow motion."'
                 )
 
-                # Side-activity rule: no day advance on a normal bust.
-                # But: sometimes you get *wrecked* and lose the day anyway.
+                # Check if player gets wrecked from the bust
+                # (Side-activity rule: no day advance on a normal bust, but sometimes you get wrecked and lose the day anyway)
                 if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'bust') { return }
 
                 Write-Host
                 return
             }
 
-            # ---- Dealer turn ----
+            # Dealer's turn
             if (Test-PoliceRaid -TotalBet $totalBet -Stage 'dealer-turn') { return }
 
             Write-RandomCenteredLine @(
@@ -2292,6 +2318,7 @@ $script:RandomEvents = @(
                 'The card flips and the vibe recalculates.'
             )
 
+            # Dealer must hit until 17 or higher
             while ((Get-HandValue $dealer) -lt 17) {
                 $dealer += New-Card
                 Write-RandomCenteredLine @(
@@ -2310,8 +2337,9 @@ $script:RandomEvents = @(
 
             $dVal = Get-HandValue $dealer
 
-            # ---- Resolve ----
+            # Resolve the hand and determine winner
             if ($dVal -gt 21 -or $pVal -gt $dVal) {
+                # Player wins
                 Write-RandomCenteredLine @(
                     '"You win. Don''t act surprised."'
                     '"Luck smiled. Briefly."'
@@ -2323,11 +2351,12 @@ $script:RandomEvents = @(
                     '"Congrats. The table hates you a little."'
                 )
 
-                # Cash-mode payout returns + winnings => 2x totalBet
+                # Player wins: payout is 2x the total bet
                 $cashPayout = $totalBet * 2
                 Grant-WinLoot -CashPayout $cashPayout
             }
             elseif ($pVal -eq $dVal) {
+                # Push - tie game
                 Write-RandomCenteredLine @(
                     '"Push. Nobody wins."'
                     '"Same math. Reset."'
@@ -2343,6 +2372,7 @@ $script:RandomEvents = @(
                 $script:Player.Cash += $totalBet
             }
             else {
+                # Dealer wins
                 Write-RandomCenteredLine @(
                     '"House wins. Always."'
                     '"That''s how tables eat."'
@@ -2354,7 +2384,7 @@ $script:RandomEvents = @(
                     '"The night collects its tax."'
                 )
 
-                # But: sometimes a big loss spirals into "welp, that night is done."
+                # Check if player gets wrecked from the big loss
                 if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'loss') { return }
             }
 
