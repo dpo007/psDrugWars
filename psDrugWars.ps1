@@ -1779,13 +1779,17 @@ $script:RandomEvents = @(
         "Description" = "A velvet rope shifts like it's alive. A guy nods once. You're already inside."
         "Effect"      = {
             function Get-PoliceRaidChance {
-                param([int]$TotalBet)
+                param(
+                    [int]$TotalBet
+                )
 
                 # Calculate raid chance based on bet size
                 # Low base chance, scales with bet size
                 # Example: $100 => ~4%, $500 => ~8%, $1000 => ~13%, cap ~18%
                 $chance = 3 + [Math]::Floor($TotalBet / 100)
-                if ($chance -gt 18) { $chance = 18 }
+                if ($chance -gt 18) {
+                    $chance = 18
+                }
                 return $chance
             }
 
@@ -1797,10 +1801,23 @@ $script:RandomEvents = @(
 
                 $chance = Get-PoliceRaidChance -TotalBet $TotalBet
                 $roll = Get-Random -Minimum 1 -Maximum 101
-                if ($roll -gt $chance) { return $false }
+                if ($roll -gt $chance) {
+                    return $false
+                }
+
+                Start-Sleep -Milliseconds 800
+
+                # Clear screen and show header
+                Clear-Host
+                ShowHeader
+                Write-Host
+
+                # Big raid header (reuse cops grawlix banner)
+                Show-CopsSwearHeader
+                Start-Sleep -Seconds 1
 
                 Write-Host
-                Write-RandomCenteredLine @(
+                Write-RandomCenteredLine -Lines @(
                     '🚨 Somebody yells "FIVE-O!" and the room instantly becomes a magic trick.'
                     '🚨 Sirens outside. Inside? Everybody teleports into panic.'
                     '🚨 Red-and-blue lights smear across the blinds like a discount rave.'
@@ -1809,9 +1826,9 @@ $script:RandomEvents = @(
                     '🚨 The dealer goes pale and mutters, "Aw, c''mon… not tonight."'
                     '🚨 The whole room suddenly remembers they left the stove on.'
                     '🚨 Reality interrupts the movie scene.'
-                )
+                ) -ForegroundColor DarkYellow
 
-                Write-RandomCenteredLine @(
+                Write-RandomCenteredLine -Lines @(
                     'Cards scatter. Cash vanishes. The table pretends it was never born.'
                     'A dude in a hoodie scoops the felt like it owes him rent.'
                     'Chips disappear into pockets with the speed of regret.'
@@ -1820,7 +1837,9 @@ $script:RandomEvents = @(
                     'Everything not bolted down becomes somebody else''s property.'
                     'The room empties like someone pulled a drain plug.'
                     'You watch your bet get reincarnated as "gone."'
-                )
+                ) -ForegroundColor DarkYellow
+
+                Start-Sleep -Seconds 2
 
                 # Default: you lose whatever was on the table (TotalBet already deducted from cash)
                 # Small chance of a consolation escape
@@ -1829,9 +1848,11 @@ $script:RandomEvents = @(
                     $consolationMode = Get-Random -InputObject @('cash', 'drug')
                     if ($consolationMode -eq 'cash') {
                         $cashBack = [Math]::Min([Math]::Floor($TotalBet * 0.25), 300)
-                        if ($cashBack -gt 0) { $script:Player.Cash += $cashBack }
+                        if ($cashBack -gt 0) {
+                            $script:Player.Cash += $cashBack
+                        }
 
-                        Write-RandomCenteredLine @(
+                        Write-RandomCenteredLine -Lines @(
                             ("You slip out like smoke with +{0} cash clenched in your hand." -f $cashBack)
                             ("You duck behind a coat rack and find +{0} cash like fate apologized." -f $cashBack)
                             ("You emerge with +{0} cash and a brand-new fear of doors." -f $cashBack)
@@ -1840,14 +1861,16 @@ $script:RandomEvents = @(
                             ("You survive the chaos and pocket +{0} cash. Don''t ask questions." -f $cashBack)
                             ("You stumble outside with +{0} cash, blinking like a newborn." -f $cashBack)
                             ("You escape with +{0} cash and a story nobody will believe." -f $cashBack)
-                        )
+                        ) -ForegroundColor DarkGreen
+
+                        Start-Sleep -Milliseconds 900
                     }
                     else {
                         $d = $script:GameDrugs | Get-Random
                         $d.Quantity = 1
                         $script:Player.AddDrugs($d)
 
-                        Write-RandomCenteredLine @(
+                        Write-RandomCenteredLine -Lines @(
                             ("You flee clutching 1 pocket of {0}. It''s a weird night." -f $d.Name)
                             ("Somebody drops a pouch. Congrats: 1 pocket of {0}." -f $d.Name)
                             ("You trip, roll, stand up holding 1 pocket of {0} like it chose you." -f $d.Name)
@@ -1856,11 +1879,13 @@ $script:RandomEvents = @(
                             ("A baggie survives the stampede: 1 pocket of {0}." -f $d.Name)
                             ("You end up outside with 1 pocket of {0} and no memory of doors." -f $d.Name)
                             ("You keep 1 pocket of {0}. The universe says 'my bad.'" -f $d.Name)
-                        )
+                        ) -ForegroundColor DarkGreen
+
+                        Start-Sleep -Seconds 1
                     }
                 }
                 else {
-                    Write-RandomCenteredLine @(
+                    Write-RandomCenteredLine -Lines @(
                         ("No refunds. The raid just ate your bet. (-{0} cash)" -f $TotalBet)
                         ("You blink and it''s gone. Bet lost. (-{0} cash)" -f $TotalBet)
                         ("Table got vacuumed into the void. (-{0} cash)" -f $TotalBet)
@@ -1869,7 +1894,9 @@ $script:RandomEvents = @(
                         ("Your money did a vanishing act. (-{0} cash)" -f $TotalBet)
                         ("The house didn''t win—chaos did. (-{0} cash)" -f $TotalBet)
                         ("Congratulations, you donated to *panic*. (-{0} cash)" -f $TotalBet)
-                    )
+                    ) -ForegroundColor DarkRed
+
+                    Start-Sleep -Seconds 2
                 }
 
                 Write-Host
@@ -1887,12 +1914,16 @@ $script:RandomEvents = @(
                 # Low chance that scales mildly with bet size
                 # Base 8% + 1% per $200 bet, capped at 20%
                 $chance = 8 + [Math]::Floor($TotalBet / 200)
-                if ($chance -gt 20) { $chance = 20 }
+                if ($chance -gt 20) {
+                    $chance = 20
+                }
 
-                if ((Get-Random -Minimum 1 -Maximum 101) -gt $chance) { return $false }
+                if ((Get-Random -Minimum 1 -Maximum 101) -gt $chance) {
+                    return $false
+                }
 
                 Write-Host
-                Write-RandomCenteredLine @(
+                Write-RandomCenteredLine -Lines @(
                     'You stagger out into the night like your bones are made of neon.'
                     'You blink too long and the world fast-forwards.'
                     'Your legs file a complaint and shut down.'
@@ -1901,9 +1932,11 @@ $script:RandomEvents = @(
                     'You try to walk it off. The universe says "no."'
                     'Your brain hits the "buffering" icon.'
                     'You become one with a very uncomfortable chair.'
-                )
+                ) -ForegroundColor DarkYellow
 
-                Write-RandomCenteredLine @(
+                Start-Sleep -Seconds 2
+
+                Write-RandomCenteredLine -Lines @(
                     'Next thing you know, it''s the next day.'
                     'You wake up somewhere safe-ish, confused and annoyed.'
                     'You lose the rest of the night to pure nonsense.'
@@ -1912,11 +1945,167 @@ $script:RandomEvents = @(
                     'You sleep it off. The night is over.'
                     'You come to later, with the taste of regret.'
                     'You wake up. The sun is rude.'
-                )
+                ) -ForegroundColor DarkRed
+
+                Start-Sleep -Milliseconds 1200
 
                 Write-Host
                 AdvanceGameDay -SkipPriceUpdate
                 return $true
+            }
+
+            function Show-BlackjackPrompt {
+                param(
+                    [string[]]$MenuOptions
+                )
+
+                # Display a random prompt header followed by menu options
+                $prompts = @(
+                    '"What next, boss?"'
+                    '"So what''s it gonna be?"'
+                    '"You ready, chief?"'
+                    '"Make your move, partner."'
+                    '"What''ll it be, pal?"'
+                )
+                Write-Host (Get-Random -InputObject $prompts).Trim('"')
+                foreach ($option in $MenuOptions) {
+                    Write-Host $option
+                }
+            }
+
+            function Write-ColoredHandLine {
+                param(
+                    [string]$Label,
+                    [string[]]$Hand,
+                    [AllowNull()]
+                    [string]$ValueText
+                )
+
+                $consoleWidth = $Host.UI.RawUI.WindowSize.Width
+                $cardsText = $Hand -join ' '
+
+                $prefix = '{0}: ' -f $Label
+                $suffix = if ($null -ne $ValueText) { ' ({0})' -f $ValueText } else { '' }
+                $visibleLength = $prefix.Length + $cardsText.Length + $suffix.Length
+                $padding = [Math]::Max([Math]::Floor(($consoleWidth - $visibleLength) / 2), 0)
+
+                if ($padding -gt 0) {
+                    Write-Host (' ' * $padding) -NoNewline
+                }
+
+                Write-Host $prefix -NoNewline -ForegroundColor White
+
+                $first = $true
+                foreach ($card in $Hand) {
+                    if (-not $first) {
+                        Write-Host ' ' -NoNewline
+                    }
+                    $first = $false
+
+                    if ($card -eq '[??]') {
+                        Write-Host $card -NoNewline -ForegroundColor White
+                        continue
+                    }
+
+                    $rank = $card.Substring(0, $card.Length - 1)
+                    $suit = $card[-1]
+                    $suitColor = if ($suit -in @('♥', '♦')) { 'Red' } else { 'DarkGray' }
+
+                    Write-Host $rank -NoNewline -ForegroundColor White
+                    Write-Host $suit -NoNewline -ForegroundColor $suitColor
+                }
+
+                if ($suffix.Length -gt 0) {
+                    Write-Host $suffix -NoNewline -ForegroundColor White
+                }
+
+                Write-Host
+            }
+
+            function New-Card { "{0}{1}" -f ($ranks | Get-Random), (@('♠', '♥', '♦', '♣') | Get-Random) }
+
+            function Get-HandValue {
+                param(
+                    [string[]]$hand
+                )
+
+                # Calculate blackjack hand value, handling aces properly
+                $total = 0; $aces = 0
+                foreach ($c in $hand) {
+                    $r = ($c -replace '[^0-9AJQK]', '')
+                    switch ($r) {
+                        'A' { $total += 11; $aces++ }
+                        'K' { $total += 10 }
+                        'Q' { $total += 10 }
+                        'J' { $total += 10 }
+                        '10' { $total += 10 }
+                        default { $total += [int]$r }
+                    }
+                }
+                while ($total -gt 21 -and $aces -gt 0) {
+                    $total -= 10
+                    $aces--
+                }
+                return $total
+            }
+
+            function Show-HandState {
+                param(
+                    [string[]]$playerHand,
+                    [string[]]$dealerHand,
+                    [switch]$Reveal
+                )
+
+                # Display dealer and player hands with suit coloring
+                if ($Reveal) {
+                    Write-ColoredHandLine -Label 'Dealer' -Hand $dealerHand -ValueText (Get-HandValue $dealerHand)
+                }
+                else {
+                    Write-ColoredHandLine -Label 'Dealer' -Hand @($dealerHand[0], '[??]') -ValueText $null
+                }
+
+                Write-ColoredHandLine -Label 'You' -Hand $playerHand -ValueText (Get-HandValue $playerHand)
+                Write-Host
+            }
+
+            function Grant-WinLoot {
+                param(
+                    [int]$CashPayout
+                )
+
+                # Randomly grant either cash or drugs as winnings
+                $lootRoll = Get-Random -Minimum 1 -Maximum 101
+                if ($lootRoll -le 55) {
+                    $script:Player.Cash += $CashPayout
+                    Write-RandomCenteredLine @(
+                        ("Dealer slides you a roll: +{0} cash." -f $CashPayout)
+                        ("He pays you like it hurts: +{0} cash." -f $CashPayout)
+                        ("Cash hits your hand: +{0}." -f $CashPayout)
+                        ("You get paid. Finally: +{0} cash." -f $CashPayout)
+                        ("He counts it out slow: +{0} cash." -f $CashPayout)
+                        ("A fat stack lands your way: +{0} cash." -f $CashPayout)
+                        ("The house coughs up +{0} cash and pretends it''s fine." -f $CashPayout)
+                        ("You take +{0} cash like it''s rent day." -f $CashPayout)
+                    )
+                }
+                else {
+                    $drugCount = Get-Random -Minimum 2 -Maximum 5
+                    1..$drugCount | ForEach-Object {
+                        $dd = $script:GameDrugs | Get-Random
+                        $dd.Quantity = 1
+                        $script:Player.AddDrugs($dd)
+                    }
+                    Write-RandomCenteredLine @(
+                        ("No cash? Fine. You get {0} random drugs." -f $drugCount)
+                        ("He can''t pay in money… so he pays in chaos: +{0} drugs." -f $drugCount)
+                        ("A little bundle gets tossed your way: +{0} random drugs." -f $drugCount)
+                        ("He shrugs and hands over {0} mystery pockets." -f $drugCount)
+                        ("You get paid in vibes: +{0} random drugs." -f $drugCount)
+                        ("The dealer whispers, 'Don''t tell nobody.' +{0} drugs." -f $drugCount)
+                        ("Payment arrives in tiny questionable parcels: +{0} drugs." -f $drugCount)
+                        ("You receive +{0} random drugs and a wink you didn''t ask for." -f $drugCount)
+                    )
+                }
             }
 
             # Minimum cash check
@@ -1937,8 +2126,12 @@ $script:RandomEvents = @(
 
             # Calculate table minimum bet
             $minBet = [Math]::Floor($script:Player.Cash * 0.10)
-            if ($minBet -lt 100) { $minBet = 100 }
-            if ($minBet -gt $script:Player.Cash) { $minBet = $script:Player.Cash }
+            if ($minBet -lt 100) {
+                $minBet = 100
+            }
+            if ($minBet -gt $script:Player.Cash) {
+                $minBet = $script:Player.Cash
+            }
 
             Write-Host
             Write-RandomCenteredLine @(
@@ -2048,40 +2241,71 @@ $script:RandomEvents = @(
                 ('"${0}. Alright, see? Now we got a picture."' -f $bet)
             )
 
-            # Deduct the chosen bet now (this is the stake on the table)
-            $totalBet = $bet
-            $script:Player.Cash -= $bet
-            Write-Host
-
-            # Police raid can happen right after the bet hits the table
-            if (Test-PoliceRaid -TotalBet $totalBet -Stage 'post-bet') { return }
-
             # Initialize cards and helper functions
             $ranks = @('A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K')
 
-            function Show-BlackjackPrompt {
+            function Write-ColoredHandLine {
                 param(
-                    [string[]]$MenuOptions
+                    [string]$Label,
+                    [string[]]$Hand,
+                    [AllowNull()]
+                    [string]$ValueText
                 )
 
-                # Display a random prompt header followed by menu options
-                $prompts = @(
-                    '"What next, boss?"'
-                    '"So what''s it gonna be?"'
-                    '"You ready, chief?"'
-                    '"Make your move, partner."'
-                    '"What''ll it be, pal?"'
-                )
-                Write-Host (Get-Random -InputObject $prompts).Trim('"')
-                foreach ($option in $MenuOptions) {
-                    Write-Host $option
+                $consoleWidth = $Host.UI.RawUI.WindowSize.Width
+                $cardsText = $Hand -join ' '
+
+                $prefix = '{0}: ' -f $Label
+
+                if ($null -ne $ValueText) {
+                    $suffix = ' ({0})' -f $ValueText
                 }
+                else {
+                    $suffix = ''
+                }
+
+                $visibleLength = $prefix.Length + $cardsText.Length + $suffix.Length
+                $padding = [Math]::Max([Math]::Floor(($consoleWidth - $visibleLength) / 2), 0)
+
+                if ($padding -gt 0) {
+                    Write-Host (' ' * $padding) -NoNewline
+                }
+
+                Write-Host $prefix -NoNewline -ForegroundColor White
+
+                $first = $true
+                foreach ($card in $Hand) {
+                    if (-not $first) {
+                        Write-Host ' ' -NoNewline
+                    }
+                    $first = $false
+
+                    if ($card -eq '[??]') {
+                        Write-Host $card -NoNewline -ForegroundColor White
+                        continue
+                    }
+
+                    $rank = $card.Substring(0, $card.Length - 1)
+                    $suit = $card[-1]
+                    $suitColor = if ($suit -in @('♥', '♦')) { 'Red' } else { 'DarkGray' }
+
+                    Write-Host $rank -NoNewline -ForegroundColor White
+                    Write-Host $suit -NoNewline -ForegroundColor $suitColor
+                }
+
+                if ($suffix.Length -gt 0) {
+                    Write-Host $suffix -NoNewline -ForegroundColor White
+                }
+
+                Write-Host
             }
 
             function New-Card { "{0}{1}" -f ($ranks | Get-Random), (@('♠', '♥', '♦', '♣') | Get-Random) }
 
             function Get-HandValue {
-                param([string[]]$hand)
+                param(
+                    [string[]]$hand
+                )
 
                 # Calculate blackjack hand value, handling aces properly
                 $total = 0; $aces = 0
@@ -2096,26 +2320,36 @@ $script:RandomEvents = @(
                         default { $total += [int]$r }
                     }
                 }
-                while ($total -gt 21 -and $aces -gt 0) { $total -= 10; $aces-- }
+                while ($total -gt 21 -and $aces -gt 0) {
+                    $total -= 10
+                    $aces--
+                }
                 return $total
             }
 
             function Show-HandState {
-                param([string[]]$p, [string[]]$d, [switch]$Reveal)
+                param(
+                    [string[]]$playerHand,
+                    [string[]]$dealerHand,
+                    [switch]$Reveal
+                )
 
-                # Display dealer and player hands
+                # Display dealer and player hands with suit coloring
                 if ($Reveal) {
-                    Write-Centered ("Dealer: {0} ({1})" -f ($d -join ' '), (Get-HandValue $d))
+                    Write-ColoredHandLine -Label 'Dealer' -Hand $dealerHand -ValueText (Get-HandValue $dealerHand)
                 }
                 else {
-                    Write-Centered ("Dealer: {0} [??]" -f $d[0])
+                    Write-ColoredHandLine -Label 'Dealer' -Hand @($dealerHand[0], '[??]') -ValueText $null
                 }
-                Write-Centered ("You:    {0} ({1})" -f ($p -join ' '), (Get-HandValue $p))
+
+                Write-ColoredHandLine -Label 'You' -Hand $playerHand -ValueText (Get-HandValue $playerHand)
                 Write-Host
             }
 
             function Grant-WinLoot {
-                param([int]$CashPayout)
+                param(
+                    [int]$CashPayout
+                )
 
                 # Randomly grant either cash or drugs as winnings
                 $lootRoll = Get-Random -Minimum 1 -Maximum 101
@@ -2152,244 +2386,270 @@ $script:RandomEvents = @(
                 }
             }
 
-            # Deal initial cards
-            $player = @((New-Card), (New-Card))
-            $dealer = @((New-Card), (New-Card))
-
-            Write-RandomCenteredLine @(
-                'Cards slap the table like it''s a music video.'
-                'The deck sings. The dealer doesn''t.'
-                'Plastic snaps. Fate shuffles.'
-                'Cards slide like they got attitude.'
-                'The table goes quiet in that fake dramatic way.'
-                'You smell cologne, fear, and bad ideas.'
-                'The room hums like it''s judging your soul.'
-                'Everything feels slightly too bright.'
-            )
-
-            Show-HandState $player $dealer
-
-            # Player turn: Hit, Stand, or Double Down
-            while ((Get-HandValue $player) -lt 21) {
-
-                # Police raid can happen mid-hand
-                if (Test-PoliceRaid -TotalBet $totalBet -Stage 'player-turn') { return }
-
-                Write-RandomCenteredLine @(
-                    '"Hit, stand… or double if you feel unstoppable."'
-                    '"H, S, or D. Don''t freestyle the alphabet."'
-                    '"You chasing or you chilling? Double''s on the menu."'
-                    '"Pick it: Hit. Stand. Double. No speeches."'
-                    '"Let''s go. H, S, or D."'
-                    '"Make your move, see? The night''s on a clock."'
-                    '"Follow the vibes: H, S, or D… the felt is speaking."'
-                    '"Choose before the cards start talking back."'
-                )
-
-                Show-BlackjackPrompt @('H. Hit', 'S. Stand', 'D. Double Down (one card only)')
-                $k = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
+            while ($true) {
+                # Deduct the chosen bet now (this is the stake on the table)
+                $totalBet = $bet
+                $script:Player.Cash -= $bet
                 Write-Host
 
-                if ($k -eq 'S') {
-                    Write-RandomCenteredLine @(
-                        '"Standing? Brave… or tired."'
-                        '"Cool. Lock it in."'
-                        '"Alright. We see you."'
-                        '"Hope that math works out."'
-                        '"You stand. The table judges you silently."'
-                        '"You plant your flag. Now we see what it means."'
-                        '"You stand like you meant it the whole time."'
-                        '"You stand. The universe raises an eyebrow."'
-                    )
-                    break
+                # Police raid can happen right after the bet hits the table
+                if (Test-PoliceRaid -TotalBet $totalBet -Stage 'post-bet') {
+                    return
                 }
 
-                if ($k -eq 'D') {
-                    # Check if player can afford to double down
-                    if ($script:Player.Cash -lt $bet) {
+                # Deal initial cards
+                $player = @((New-Card), (New-Card))
+                $dealer = @((New-Card), (New-Card))
+
+                Write-RandomCenteredLine @(
+                    'Cards slap the table like it''s a music video.'
+                    'The deck sings. The dealer doesn''t.'
+                    'Plastic snaps. Fate shuffles.'
+                    'Cards slide like they got attitude.'
+                    'The table goes quiet in that fake dramatic way.'
+                    'You smell cologne, fear, and bad ideas.'
+                    'The room hums like it''s judging your soul.'
+                    'Everything feels slightly too bright.'
+                )
+
+                Show-HandState $player $dealer
+
+                # Player turn: Hit, Stand, or Double Down
+                while ((Get-HandValue $player) -lt 21) {
+
+                    # Police raid can happen mid-hand
+                    if (Test-PoliceRaid -TotalBet $totalBet -Stage 'player-turn') {
+                        return
+                    }
+
+                    Write-RandomCenteredLine @(
+                        '"Hit, stand… or double if you feel unstoppable."'
+                        '"H, S, or D. Don''t freestyle the alphabet."'
+                        '"You chasing or you chilling? Double''s on the menu."'
+                        '"Pick it: Hit. Stand. Double. No speeches."'
+                        '"Let''s go. H, S, or D."'
+                        '"Make your move, see? The night''s on a clock."'
+                        '"Follow the vibes: H, S, or D… the felt is speaking."'
+                        '"Choose before the cards start talking back."'
+                    )
+
+                    Show-BlackjackPrompt @('H. Hit', 'S. Stand', 'D. Double Down (one card only)')
+                    $k = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
+                    Write-Host
+
+                    if ($k -eq 'S') {
                         Write-RandomCenteredLine @(
-                            '"You tryna double with empty pockets? Cute."'
-                            '"Double-down requires double-money, boss."'
-                            '"You ain''t got the juice to double."'
-                            '"Nah. Come correct if you want that option."'
-                            '"That''s a strong choice for someone broke."'
-                            '"You can''t double the bet if you can''t double the bread."'
-                            '"Nice dream. Needs funding."'
-                            '"Your wallet just said ''absolutely not.''"'
+                            '"Standing? Brave… or tired."'
+                            '"Cool. Lock it in."'
+                            '"Alright. We see you."'
+                            '"Hope that math works out."'
+                            '"You stand. The table judges you silently."'
+                            '"You plant your flag. Now we see what it means."'
+                            '"You stand like you meant it the whole time."'
+                            '"You stand. The universe raises an eyebrow."'
+                        )
+                        break
+                    }
+
+                    if ($k -eq 'D') {
+                        # Check if player can afford to double down
+                        if ($script:Player.Cash -lt $bet) {
+                            Write-RandomCenteredLine @(
+                                '"You tryna double with empty pockets? Cute."'
+                                '"Double-down requires double-money, boss."'
+                                '"You ain''t got the juice to double."'
+                                '"Nah. Come correct if you want that option."'
+                                '"That''s a strong choice for someone broke."'
+                                '"You can''t double the bet if you can''t double the bread."'
+                                '"Nice dream. Needs funding."'
+                                '"Your wallet just said ''absolutely not.''"'
+                            )
+                            continue
+                        }
+
+                        # Double the bet
+                        $script:Player.Cash -= $bet
+                        $totalBet += $bet
+
+                        Write-RandomCenteredLine @(
+                            ('"DOUBLE. Okay." Another ${0} hits the table hard.' -f $bet)
+                            ('"Big moves." You drop another ${0} like it''s nothing.' -f $bet)
+                            ('"Respect." Another ${0} goes in—no hesitation.' -f $bet)
+                            ('"You sure?" Too late. ${0} more is gone.' -f $bet)
+                            ('"Alright, movie star." ${0} more on the felt.' -f $bet)
+                            ('"Double down, see? That''s the spirit." +${0} bet.' -f $bet)
+                            ('"You just turned the volume up." ${0} more.' -f $bet)
+                            ('"The cosmos just blinked." ${0} more lands.' -f $bet)
+                        )
+
+                        # Deal one card only for double down, then forced stand
+                        $player += New-Card
+                        Write-RandomCenteredLine @(
+                            ("One card. That''s it: {0}" -f $player[-1])
+                            ("Dealer deals your fate: {0}" -f $player[-1])
+                            ("You get exactly one more: {0}" -f $player[-1])
+                            ("The table gives you one last card: {0}" -f $player[-1])
+                            ("Last card. Make it count: {0}" -f $player[-1])
+                            ("Here''s your finale: {0}" -f $player[-1])
+                            ("The universe hands you: {0}" -f $player[-1])
+                            ("One last sparkle of doom: {0}" -f $player[-1])
+                        )
+
+                        Show-HandState $player $dealer
+                        break
+                    }
+
+                    if ($k -ne 'H') {
+                        Write-RandomCenteredLine @(
+                            '"That ain''t a choice. Focus."'
+                            '"Try again. With letters this time."'
+                            '"You okay? Pick H, S, or D."'
+                            '"We ain''t got all night. H, S, or D."'
+                            '"Stop free-styling. H, S, or D."'
+                            '"C''mon, pal—pick one of the options, not a new religion."'
+                            '"Your button pressed… nothing. Try again."'
+                            '"Your choice was… interpretive. Pick H/S/D."'
                         )
                         continue
                     }
 
-                    # Double the bet
-                    $script:Player.Cash -= $bet
-                    $totalBet += $bet
-
-                    Write-RandomCenteredLine @(
-                        ('"DOUBLE. Okay." Another ${0} hits the table hard.' -f $bet)
-                        ('"Big moves." You drop another ${0} like it''s nothing.' -f $bet)
-                        ('"Respect." Another ${0} goes in—no hesitation.' -f $bet)
-                        ('"You sure?" Too late. ${0} more is gone.' -f $bet)
-                        ('"Alright, movie star." ${0} more on the felt.' -f $bet)
-                        ('"Double down, see? That''s the spirit." +${0} bet.' -f $bet)
-                        ('"You just turned the volume up." ${0} more.' -f $bet)
-                        ('"The cosmos just blinked." ${0} more lands.' -f $bet)
-                    )
-
-                    # Deal one card only for double down, then forced stand
+                    # Player chose to hit
                     $player += New-Card
                     Write-RandomCenteredLine @(
-                        ("One card. That''s it: {0}" -f $player[-1])
-                        ("Dealer deals your fate: {0}" -f $player[-1])
-                        ("You get exactly one more: {0}" -f $player[-1])
-                        ("The table gives you one last card: {0}" -f $player[-1])
-                        ("Last card. Make it count: {0}" -f $player[-1])
-                        ("Here''s your finale: {0}" -f $player[-1])
-                        ("The universe hands you: {0}" -f $player[-1])
-                        ("One last sparkle of doom: {0}" -f $player[-1])
+                        ("You take a card: {0}" -f $player[-1])
+                        ("Dealer flicks you one: {0}" -f $player[-1])
+                        ("Another card slides in: {0}" -f $player[-1])
+                        ("You reach. You receive: {0}" -f $player[-1])
+                        ("One more hits your stack: {0}" -f $player[-1])
+                        ("The deck coughs up: {0}" -f $player[-1])
+                        ("A new rectangle of fate appears: {0}" -f $player[-1])
+                        ("The table whispers and delivers: {0}" -f $player[-1])
                     )
-
                     Show-HandState $player $dealer
-                    break
                 }
 
-                if ($k -ne 'H') {
+                # Check if player busted
+                $pVal = Get-HandValue $player
+                if ($pVal -gt 21) {
+                    Show-HandState $player $dealer -Reveal
+                    Write-RandomCenteredLine -Lines @(
+                        '"BUSTED. That''s tragic."'
+                        '"Yeah… nah. You cooked."'
+                        '"Twenty-two is ambitious."'
+                        '"You flew too close."'
+                        '"House appreciates your donation."'
+                        '"Oof. That''s a wrap. Fade to black."'
+                        '"You busted. The table smiles without warmth."'
+                        '"That hand just exploded in slow motion."'
+                    ) -ForegroundColor DarkRed
+
+                    # Check if player gets wrecked from the bust
+                    # (Side-activity rule: no day advance on a normal bust, but sometimes you get wrecked and lose the day anyway)
+                    if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'bust') {
+                        return
+                    }
+
+                    Write-Host
+                    return
+                }
+
+                # Dealer's turn
+                if (Test-PoliceRaid -TotalBet $totalBet -Stage 'dealer-turn') {
+                    return
+                }
+
+                Write-RandomCenteredLine @(
+                    'Dealer reveals the hole card slow like he practiced in a mirror.'
+                    'The hole card flips. Drama included for free.'
+                    'Dealer shows the card like it''s evidence.'
+                    'The table leans in. The dealer doesn''t.'
+                    'Reality arrives in card form.'
+                    'The dealer turns a card like it''s a confession.'
+                    'The room holds its breath in a very fake way.'
+                    'The card flips and the vibe recalculates.'
+                )
+
+                # Dealer must hit until 17 or higher
+                while ((Get-HandValue $dealer) -lt 17) {
+                    $dealer += New-Card
                     Write-RandomCenteredLine @(
-                        '"That ain''t a choice. Focus."'
-                        '"Try again. With letters this time."'
-                        '"You okay? Pick H, S, or D."'
-                        '"We ain''t got all night. H, S, or D."'
-                        '"Stop free-styling. H, S, or D."'
-                        '"C''mon, pal—pick one of the options, not a new religion."'
-                        '"Your button pressed… nothing. Try again."'
-                        '"Your choice was… interpretive. Pick H/S/D."'
+                        ("Dealer hits: {0}" -f $dealer[-1])
+                        ("Dealer pulls: {0}" -f $dealer[-1])
+                        ("Dealer takes one: {0}" -f $dealer[-1])
+                        ("Dealer draws: {0}" -f $dealer[-1])
+                        ("Dealer snags a card: {0}" -f $dealer[-1])
+                        ("Dealer taps the deck and takes: {0}" -f $dealer[-1])
+                        ("Dealer quietly adds: {0}" -f $dealer[-1])
+                        ("Dealer deals himself: {0}" -f $dealer[-1])
                     )
+                }
+
+                Show-HandState $player $dealer -Reveal
+
+                $dVal = Get-HandValue $dealer
+
+                # Resolve the hand and determine winner
+                if ($dVal -gt 21 -or $pVal -gt $dVal) {
+                    # Player wins
+                    Write-RandomCenteredLine -Lines @(
+                        '"You win. Don''t act surprised."'
+                        '"Luck smiled. Briefly."'
+                        '"Take it and vanish."'
+                        '"Alright… fair."'
+                        '"Yeah yeah. You got it."'
+                        '"You win, see? Don''t let it go to your head."'
+                        '"The universe blinked first. You win."'
+                        '"Congrats. The table hates you a little."'
+                    ) -ForegroundColor DarkGreen
+
+                    # Player wins: payout is 2x the total bet
+                    $cashPayout = $totalBet * 2
+                    Grant-WinLoot -CashPayout $cashPayout
+                    Write-Host
+                    return
+                }
+                elseif ($pVal -eq $dVal) {
+                    # Push - tie game
+                    Write-RandomCenteredLine -Lines @(
+                        '"Push. Nobody wins."'
+                        '"Same math. Reset."'
+                        '"Dead even. Cute."'
+                        '"That''s a wash."'
+                        '"Run it again another day."'
+                        '"A tie. Everybody wastes time. Beautiful."'
+                        '"Push. The universe shrugs."'
+                        '"It''s even. Like a stalemate in a neon dream."'
+                    ) -ForegroundColor DarkYellow
+
+                    # Return the full bet, pause, and re-deal the same stake
+                    $script:Player.Cash += $totalBet
+                    Start-Sleep -Seconds 1
+                    Write-Host
                     continue
                 }
+                else {
+                    # Dealer wins
+                    Write-RandomCenteredLine -Lines @(
+                        '"House wins. Always."'
+                        '"That''s how tables eat."'
+                        '"Thanks for playing yourself."'
+                        '"Dealer stays winning."'
+                        '"Cash stays here."'
+                        '"Tough break, see? The joint takes its cut."'
+                        '"You lose. The table purrs."'
+                        '"The night collects its tax."'
+                    ) -ForegroundColor DarkRed
 
-                # Player chose to hit
-                $player += New-Card
-                Write-RandomCenteredLine @(
-                    ("You take a card: {0}" -f $player[-1])
-                    ("Dealer flicks you one: {0}" -f $player[-1])
-                    ("Another card slides in: {0}" -f $player[-1])
-                    ("You reach. You receive: {0}" -f $player[-1])
-                    ("One more hits your stack: {0}" -f $player[-1])
-                    ("The deck coughs up: {0}" -f $player[-1])
-                    ("A new rectangle of fate appears: {0}" -f $player[-1])
-                    ("The table whispers and delivers: {0}" -f $player[-1])
-                )
-                Show-HandState $player $dealer
+                    # Check if player gets wrecked from the big loss
+                    if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'loss') {
+                        return
+                    }
+
+                    Write-Host
+                    return
+                }
+
             }
-
-            # Check if player busted
-            $pVal = Get-HandValue $player
-            if ($pVal -gt 21) {
-                Show-HandState $player $dealer -Reveal
-                Write-RandomCenteredLine @(
-                    '"BUSTED. That''s tragic."'
-                    '"Yeah… nah. You cooked."'
-                    '"Twenty-two is ambitious."'
-                    '"You flew too close."'
-                    '"House appreciates your donation."'
-                    '"Oof. That''s a wrap. Fade to black."'
-                    '"You busted. The table smiles without warmth."'
-                    '"That hand just exploded in slow motion."'
-                )
-
-                # Check if player gets wrecked from the bust
-                # (Side-activity rule: no day advance on a normal bust, but sometimes you get wrecked and lose the day anyway)
-                if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'bust') { return }
-
-                Write-Host
-                return
-            }
-
-            # Dealer's turn
-            if (Test-PoliceRaid -TotalBet $totalBet -Stage 'dealer-turn') { return }
-
-            Write-RandomCenteredLine @(
-                'Dealer reveals the hole card slow like he practiced in a mirror.'
-                'The hole card flips. Drama included for free.'
-                'Dealer shows the card like it''s evidence.'
-                'The table leans in. The dealer doesn''t.'
-                'Reality arrives in card form.'
-                'The dealer turns a card like it''s a confession.'
-                'The room holds its breath in a very fake way.'
-                'The card flips and the vibe recalculates.'
-            )
-
-            # Dealer must hit until 17 or higher
-            while ((Get-HandValue $dealer) -lt 17) {
-                $dealer += New-Card
-                Write-RandomCenteredLine @(
-                    ("Dealer hits: {0}" -f $dealer[-1])
-                    ("Dealer pulls: {0}" -f $dealer[-1])
-                    ("Dealer takes one: {0}" -f $dealer[-1])
-                    ("Dealer draws: {0}" -f $dealer[-1])
-                    ("Dealer snags a card: {0}" -f $dealer[-1])
-                    ("Dealer taps the deck and takes: {0}" -f $dealer[-1])
-                    ("Dealer quietly adds: {0}" -f $dealer[-1])
-                    ("Dealer deals himself: {0}" -f $dealer[-1])
-                )
-            }
-
-            Show-HandState $player $dealer -Reveal
-
-            $dVal = Get-HandValue $dealer
-
-            # Resolve the hand and determine winner
-            if ($dVal -gt 21 -or $pVal -gt $dVal) {
-                # Player wins
-                Write-RandomCenteredLine @(
-                    '"You win. Don''t act surprised."'
-                    '"Luck smiled. Briefly."'
-                    '"Take it and vanish."'
-                    '"Alright… fair."'
-                    '"Yeah yeah. You got it."'
-                    '"You win, see? Don''t let it go to your head."'
-                    '"The universe blinked first. You win."'
-                    '"Congrats. The table hates you a little."'
-                )
-
-                # Player wins: payout is 2x the total bet
-                $cashPayout = $totalBet * 2
-                Grant-WinLoot -CashPayout $cashPayout
-            }
-            elseif ($pVal -eq $dVal) {
-                # Push - tie game
-                Write-RandomCenteredLine @(
-                    '"Push. Nobody wins."'
-                    '"Same math. Reset."'
-                    '"Dead even. Cute."'
-                    '"That''s a wash."'
-                    '"Run it again another day."'
-                    '"A tie. Everybody wastes time. Beautiful."'
-                    '"Push. The universe shrugs."'
-                    '"It''s even. Like a stalemate in a neon dream."'
-                )
-
-                # Return the full bet
-                $script:Player.Cash += $totalBet
-            }
-            else {
-                # Dealer wins
-                Write-RandomCenteredLine @(
-                    '"House wins. Always."'
-                    '"That''s how tables eat."'
-                    '"Thanks for playing yourself."'
-                    '"Dealer stays winning."'
-                    '"Cash stays here."'
-                    '"Tough break, see? The joint takes its cut."'
-                    '"You lose. The table purrs."'
-                    '"The night collects its tax."'
-                )
-
-                # Check if player gets wrecked from the big loss
-                if (Test-WreckedOutcome -TotalBet $totalBet -Reason 'loss') { return }
-            }
-
-            Write-Host
-
         }
     }
 )
@@ -2557,7 +2817,9 @@ $script:MobBossNames = @(
 #region Function Definitions
 #############################
 # Function that will Exit if console size is not at least 80x25.
+# Checks if the console window meets the minimum size requirements for the game.
 function CheckConsoleSize {
+    # If the console window is too small, display an error message and exit
     if ($Host.UI.RawUI.WindowSize.Width -lt 120 -or $Host.UI.RawUI.WindowSize.Height -lt 30) {
         Write-Host 'Please resize your console window to at least 120 x 30 and run the script again.' -ForegroundColor Red
         Write-Host ('Current size: {0}x{1}' -f $Host.UI.RawUI.WindowSize.Width, $Host.UI.RawUI.WindowSize.Height) -ForegroundColor Red
@@ -2573,17 +2835,24 @@ function OverWriteLastLines {
         [switch]$WithClear
     )
 
+    # Get the current cursor line position
     $CurrentLine = $Host.UI.RawUI.CursorPosition.Y
+    # Get the console width to use for clearing lines
     $ConsoleWidth = $Host.UI.RawUI.BufferSize.Width
 
+    # If WithClear is specified, clear the lines before moving cursor
     if ($WithClear) {
+        # Loop through each line to be cleared
         for ($i = 1; $i -le $Count; $i++) {
+            # Set cursor position to the line to be cleared
             [Console]::SetCursorPosition(0, ($CurrentLine - $i))
+            # Overwrite the line with spaces
             [Console]::Write("{0,-$ConsoleWidth}" -f ' ')
         }
 
     }
 
+    # Move cursor to the target line (N lines up from current position)
     [Console]::SetCursorPosition(0, ($CurrentLine - $Count))
 }
 
@@ -3228,6 +3497,40 @@ function Write-BlockLetters {
     }
 }
 
+# Displays the grawlix cops header (block letters with fallback)
+function Show-CopsSwearHeader {
+    param(
+        [ConsoleColor]$ForegroundColor = [ConsoleColor]::Blue,
+        [ConsoleColor]$BackgroundColor = [ConsoleColor]::DarkRed
+    )
+
+    $grawlixes = @(
+        '$#@%',
+        '#@*&',
+        '%$#@',
+        '*&%$',
+        '@#$%',
+        '$@*%',
+        'F***'
+    )
+
+    $copNames = @(
+        'cops',
+        'pigs',
+        'law',
+        'fuzz',
+        'po-po'
+    )
+
+    $grawlix = Get-Random -InputObject $grawlixes
+    $copName = Get-Random -InputObject $copNames
+    $text = ('{0}! It''s the {1}!' -f $grawlix, $copName)
+
+    if ((Write-BlockLetters $text -BackgroundColor $BackgroundColor -ForegroundColor $ForegroundColor -Align Center -VerticalPadding 1) -eq $false) {
+        Write-Centered $text -BackgroundColor $BackgroundColor -ForegroundColor $ForegroundColor
+    }
+}
+
 # Generates a list of distinct sale days, ensuring each is a certain number of days apart.
 function GenerateSaleDays {
     param (
@@ -3237,21 +3540,29 @@ function GenerateSaleDays {
         [int]$DaysApart
     )
 
+    # Initialize an empty array to hold sale days
     $saleDays = @()
 
+    # Keep generating random days until we have the required count
     while ($saleDays.Count -lt $SaleDaysCount) {
+        # Generate a random day within the game period
         $randomDay = Get-Random -Minimum 1 -Maximum $script:GameDays
+        # If this is the first sale day, add it without validation
         if ($saleDays.Count -eq 0) {
             $saleDays += $randomDay
         }
         else {
+            # Assume the day is valid until proven otherwise
             $validDay = $true
+            # Check if the random day is far enough from all existing sale days
             foreach ($day in $saleDays) {
+                # If the random day is too close to an existing sale day, mark it as invalid
                 if ([math]::Abs($day - $randomDay) -lt $DaysApart) {
                     $validDay = $false
                     break
                 }
             }
+            # If the day passed validation, add it to the sale days array
             if ($validDay) {
                 $saleDays += $randomDay
             }
@@ -3261,11 +3572,13 @@ function GenerateSaleDays {
     return $saleDays
 }
 
+# Checks if the specified day (or current game day) is a home drug sale day.
 function IsHomeDrugSaleDay {
     param (
         [int]$Day = $script:Player.GameDay
     )
 
+    # Return true if the specified day is in the HomeDrugSaleDays array
     return [bool]($script:HomeDrugSaleDays -contains $Day)
 }
 
@@ -3416,9 +3729,13 @@ function GetHomeDrugString {
         [string[]]$HomeDrugNames
     )
 
+    # Initialize an empty string to build the drug name list
     $homeDrugString = ''
+    # Loop through each drug name in the array
     for ($i = 0; $i -lt $HomeDrugNames.Count; $i++) {
+        # Add the drug name to the string
         $homeDrugString += $HomeDrugNames[$i]
+        # Add a comma separator if this is not the last drug
         if ($i -lt ($HomeDrugNames.Count - 1)) {
             $homeDrugString += ', '
         }
@@ -3428,11 +3745,16 @@ function GetHomeDrugString {
 
 # This function displays a menu header with the player's current cash, city, and home drug information in a formatted string.
 function ShowHeader {
+    # Get the formatted string of home drugs for the current city
     $homeDrugString = GetHomeDrugString -HomeDrugNames $script:Player.City.HomeDrugNames
 
+    # Display top border
     Write-Host ('·' + ('═' * ($Host.UI.RawUI.WindowSize.Width - 2)) + '·') -ForegroundColor DarkGray
+    # Display game day, city name, and home drugs
     Write-Centered ('Drug Wars :: Day {3} :: {1} ({2})' -f $script:Player.Cash, $script:Player.City.Name, $homeDrugString, $script:Player.GameDay)
+    # Display player's cash and pocket information
     Write-centered ('Cash: ${0} :: Free Pockets: {1}/{2}' -f $script:Player.Cash, $script:Player.get_FreePocketCount(), $script:Player.Pockets)
+    # Display bottom border
     Write-Host ('·' + ('═' * ($Host.UI.RawUI.WindowSize.Width - 2)) + '·') -ForegroundColor DarkGray
 }
 
@@ -4431,13 +4753,17 @@ function StartRandomEvent {
 
 # This function displays a prompt to the user to press Enter to continue.
 function PressEnterPrompt {
-    # Clear existing keyboard buffer
+    # Clear any pending keyboard input
     $Host.UI.RawUI.Flushinputbuffer()
+    # Display the prompt message
     Write-Centered 'Press Enter to continue' -NoNewline
+    # Initialize choice variable
     $choice = $null
+    # Wait for Enter key (VirtualKeyCode 13)
     while ($choice.VirtualKeyCode -ne 13) {
         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
     }
+    # Clear keyboard buffer again after input
     $Host.UI.RawUI.Flushinputbuffer()
 }
 
@@ -4573,15 +4899,17 @@ function JailForLife {
 
 # This function is called when the player chooses to quit the game.
 function QuitGame {
-    # Check if they're sure they want to quit.
+    # Prompt the player for confirmation
     Write-Host
     Write-Centered 'Are you sure you want to quit? (Y/N)' -NoNewline
-    # Wait for user to press a valid key
+    # Clear any existing keyboard input
     $Host.UI.RawUI.Flushinputbuffer()
+    # Loop until user presses Y or N
     do {
         $choice = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character.ToString().ToUpper()
     } while ('Y', 'N' -notcontains $choice)
 
+    # If the player confirms, end the game
     if ($choice -eq 'Y') {
         EndGame
     }
@@ -4592,7 +4920,12 @@ function EndGame {
     Clear-Host
     Write-Host
     $days = $script:Player.GameDay
-    $daysLabel = if ($days -eq 1) { 'day' } else { 'days' }
+    if ($days -eq 1) {
+        $daysLabel = 'day'
+    }
+    else {
+        $daysLabel = 'days'
+    }
     Write-Centered ('You survived {0} {1}, and ended up with ${2} in cash.' -f $days, $daysLabel, $script:Player.Cash)
     if ($script:Player.Drugs.Count -gt 0) {
         Write-Host
@@ -5132,9 +5465,12 @@ function IsHighScore {
         [int]$Score
     )
 
+    # Get the current high score list
     $highScores = @(GetHighScores)
+    # Find any score in the list that is lower than the given score
     $lowerScore = $highScores | Where-Object { $_.Score -lt $Score } | Select-Object -First 1
 
+    # Return true if a lower score was found (meaning the given score qualifies)
     return $null -ne $lowerScore
 }
 
@@ -5147,15 +5483,18 @@ function AddHighScore {
         [string]$Initials
     )
 
+    # Load the current high scores
     $highScores = @(GetHighScores)
+    # Create a new score entry with the player's initials, score, and current date
     $newScore = [PSCustomObject]@{
         Initials = $Initials
         Score    = $Score
         Date     = (Get-Date).ToString("yyyy-MM-dd")
     }
+    # Add the new score to the high scores array
     $highScores += $newScore
 
-    # Sort the high scores by score, descending, and keep the top 10
+    # Sort the high scores by score (descending), keep only the top 10, and save to file
     $highScores | Sort-Object -Property Score -Descending | Select-Object -First 10 | ConvertTo-Json | Out-File -FilePath "highscores.json" -Force
 }
 
@@ -5231,8 +5570,11 @@ function AdvanceGameDay {
 
 # This function sets a random price multiplier for each drug in the game.
 function SetGameDrugMultipliers {
+    # Get reference to all game drugs
     $drugs = $script:GameDrugs
+    # Loop through each drug and assign a random price multiplier
     foreach ($drug in $drugs) {
+        # Multiplier ranges from 0.5 (half price) to 2.6 (2.6x price)
         $drug.PriceMultiplier = Get-Random -Minimum 0.5 -Maximum 2.6
     }
 }
@@ -5246,8 +5588,11 @@ function SetDrugPriceMultiplier {
         [double]$Multiplier
     )
 
+    # Loop through each drug name provided
     foreach ($name in $DrugNames) {
+        # Find the drug object matching the name
         $drug = $script:GameDrugs | Where-Object { $_.Name -eq $name }
+        # Set the price multiplier for this drug
         $drug.PriceMultiplier = $Multiplier
     }
 }
@@ -5325,27 +5670,7 @@ function CopFight {
     Clear-Host
     ShowHeader
     Write-Host
-    $grawlixes = @(
-        '$#@%',
-        '#@*&',
-        '%$#@',
-        '*&%$',
-        '@#$%',
-        '$@*%',
-        'F***'
-    )
-    $grawlix = Get-Random -InputObject $grawlixes
-
-    $copNames = @(
-        'cops',
-        'pigs',
-        'law',
-        'fuzz',
-        'po-po'
-    )
-    $copName = Get-Random -InputObject $copNames
-
-    Write-BlockLetters ('{0}! It''s the {1}!' -f $grawlix, $copName) -BackgroundColor DarkRed -ForegroundColor Blue -Align Center -VerticalPadding 1
+    Show-CopsSwearHeader
 
     # Calculate the number of cops
     $numCops = CalculateCops -PlayerMoney $script:Player.Cash -PlayerInventoryCount $script:Player.get_DrugCount()
@@ -5797,6 +6122,7 @@ function CopFight {
 
 # Function to generate a random punch phrase
 function GetRandomPunchPhrase {
+    # Array of different punch types
     $punchNames = @(
         'backfist',
         'bitch slap',
@@ -5813,6 +6139,7 @@ function GetRandomPunchPhrase {
         'uppercut'
     )
 
+    # Array of humorous punch descriptions with a placeholder for the punch type
     $punchPhrases = @(
         'You swing your arm like a pro, aiming for greatness with your best PUNCH_NAME...',
         'You unleash your inner boxer, swinging and hoping for the best with your PUNCH_NAME...',
@@ -5829,7 +6156,7 @@ function GetRandomPunchPhrase {
     $randomPunchName = $punchNames | Get-Random
     $randomPunchPhrase = $punchPhrases | Get-Random
 
-    # Replace "PUNCH_NAME" placeholder with the selected punch name
+    # Replace the placeholder with the actual punch name
     $randomPunchPhrase = $randomPunchPhrase -replace 'PUNCH_NAME', $randomPunchName
 
     return $randomPunchPhrase
